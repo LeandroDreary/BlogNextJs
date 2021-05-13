@@ -1,0 +1,33 @@
+.background-radio {
+    display: none;
+}
+
+.background-radio + label {
+    -webkit-appearance: none;
+    border: 2px solid transparent;
+    border-radius: 1px;
+    display: inline-block;
+    position: relative;
+    width: 20px;
+    height:  20px;
+}
+
+.background-radio:checked + label {
+    border: 2px solid #000000;
+}
+
+.text-radio {
+    display: none;
+}
+
+.text-radio + label {
+    -webkit-appearance: none;
+    border: 2px solid transparent;
+    border-radius: 1px;
+    display: inline-block;
+    position: relative;
+}
+
+.text-radio:checked + label {
+    border: 2px solid #000000;
+}
