@@ -1,25 +1,10 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import Head from 'next/head'
-import Mongoose from "mongoose"
 import Navbar from '../../components/navbar'
 import Sidebar from '../../components/sidebar'
 import Link from 'next/link'
 import '../../components/LoadClasses'
-import { loadInfo } from '../../services/loadApi'
 import DbConnect, { Category, Config, Post } from "./../../database/connection"
-
-interface PostI {
-    title: string,
-    description: string,
-    link: string,
-    image: string,
-    publishDate: any,
-    category: {
-        name: string,
-        color: string
-    },
-    content: any
-}
 
 export async function getStaticPaths() {
     return {

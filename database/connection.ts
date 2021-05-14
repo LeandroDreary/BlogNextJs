@@ -53,13 +53,15 @@ export const Auth = AuthModel();
 
 export interface UserI {
   username?: String;
-  email?: String;
+  discordUser?: String;
+  deactvated?: Boolean;
   password?: String;
 }
 
 let UserSchema = new Schema({
   username: { type: String, unique: true },
-  email: { type: String, unique: true },
+  discordUser: { type: String, unique: true },
+  deactvated: { type: Boolean },
   password: { type: String }
 });
 

@@ -2,64 +2,45 @@ import React from 'react'
 import Head from 'next/head'
 import Cookies from 'cookies'
 import getRawBody from 'raw-body'
-import mongoose from "mongoose"
 import bcrypt from 'bcryptjs'
 import '../../components/LoadClasses'
-import { GetServerSideProps, } from 'next'
-import dbConnect, { Auth, AuthI, User, UserI } from '../../database/connection'
+import { GetServerSideProps } from 'next'
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
     const cookies = new Cookies(req, res)
     let warnings = []
-    let { user_agent, ip, auth } = {
-        user_agent: req.headers['user-agent'],
-        ip: req.connection.remoteAddress || req.connection.localAddress,
-        auth: cookies.get('auth')
-    }
+    let auth = cookies.get('AdminAreaAuth') || ""
     const url = new URL(`${process.env.API_URL}/?` + (await getRawBody(req)).toString("utf-8"));
     const { username, password } = { username: url.searchParams.get("username"), password: url.searchParams.get("password") }
 
-    await dbConnect()
     switch (req.method) {
         case "POST":
-            cookies.set('auth')
-
-            let user: mongoose.Document & UserI = await User.findOne({
-                $or: [{
-                    username: username
-                }, {
-                    email: username
-                }]
-            }).exec();
-            if (!user?.username) {
-                warnings.push({ message: "Usuário não encontrado", input: "username" })
+            cookies.set('AdminAreaAuth')
+            if (process.env.ADMINUSERNAME === username && process.env.ADMINPASSWORD === password) {
+                auth = bcrypt.hashSync(`${password}_${username}`, bcrypt.genSaltSync(10))
+                cookies.set('AdminAreaAuth', auth)
             }
             else {
-                if (bcrypt.compareSync(password, user.password)) {
-                    let authInfo: AuthI = { ip, user_agent, user: user._id }
-                    auth = (await (new Auth(authInfo)).save())._id;
-                    cookies.set('auth', String(auth))
-                } else {
-                    warnings.push({ message: "Senha incorreta", input: "password" })
-                }
+                warnings.push({ message: "Dados incorretos.", input: "password" })
             }
             break;
     }
 
-    if (!auth) {
-        cookies.set('auth')
+    if (bcrypt.compareSync(`${process.env.ADMINPASSWORD}_${process.env.ADMINUSERNAME}`, auth)) {
+
         return {
-            props: {
-                warnings,
-                inputs: { username }
+            redirect: {
+                destination: '/AdminArea',
+                permanent: false,
             }
         }
     }
     else {
+        cookies.set('AdminAreaAuth')
         return {
-            redirect: {
-                destination: '/admin',
-                permanent: false,
+            props: {
+                warnings,
+                inputs: { username }
             }
         }
     }
@@ -80,12 +61,6 @@ const Index = ({ warnings, inputs }) => {
                             Username
                         </label>
                         <input className="shadow w-64 appearance-none border rounded py-2 px-3 text-grey-400" defaultValue={inputs.username} type="text" name="username" placeholder="username" />
-                        {
-                            warnings.map(warning => {
-                                if (warning.input === "username")
-                                    return <p className="text-red-400 text-xs italic font-bold my-1">{warning.message}</p>
-                            })
-                        }
                     </div>
                     <div className="mb-6">
                         <label className="block text-grey-400 text-sm font-bold mb-2" htmlFor="password">

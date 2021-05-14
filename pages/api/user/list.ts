@@ -1,6 +1,6 @@
 import bcrypt from 'bcryptjs'
 import Cookies from 'cookies'
-import DbConnect, { Category } from "./../../../database/connection"
+import DbConnect, { User } from "./../../../database/connection"
 
 async function handler(req, res) {
     await DbConnect()
@@ -14,26 +14,26 @@ async function handler(req, res) {
     perPage = Number(perPage)
     page = Number(page)
 
-    let category: any = Category
-    let count: any = Category
+    let user: any = User
+    let count: any = User
 
     if (search) {
-        category = category.find({ name: { $regex: rgx(search), $options: "i" } }).collation({ locale: "en", strength: 2 })
-        count = count.find({ name: { $regex: rgx(search), $options: "i" } }).collation({ locale: "en", strength: 2 })
+        user = user.find({ username: { $regex: rgx(search), $options: "i" } }).collation({ locale: "en", strength: 2 })
+        count = count.find({ username: { $regex: rgx(search), $options: "i" } }).collation({ locale: "en", strength: 2 })
     } else {
-        category = category.find({})
+        user = user.find({})
         count = count.find({})
     }
-    category = category.select(`${UA ? "" : "-_id"}`)
+    user = user.select(`${UA ? "" : "-_id"}`)
     count = count.select(`${UA ? "" : "-_id"}`)
 
     count = await count.countDocuments({}).exec()
-    category = await category.skip(perPage * (((page >= 1) ? page : 1) - 1))
+    user = await user.skip(perPage * (((page >= 1) ? page : 1) - 1))
         .limit(perPage)
         .exec()
 
     res.status(200).json({
-        result: category,
+        result: user,
         count,
         perPage,
         page,

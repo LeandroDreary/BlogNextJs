@@ -1,8 +1,6 @@
 import Head from 'next/head'
 import { useState, useEffect } from 'react'
 import $ from 'jquery'
-import { } from 'cloudinary-react'
-import { FaWindowClose, FaPlusSquare } from 'react-icons/fa'
 import Api from './../../services/api'
 import UploadImage from './../../services/uploadImage'
 import Router from 'next/router'
@@ -28,21 +26,16 @@ export default function index({ _id, content, title, link, description, publishD
         file: undefined
     })
 
-    const [createCategoryWindow, setCreateCategoryWindow] = useState<boolean>(true)
+    
 
     const [categories, setCategories] = useState<{ name: string, color: string }[]>([{ color: "", name: "" }])
-    const [categoryForm, setCategoryForm] = useState<{ name: string, color: string }>({ name: "", color: "" })
 
     const LoadCategories = () => {
         Api.get('/api/category', { withCredentials: true }).then(response => {
             setCategories(response.data?.result?.map(c => { return { name: c.name, color: c.color } }))
         })
     }
-    const CreateCategory = () => {
-        Api.post('/api/category', categoryForm, { withCredentials: true }).then(response => {
-            LoadCategories()
-        })
-    }
+   
 
     useEffect(() => {
         LoadCategories()
@@ -242,24 +235,7 @@ export default function index({ _id, content, title, link, description, publishD
                                     })
                                     }
                                 </div>
-                                <div>
-                                    <div className={`bg-${info?.colors?.background?.shadow} p-2 px-4 grid grid-cols-12`}>
-                                        <span className={`font-semibold text-${info?.colors?.text?.color} col-span-10`}>Create Category</span>
-                                        <span className="col-span-2 text-right">
-                                            {
-                                                createCategoryWindow ?
-                                                    <button type="button" className={`font-semibold text-${info?.colors?.text?.color}`} onClick={() => setCreateCategoryWindow(false)}><FaPlusSquare /></button>
-                                                    :
-                                                    <button type="button" className={`font-semibold text-${info?.colors?.text?.color}`} onClick={() => setCreateCategoryWindow(true)}><FaWindowClose /></button>
-                                            }
-                                        </span>
-                                    </div>
-                                    <div className={(createCategoryWindow ? "hidden " : "") + "border shadow-md p-2"}>
-                                        <input onChange={e => setCategoryForm({ ...categoryForm, name: e.target.value })} className="shadow w-full appearance-none border border-red rounded py-2 px-3 text-grey-400 mb-3" name="CategoryName" type="text" id="CategoryName" placeholder="Category Name" />
-                                        <input onChange={e => setCategoryForm({ ...categoryForm, color: e.target.value })} className="shadow w-full appearance-none border border-red rounded py-2 px-3 text-grey-400 mb-3" name="CategoryColor" type="color" id="CategoryColor" placeholder="Category Color" />
-                                        <button type="button" className="my-2 bg-green-700 text-white px-6 py-2 font-semibold" onClick={() => CreateCategory()}>Create Category</button>
-                                    </div>
-                                </div>
+                                
                             </div>
                         </div>
 

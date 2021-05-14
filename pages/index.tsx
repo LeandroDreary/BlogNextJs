@@ -1,43 +1,45 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import Link from 'next/link'
 import Head from 'next/head'
 import Navbar from './../components/navbar'
 import Card from '../components/cards/post'
 import Sidebar from '../components/sidebar'
 import '../components/LoadClasses'
-import { loadInfo } from '../services/loadApi'
 import ReactHtmlParser from 'react-html-parser'
+import DbConnect, { Config, Post } from "./../database/connection"
+
 
 export async function getStaticProps() {
-  let { Info, homePageInfo, posts } = { Info: null, homePageInfo: null, posts: null }
+  await DbConnect()
+
+  let { info, homePageInfo, posts } = { info: null, homePageInfo: null, posts: null }
   try {
-    posts = (await (await fetch(process.env.API_URL + '/api/post/list?quantity=6&select=title%20description%20image%20link')).json())?.result
+    let perPage = 6
+    posts = (await Post.aggregate([{ $sample: { size: perPage + 1 } }])).map(p => { return { image: p.image, link: p.link, title: p.title, description: p.description } })
   } catch (e) { }
 
   try {
-    Info = (await (await fetch(process.env.API_URL + '/api/config?name=info')).json())?.result?.content
+    info = await Config.findOne({ name: "info" }).select(`-_id`).exec()
+    info = info._doc.content
   } catch (e) { }
 
   try {
-    homePageInfo = (await (await fetch(process.env.API_URL + '/api/config?name=homePageInfo')).json())?.result?.content
+    homePageInfo = await Config.findOne({ name: "homePageInfo" }).select(`-_id`).exec()
+    homePageInfo = homePageInfo._doc.content
   } catch (e) { }
 
 
   return {
     props: {
       posts,
-      Info,
-      homePageInfo
+      homePageInfo,
+      info
     },
     revalidate: 1
   }
 }
 
-const Index = ({ posts, homePageInfo, Info }: { posts: { title: string, description: string, image: string, link: string }[], homePageInfo: any, Info: any }) => {
-  const [info, setInfo] = useState(Info)
-  useEffect(() => {
-    loadInfo(Info, setInfo)
-  }, [Info])
+const Index = ({ posts, homePageInfo, info }: { posts: { title: string, description: string, image: string, link: string }[], homePageInfo: any, info: any }) => {
   return (
     <>
       <div>

@@ -2,12 +2,13 @@ import React, { useEffect, useState } from 'react'
 import $ from 'jquery'
 import Head from 'next/head'
 import Cookies from 'cookies'
-import Api from '../../../services/api'
-import Navbar from './../../../components/navbar_admin'
-import '../../../components/LoadClasses'
-import uploadImages from '../../../services/uploadImage'
+import Api from '../../services/api'
+import Navbar from '../../components/navbar_admin_area'
+import '../../components/LoadClasses'
+import uploadImages from '../../services/uploadImage'
+import bcrypt from 'bcryptjs'
 import { GetServerSideProps } from 'next'
-import HandleAuth from '../../../services/auth'
+import DbConnect, { Config } from '../../database/connection'
 
 interface info {
     websiteName: string,
@@ -34,18 +35,28 @@ interface homePageInfo {
 }
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
+    await DbConnect()
+
     const cookies = new Cookies(req, res)
-    let { Info, user } = { Info: null, user: null }
+    let Info = null
     try {
-        Info = (await (await fetch(process.env.API_URL + '/api/config?name=info')).json())?.result?.content
+        Info = await Config.findOne({ name: "info" }).select(`-_id`).exec()
+        Info = Info._doc.content
     } catch (e) { }
 
-    user = await HandleAuth(cookies.get("auth"))
-    
-    return {
-        props: {
-            Info,
-            user: { username: user.username, email: user.email }
+    if (bcrypt.compareSync(`${process.env.ADMINPASSWORD}_${process.env.ADMINUSERNAME}`, cookies.get('AdminAreaAuth'))) {
+        return {
+            props: {
+                Info,
+                user: { username: process.env.ADMINUSERNAME }
+            }
+        }
+    } else {
+        return {
+            redirect: {
+                destination: '/AdminArea',
+                permanent: false,
+            }
         }
     }
 }
@@ -75,7 +86,7 @@ const Index = ({ Info, user }) => {
         e.preventDefault();
 
         const save = (icon: string) => {
-            Api.post('/api/config?name=info', { content: { ...infoInputs, icon } }).then(response => {
+            Api.post('/api/config?name=info', { content: { ...infoInputs, icon } }, { withCredentials: true }).then(response => {
                 loadInfo1()
             })
         }
@@ -91,7 +102,7 @@ const Index = ({ Info, user }) => {
         e.preventDefault();
 
         const save = (banner: string) => {
-            Api.post('/api/config?name=homePageInfo', { content: { ...homePageInfoInputs, banner } }).then(response => {
+            Api.post('/api/config?name=homePageInfo', { content: { ...homePageInfoInputs, banner } }, { withCredentials: true }).then(response => {
                 loadHomePageInfo()
             })
         }

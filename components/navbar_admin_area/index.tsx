@@ -34,7 +34,7 @@ class Login extends React.Component<MyProps, MyState> {
                 className={`flex items-center justify-between flex-wrap bg-${this.props?.info?.colors?.background?.color || "gray-500"} py-4 lg:px-12 shadow-lg border-solid border-t-2 border-${this.props?.info?.colors?.background?.shadow || "gray-700"}`}>
                 <div className={`flex justify-between lg:w-auto w-full lg:border-b-0 pl-6 pr-2 border-solid border-b-2 border-${this.props?.info?.colors?.text?.color || "white"} pb-5 lg:pb-0`}>
                     <div className={`flex items-center flex-shrink-0 text-${this.props?.info?.colors?.text?.color || "white"} mr-12`}>
-                        <Link href='/admin'>
+                        <Link href='/AdminArea'>
                             <a>
                                 <button className="font-semibold text-2xl tracking-tight flex items-center"><FaHome /><i className="ml-2">{this.props?.info?.websiteName || "Home"}</i></button>
                             </a>
@@ -53,11 +53,27 @@ class Login extends React.Component<MyProps, MyState> {
 
                 <div className="menu w-full flex-grow lg:flex lg:items-center lg:w-auto lg:px-3 px-8">
                     <div className={`text-md font-bold text-${this.props?.info?.colors?.text?.color || "white"} lg:flex-grow`}>
-                        <Link href='/admin/post'>
+                        <Link href='/AdminArea/categories'>
                             <a>
                                 <button
                                     className={`block mt-4 lg:inline-block lg:mt-0 hover:text-${this.props?.info?.colors?.text?.shadow || "gray-100"} font-semibold px-4 py-2 rounded mr-2`}>
-                                    Posts
+                                    Categories
+                                </button>
+                            </a>
+                        </Link>
+                        <Link href='/AdminArea/config'>
+                            <a>
+                                <button
+                                    className={`block mt-4 lg:inline-block lg:mt-0 hover:text-${this.props?.info?.colors?.text?.shadow || "gray-100"} font-semibold px-4 py-2 rounded mr-2`}>
+                                    Configuration
+                                </button>
+                            </a>
+                        </Link>
+                        <Link href='/AdminArea/users'>
+                            <a>
+                                <button
+                                    className={`block mt-4 lg:inline-block lg:mt-0 hover:text-${this.props?.info?.colors?.text?.shadow || "gray-100"} font-semibold px-4 py-2 rounded mr-2`}>
+                                    Users
                                 </button>
                             </a>
                         </Link>

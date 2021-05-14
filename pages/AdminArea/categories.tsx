@@ -4,17 +4,20 @@ import $ from 'jquery'
 import Cookies from 'cookies'
 import { FaSearch, FaWindowClose } from 'react-icons/fa'
 import Api from '../../services/api'
-import Navbar from './../../components/navbar_admin'
+import Navbar from '../../components/navbar_admin_area'
 import '../../components/LoadClasses'
 import Navigation from '../../components/navigation'
 import { GetServerSideProps } from 'next'
 import HandleAuth from '../../services/auth'
+import DbConnect, { Config } from '../../database/connection'
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
+    await DbConnect()
     const cookies = new Cookies(req, res)
     let { info, user } = { info: null, user: null }
     try {
-        info = (await (await fetch(process.env.API_URL + '/api/config?name=info')).json())?.result?.content
+        info = await Config.findOne({ name: "info" }).select(`-_id`).exec()
+        info = info._doc.content
     } catch (e) { }
 
     user = await HandleAuth(cookies.get("auth"))
@@ -32,10 +35,12 @@ const Index = ({ info, user }) => {
     const [categories, setCategories] = useState<{ _id: string, name: string, color: string }[]>()
     const [categoriesEdit, setCategoriesEdit] = useState<{ _id: string, name: string, color: string }[]>()
     const [deletePopup, setDeletePopup] = useState<{ _id: string, name: string, show: boolean, able: boolean }>({ _id: "", name: "", show: false, able: false })
+    const [createPopup, setCreatePopup] = useState<{ show: boolean, able: boolean }>({ show: false, able: false })
+    const [categoryForm, setCategoryForm] = useState<{ name: string, color: string }>({ name: "", color: "" })
     const [filters, setFilters] = useState<{ perPage: number, page: number, pages: number, search: string, category: string }>({ search: "", page: 1, pages: 0, category: undefined, perPage: 12 })
     const [loading, setLoading] = useState<boolean>(false);
-
-    const LoadCategory = (page?: number, perPage?: number, search?: string) => {
+    let deer = false
+    const LoadCategories = (page?: number, perPage?: number, search?: string) => {
         setLoading(true)
         Api.get(`/api/category/list?${`page=${page || filters.page || 1}&`
             }${`perPage=${perPage || filters.perPage || 1}&`
@@ -63,20 +68,29 @@ const Index = ({ info, user }) => {
     }
 
     const HandleDelete = () => {
-        Api.delete('/api/category?_id=' + deletePopup._id).then(async response => {
+        Api.delete(`/api/category?_id=${deletePopup._id}`, { withCredentials: true }).then(async response => {
             setCategoriesEdit(categoriesEdit.filter(category => category._id !== deletePopup._id))
             await Api.get(`/api/category/list?${`page=${filters.page || 1}&`
                 }${`perPage=${filters.perPage || 12}&`
                 }${(filters.search) ? `search=${filters.search || ""}` : ""
-                }`, { withCredentials: true }).then(response => {
+                }`).then(response => {
                     setCategories(response.data?.result)
                 })
             setDeletePopup({ ...deletePopup, show: false })
+            $("body").css({ "overflow-y": "auto" })
+        })
+    }
+
+    const CreateCategory = () => {
+        Api.post('/api/category', categoryForm, { withCredentials: true }).then(response => {
+            LoadCategories()
+            setCreatePopup({ ...deletePopup, show: false })
+            $("body").css({ "overflow-y": "auto" })
         })
     }
 
     useEffect(() => {
-        LoadCategory()
+        LoadCategories()
     }, [])
 
     return (
@@ -118,6 +132,42 @@ const Index = ({ info, user }) => {
                     </div>
                     : ""
             }
+            {
+                createPopup.show ?
+                    <div className="h-full w-full top-0 left-0 fixed">
+                        <div onClick={() => { $("body").css({ "overflow-y": "auto" }); setCreatePopup({ ...createPopup, show: false }) }} className="bg-black opacity-50 h-full w-full z-10 absolute">
+                        </div>
+                        <div className="h-full w-full flex justify-center items-center z-20">
+                            <div className="bg-white rounded z-20">
+                                <div className="w-full grid grid-cols-6 bg-red-600">
+                                    <div className="col-span-5 text-lg text-white font-semibold p-2">
+                                        Create category
+                                    </div>
+                                    <div className="col-span-1 p-2 text-right">
+                                        <button className="text-lg p-1 text-white" onClick={() => { $("body").css({ "overflow-y": "auto" }); setCreatePopup({ ...createPopup, show: false }) }}><FaWindowClose /></button>
+                                    </div>
+                                </div>
+                                <div className="p-5">
+                                    <input onChange={e => { setCreatePopup({ ...createPopup, able: e.target.value !== "" }); setCategoryForm({ ...categoryForm, name: e.target.value }) }} className="shadow w-full appearance-none border border-red rounded py-2 px-3 text-grey-400 mb-3" name="CategoryName" type="text" id="CategoryName" placeholder="Category Name" />
+                                    <input onChange={e => { setCategoryForm({ ...categoryForm, color: e.target.value }) }} className="shadow w-full appearance-none border border-red rounded py-2 px-3 text-grey-400 mb-3" name="CategoryColor" type="color" id="CategoryColor" placeholder="Category Color" />
+                                    <hr className="my-2" />
+                                    {createPopup.able ?
+                                        <button onClick={CreateCategory} type="button" className="mr-5 mt-2 bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-6 rounded-lg">
+                                            Create
+                                        </button> :
+                                        <div className="pt-4 pb-1">
+                                            <span className="mr-5 bg-gray-100 text-gray-800 font-bold py-2 px-6 rounded-lg">
+                                                Create
+                                            </span>
+                                        </div>
+                                    }
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    : ""
+            }
             <Head>
                 <title>Categories</title>
             </Head>
@@ -125,19 +175,17 @@ const Index = ({ info, user }) => {
             <div className="container mx-auto">
                 <div className="grid grid-cols-12">
                     <div className="col-span-12">
-                        {/* <a href="/admin/categories/create">
-                            <button className={`mr-5 my-4 bg-${info?.colors.background?.color} hover:bg-${info?.colors.background?.shadow} text-${info?.colors.text?.shadow} hover:text-${info?.colors.text?.color} font-bold py-2 px-6 rounded-lg`}>
-                                Create
-                            </button>
-                        </a> */}
-                        <button onClick={() => LoadCategory()} className="mr-5 my-4 bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-2 px-6 rounded-lg">
+                        <button onClick={() => { $("body").css({ "overflow-y": "hidden" }); setCreatePopup({ show: true, able: false }) }} className={`mr-5 my-4 bg-${info?.colors.background?.color} hover:bg-${info?.colors.background?.shadow} text-${info?.colors.text?.shadow} hover:text-${info?.colors.text?.color} font-bold py-2 px-6 rounded-lg`}>
+                            Create
+                        </button>
+                        <button onClick={() => LoadCategories()} className="mr-5 my-4 bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-2 px-6 rounded-lg">
                             Reload
                         </button>
                         <hr />
                     </div>
                 </div>
-                <div className="box pt-6 ">
-                    <form onSubmit={(e) => { e.preventDefault(); LoadCategory(); }}>
+                <div className="box pt-6">
+                    <form onSubmit={(e) => { e.preventDefault(); LoadCategories(); }}>
                         <div className={`bg-${info?.colors.background?.color} py-4 px-6 mx-4 rounded-lg shadow-md box-wrapper`}>
                             <div className={`rounded flex items-center w-full p-3 shadow-sm border border-${info?.colors?.text?.color} text-${info?.colors?.text?.color}`}>
                                 <input onChange={e => setFilters({ ...filters, search: e.target.value })} type="search" placeholder="search" x-model="q" className={`placeholder-${info?.colors?.text?.shadow} font-semibold w-full text-sm outline-none focus:outline-none bg-transparent`} />
@@ -150,7 +198,7 @@ const Index = ({ info, user }) => {
                 </div>
                 <div className="grid grid-cols-6">
                     <div className="col-span-6">
-                        <Navigation callBack={page => LoadCategory(page)} info={info} page={filters.page} pages={filters.pages} />
+                        <Navigation callBack={page => LoadCategories(page)} info={info} page={filters.page} pages={filters.pages} />
                         <hr />
                     </div>
                     <div className="col-span-1">
@@ -195,7 +243,7 @@ const Index = ({ info, user }) => {
                     </div>
                     <div className="col-span-6">
                         <hr />
-                        <Navigation callBack={page => LoadCategory(page)} info={info} page={filters.page} pages={filters.pages} />
+                        <Navigation callBack={page => LoadCategories(page)} info={info} page={filters.page} pages={filters.pages} />
                     </div>
                 </div>
             </div>

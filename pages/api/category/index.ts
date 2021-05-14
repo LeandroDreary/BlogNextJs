@@ -1,36 +1,33 @@
-import HandleAuth from "../../../services/auth"
+import bcrypt from 'bcryptjs'
 import Cookies from 'cookies'
 import DbConnect, { Category } from "./../../../database/connection"
 
 async function handler(req, res) {
     const cookies = new Cookies(req, res)
-    let UA = await HandleAuth(cookies.get("auth"))
 
     await DbConnect()
     const { _id, name, color } = req.body
+    let category: any
 
-    if (UA?.username) {
+    if (bcrypt.compareSync(`${process.env.ADMINPASSWORD}_${process.env.ADMINUSERNAME}`, (cookies.get('AdminAreaAuth') || ""))) {
         switch (req.method) {
             case "GET":
-                let categoryGet = await Category.find({}).collation({ locale: "en", strength: 1 }).exec()
-                res.status(200).json({ result: categoryGet })
+                category = await Category.find({}).collation({ locale: "en", strength: 1 }).exec()
                 break;
             case "POST":
-                let categoryPost = await (new Category({ name, color })).save();
-                res.status(200).json({ result: categoryPost })
+                category = await (new Category({ name, color })).save();
                 break;
             case "PUT":
-                let categoryPut = await Category.findOneAndUpdate({ _id }, { name, color }).exec();
-                res.status(200).json({ result: categoryPut })
+                category = await Category.findOneAndUpdate({ _id }, { name, color }).exec();
                 break;
             case "DELETE":
-                let categoryDelete = await Category.find({ _id: req.query?._id }).remove().exec();
-                res.status(200).json({ result: categoryDelete })
+                category = await Category.find({ _id: req.query?._id }).remove().exec();
                 break;
             default:
                 res.status(200).json({})
                 break;
         }
+        res.status(200).json({ result: category })
     }
     else {
         res.status(200).json({})
