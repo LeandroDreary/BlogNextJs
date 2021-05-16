@@ -4,18 +4,26 @@ import { FaHome, FaSearch } from 'react-icons/fa'
 import Router from 'next/router'
 
 interface MyProps {
-    info: any
+    info: any,
+    categories: {
+        name: string,
+        color: string
+    }[]
 }
 
 interface MyState {
     info: any,
-    search: string
+    search: string,
+    categories: {
+        name: string,
+        color: string
+    }[]
 }
 
 class Login extends React.Component<MyProps, MyState> {
     constructor(props: any) {
         super(props);
-        this.state = { ...props, search: "" }
+        this.state = { ...props, search: "", categories: [{ name: "", color: "" }] }
     }
 
     componentDidUpdate() {
@@ -47,12 +55,20 @@ class Login extends React.Component<MyProps, MyState> {
                 </div>
 
                 <div className="menu w-full flex-grow lg:flex lg:items-center lg:w-auto lg:px-3 px-8">
-                    {/* <div className="text-md font-bold lg:flex-grow">
-                        <a onClick={() => Router.push('/Categories')} 
-                            className="text-gray-100 hover:text-gray-300 block mt-4 lg:inline-block lg:mt-0 px-4 py-2 rounded mr-2">
-                            Categories
-                        </a> 
-                    </div> */}
+                    <div className="text-md font-bold lg:flex-grow">
+                        {
+                            this.props.categories.map(category => {
+                                return (
+                                    <Link key={category.name} href={'/category/' + encodeURI(category.name)}>
+                                        <a className="text-gray-100 hover:text-gray-300 block mt-4 lg:inline-block lg:mt-0 px-4 py-2 rounded mr-2">
+                                            {category.name}
+                                        </a>
+                                    </Link>
+                                )
+                            })
+                        }
+
+                    </div>
                     <form onSubmit={e => {
                         e.preventDefault(); Router.push({
                             pathname: '/search',

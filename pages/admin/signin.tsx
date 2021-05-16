@@ -7,6 +7,7 @@ import bcrypt from 'bcryptjs'
 import '../../components/LoadClasses'
 import { GetServerSideProps, } from 'next'
 import dbConnect, { Auth, AuthI, User, UserI } from '../../database/connection'
+import HandleAuth from '../../services/auth'
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
     const cookies = new Cookies(req, res)
@@ -20,17 +21,12 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
     const { username, password } = { username: url.searchParams.get("username"), password: url.searchParams.get("password") }
 
     await dbConnect()
+
     switch (req.method) {
         case "POST":
             cookies.set('auth')
 
-            let user: mongoose.Document & UserI = await User.findOne({
-                $or: [{
-                    username: username
-                }, {
-                    email: username
-                }]
-            }).exec();
+            let user: mongoose.Document & UserI = await User.findOne({ username }).exec();
             if (!user?.username) {
                 warnings.push({ message: "Usuário não encontrado", input: "username" })
             }
@@ -40,26 +36,29 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
                     auth = (await (new Auth(authInfo)).save())._id;
                     cookies.set('auth', String(auth))
                 } else {
-                    warnings.push({ message: "Senha incorreta", input: "password" })
+                    warnings.push({ message: "Senha incorreta.", input: "password" })
                 }
             }
             break;
     }
 
-    if (!auth) {
+    let user = await HandleAuth(auth)
+
+    if (user?.username) {
+        return {
+            redirect: {
+                destination: '/admin',
+                permanent: false,
+            }
+        }
+
+    }
+    else {
         cookies.set('auth')
         return {
             props: {
                 warnings,
                 inputs: { username }
-            }
-        }
-    }
-    else {
-        return {
-            redirect: {
-                destination: '/admin',
-                permanent: false,
             }
         }
     }

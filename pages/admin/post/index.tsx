@@ -9,20 +9,33 @@ import '../../../components/LoadClasses'
 import { FaSearch } from 'react-icons/fa'
 import { GetServerSideProps } from 'next'
 import HandleAuth from '../../../services/auth'
+import DbConnect, { Config } from '../../../database/connection'
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
+    await DbConnect()
     const cookies = new Cookies(req, res)
     let { info, user } = { info: null, user: null }
     try {
-        info = (await (await fetch(process.env.API_URL + '/api/config?name=info')).json())?.result?.content
+        info = await Config.findOne({ name: "info" }).select(`-_id`).exec()
+        info = info._doc.content
     } catch (e) { }
 
     user = await HandleAuth(cookies.get("auth") || "na")
 
-    return {
-        props: {
-            info,
-            user: { username: user.username, email: user.email }
+    if (user?.username) {
+        return {
+            props: {
+                info,
+                user: { username: user.username }
+            }
+        }
+    } else {
+        cookies.get("set")
+        return {
+            redirect: {
+                destination: '/admin/signin',
+                permanent: false,
+            }
         }
     }
 }
@@ -34,7 +47,7 @@ const Index = ({ info, user }) => {
 
     const LoadPost = (page?: number, perPage?: number, q?: string) => {
         setLoading(true)
-        Api.get(`/api/post/list?select=title%20description%20image%20link&${`page=${page || filters.page || 1}&`
+        Api.get(`/api/post/list?authorFilter=true&select=title%20description%20image%20link&${`page=${page || filters.page || 1}&`
             }${`perPage=${perPage || filters.perPage || 12}&`
             }${(q || filters.search) ? `search=${q || filters.search || ""}` : ""
             }`, { withCredentials: true }

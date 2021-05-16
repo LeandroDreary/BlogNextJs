@@ -8,7 +8,7 @@ const HandleAuth = async (_id) => {
         await dbConnect()
         let auth: Document & AuthI = await Auth.findOne({ _id }).exec()
         if (auth?.user)
-            user = await User.findOne(auth?.user).select('-password -_id -__v').exec()
+            user = await User.findOne({ _id: auth?.user }).select('-password _id -__v').exec()
 
     } catch (e) { }
 

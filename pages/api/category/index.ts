@@ -12,7 +12,7 @@ async function handler(req, res) {
     if (bcrypt.compareSync(`${process.env.ADMINPASSWORD}_${process.env.ADMINUSERNAME}`, (cookies.get('AdminAreaAuth') || ""))) {
         switch (req.method) {
             case "GET":
-                category = await Category.find({}).collation({ locale: "en", strength: 1 }).exec()
+                category = await Category.findOne({}).collation({ locale: "en", strength: 1 }).exec()
                 break;
             case "POST":
                 category = await (new Category({ name, color })).save();

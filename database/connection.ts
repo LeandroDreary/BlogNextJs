@@ -4,7 +4,8 @@ const uri = process.env.DATABASE_STRING
 
 
 export interface ConfigI {
-  name?: String;
+  _id?: string;
+  name?: string;
   content?: JSON
 }
 
@@ -27,9 +28,10 @@ export const Config = ConfigModel();
 
 
 export interface AuthI {
-  user?: String;
-  user_agent?: String;
-  ip?: String;
+  _id?: string;
+  user?: string;
+  user_agent?: string;
+  ip?: string;
 }
 
 let AuthSchema = new Schema({
@@ -52,16 +54,17 @@ export const Auth = AuthModel();
 
 
 export interface UserI {
-  username?: String;
-  discordUser?: String;
-  deactvated?: Boolean;
-  password?: String;
+  _id?: string;
+  username?: string;
+  discordUser?: string;
+  activated?: boolean;
+  password?: string;
 }
 
 let UserSchema = new Schema({
   username: { type: String, unique: true },
-  discordUser: { type: String, unique: true },
-  deactvated: { type: Boolean },
+  discordUser: { type: String },
+  activated: { type: Boolean },
   password: { type: String }
 });
 
@@ -78,8 +81,9 @@ export const User = UserModel();
 
 
 export interface CategoryI {
-  name?: String;
-  color?: String;
+  _id?: string;
+  name?: string;
+  color?: string;
 }
 
 let CategorySchema = new Schema({
@@ -100,23 +104,26 @@ export const Category = CategoryModel();
 
 
 export interface PostI {
-  content?: String;
-  title?: String;
-  link?: String;
+  _id?: string;
+  content?: string;
+  title?: string;
+  link?: string;
+  author: { type: Schema.Types.ObjectId, ref: "users" },
   category?: { type: Schema.Types.ObjectId, ref: "categories" };
-  description?: String;
+  description?: string;
   publishDate?: Date;
-  image?: String;
+  image?: string;
 }
 
 let PostSchema = new Schema({
   title: String,
   link: { type: String, unique: true },
-  content: String,
+  content: { type: String },
+  author: { type: Schema.Types.ObjectId, ref: "users" },
   category: { type: Schema.Types.ObjectId, ref: "categories" },
-  description: String,
-  publishDate: Date,
-  image: String
+  description: { type: String },
+  publishDate: { type: Date },
+  image: { type: String }
 });
 
 export const PostModel = () => {

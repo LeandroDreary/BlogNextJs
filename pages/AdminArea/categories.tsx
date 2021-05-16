@@ -8,24 +8,31 @@ import Navbar from '../../components/navbar_admin_area'
 import '../../components/LoadClasses'
 import Navigation from '../../components/navigation'
 import { GetServerSideProps } from 'next'
-import HandleAuth from '../../services/auth'
+import bcrypt from 'bcryptjs'
 import DbConnect, { Config } from '../../database/connection'
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
     await DbConnect()
     const cookies = new Cookies(req, res)
-    let { info, user } = { info: null, user: null }
+    let info
     try {
         info = await Config.findOne({ name: "info" }).select(`-_id`).exec()
         info = info._doc.content
     } catch (e) { }
 
-    user = await HandleAuth(cookies.get("auth"))
-
-    return {
-        props: {
-            info,
-            user: { username: user.username, email: user.email }
+    if (bcrypt.compareSync(`${process.env.ADMINPASSWORD}_${process.env.ADMINUSERNAME}`, (cookies.get('AdminAreaAuth') || ""))) {
+        return {
+            props: {
+                info,
+                user: { username: process.env.ADMINUSERNAME }
+            }
+        }
+    } else {
+        return {
+            redirect: {
+                destination: '/AdminArea/signin',
+                permanent: false,
+            }
         }
     }
 }

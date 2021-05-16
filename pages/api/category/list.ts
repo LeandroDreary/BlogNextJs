@@ -2,14 +2,17 @@ import bcrypt from 'bcryptjs'
 import Cookies from 'cookies'
 import DbConnect, { Category } from "./../../../database/connection"
 
-async function handler(req, res) {
-    await DbConnect()
+interface ListCategoriesParams {
+    perPage?: any,
+    page?: any,
+    search?: any,
+    UA?: any
+}
+
+export const ListCategories = async (params: ListCategoriesParams) => {
+    let { perPage, page, search, UA } = params
+
     const rgx = (pattern) => (new RegExp(`.*${pattern}.*`));
-
-    let { perPage, page, search } = req.query
-
-    const cookies = new Cookies(req, res)
-    let UA = bcrypt.compareSync(`${process.env.ADMINPASSWORD}_${process.env.ADMINUSERNAME}`, (cookies.get('AdminAreaAuth') || ""))
 
     perPage = Number(perPage)
     page = Number(page)
@@ -31,14 +34,25 @@ async function handler(req, res) {
     category = await category.skip(perPage * (((page >= 1) ? page : 1) - 1))
         .limit(perPage)
         .exec()
-
-    res.status(200).json({
-        result: category,
+    return {
+        result: category.map(c => { return { color: c.color, name: c.name, _id: String(c._id) } }),
         count,
         perPage,
         page,
         pages: count % perPage > 0 ? Math.floor(count / perPage) + 1 : Math.floor(count / perPage)
-    })
+    }
+}
+
+async function handler(req, res) {
+    await DbConnect()
+
+    let { perPage, page, search } = req.query
+
+    const cookies = new Cookies(req, res)
+
+    let UA = bcrypt.compareSync(`${process.env.ADMINPASSWORD}_${process.env.ADMINUSERNAME}`, (cookies.get('AdminAreaAuth') || ""))
+
+    res.status(200).json(await ListCategories({ perPage, page, search, UA }))
 }
 
 export default handler

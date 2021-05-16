@@ -6,6 +6,8 @@ import Api from '../../../../services/api'
 import { GetStaticProps } from 'next'
 import '../../../../components/LoadClasses'
 import Navbar from '../../../../components/navbar_admin'
+import DbConnect, { Config } from "./../../../../database/connection"
+
 
 export async function getStaticPaths() {
     return {
@@ -15,27 +17,31 @@ export async function getStaticPaths() {
 }
 
 export const getStaticProps: GetStaticProps = async (context) => {
+    DbConnect()
     let { info } = { info: null }
+
     try {
-        info = (await (await fetch(process.env.API_URL + '/api/config?name=info')).json())?.result?.content
+        info = await Config.findOne({ name: "info" }).select(`-_id`).exec()
+        info = info._doc.content
     } catch (e) { }
 
     return {
         props: {
             info,
             link: context.params.post
-        }
+        },
+        revalidate: 1
     }
 }
 
 function Blog({ info, link }) {
     const [post, setPost] = useState<any>()
-    const [user, setUser] = useState<{ username: string, email: string }>({username: "", email: ""})
+    const [user, setUser] = useState<{ username: string, email: string }>({ username: "", email: "" })
 
     useEffect(() => {
         if (link)
             Api.get(`/api/post?link=${link}`, { withCredentials: true }).then(response => setPost(response.data?.result))
-        Api.get(`/api/auth`, { withCredentials: true }).then(response =>{setUser(response.data)})
+        Api.get(`/api/auth`, { withCredentials: true }).then(response => { setUser(response.data) })
     }, [link])
 
     return (

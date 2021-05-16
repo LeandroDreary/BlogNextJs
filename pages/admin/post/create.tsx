@@ -11,16 +11,26 @@ import HandleAuth from '../../../services/auth'
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
     const cookies = new Cookies(req, res)
     let { info, user } = { info: null, user: null }
-    user = await HandleAuth(cookies.get("auth") || "na")
-
     try {
         info = (await (await fetch(process.env.API_URL + '/api/config?name=info')).json())?.result?.content
     } catch (e) { }
 
-    return {
-        props: {
-            info,
-            user: { username: user.username, email: user.email }
+    user = await HandleAuth(cookies.get("auth") || "na")
+
+    if (user?.username) {
+        return {
+            props: {
+                info,
+                user: { username: user.username }
+            }
+        }
+    } else {
+        cookies.get("set")
+        return {
+            redirect: {
+                destination: '/admin/signin',
+                permanent: false,
+            }
         }
     }
 }

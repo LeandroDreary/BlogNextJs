@@ -1,20 +1,20 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import Cookies from 'cookies'
-import HandleAuth from '../../services/auth'
-
+import bcrypt from 'bcryptjs'
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
   const cookies = new Cookies(req, res)
 
   switch (req.method) {
     case "DELETE":
-      cookies.set('auth')
+      cookies.set('AdminAreaAuth')
       break;
   }
-  let UA = await HandleAuth(cookies.get("auth"))
-  UA?.username ?
-    res.status(200).json({ username: UA?.username }) :
+
+  bcrypt.compareSync(`${process.env.ADMINPASSWORD}_${process.env.ADMINUSERNAME}`, (cookies.get('AdminAreaAuth') || "")) ?
+    res.status(200).json({ username: process.env.ADMINUSERNAME }) :
     res.status(200).json({})
+
 }
 
 export default handler

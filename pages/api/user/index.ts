@@ -1,36 +1,55 @@
-import DbConnect, { User } from "./../../../database/connection"
+import bcrypt from 'bcryptjs'
+import Cookies from 'cookies'
+import DbConnect, { User, UserI } from "./../../../database/connection"
 
 async function handler(req, res) {
     await DbConnect()
-    const { username, email, password } = req.body
-    switch (req.method) {
-        case "GET":
-            let userGet = await User.findOne({ username }).collation({ locale: "en", strength: 1 }).exec()
-            res.status(200).json({ result: userGet })
-            break;
-        case "POST":
-            let exists = {
-                username: (await User.find({ username }).exec()).length > 0,
-                email: (await User.find({ email }).exec()).length > 0,
-            }
-            if (exists.username || exists.email) {
-                res.status(200).json({ exists })
-            } else {
-                let userPost = await (new User({ username, email, password })).save();
-                res.status(200).json({ user: userPost })
-            }
-            break;
-        case "PUT":
-            let userPut = await User.findOneAndUpdate({ email }, { username, email, password }).exec();
-            res.status(200).json({ result: userPut })
-            break;
-        case "DELETE":
-            let userDelete = await User.find({ email }).remove().exec();
-            res.status(200).json({ result: userDelete })
-            break;
-        default:
-            res.status(200).json({})
-            break;
+    const cookies = new Cookies(req, res)
+    let UA = bcrypt.compareSync(`${process.env.ADMINPASSWORD}_${process.env.ADMINUSERNAME}`, (cookies.get('AdminAreaAuth') || ""))
+
+    let { _id, username, discordUser, activated, password } = req.body
+
+    let warnings = []
+    let user: any
+
+
+    if (req.method === "POST") {
+        if ((await User.find({ username }).exec()).length > 0)
+            warnings.push({ message: "Nome de usuário já em uso.", input: "username" })
+    }
+
+    if (!UA)
+        warnings.push({ message: "Você não está logado.", input: "warns" })
+
+    if (warnings.length <= 0) {
+        switch (req.method) {
+            case "GET":
+                user = await User.findOne({ username: req.query?.username }).exec()
+                break;
+            case "POST":
+                user = await (new User({ username, discordUser, password: bcrypt.hashSync(password, bcrypt.genSaltSync(10)) })).save();
+                break;
+            case "PUT":
+                let u: UserI = await User.findOne({ _id }).exec()
+                if (u?.password !== password)
+                    password = bcrypt.hashSync(password, bcrypt.genSaltSync(10))
+                if (u?.username !== username)
+                    if ((await User.find({ username }).exec()).length > 0) {
+                        res.status(200).json({ warnings })
+                        warnings.push({ message: "Nome de usuário já em uso.", input: "username" })
+                    }
+                user = await User.findOneAndUpdate({ _id }, { username, discordUser, activated, password }).exec();
+                break;
+            case "DELETE":
+                user = await User.find({ _id }).remove().exec();
+                break;
+            default:
+                res.status(200).json({})
+                break;
+        }
+        res.status(200).json({ result: user })
+    } else {
+        res.status(200).json({ warnings })
     }
 }
 

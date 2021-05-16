@@ -4,7 +4,8 @@ import Navbar from '../../components/navbar'
 import Sidebar from '../../components/sidebar'
 import Link from 'next/link'
 import '../../components/LoadClasses'
-import DbConnect, { Category, Config, Post } from "./../../database/connection"
+import DbConnect, { Category, Config, Post, User } from "./../../database/connection"
+import { ListCategories } from '../api/category/list'
 
 export async function getStaticPaths() {
     return {
@@ -16,12 +17,18 @@ export async function getStaticPaths() {
 export async function getStaticProps(context) {
     await DbConnect()
 
-    let { info, post, recommend } = { info: null, post: null, recommend: null }
+    let { info, post, author, recommend, categories } = { info: null, post: null, author: null, recommend: null, categories: null }
 
     try {
         post = await Post.findOne({ link: context.params.post }).select(`-_id`).collation({ locale: "en", strength: 1 }).exec()
         let category: any = await Category.findById(post._doc.category).exec()
-        post = { ...post._doc, publishDate: String(post._doc.publishDate), category: { name: category.name, color: category.color } }
+        post = { ...post._doc, publishDate: post._doc.publishDate.toISOString().substr(0, 10), category: { name: category.name, color: category.color } }
+    } catch (e) { }
+
+    try {
+        author = await User.findOne({ _id: post?.author }).select(`-password -activated -_id`).exec()
+        author = { ...author._doc, username: author._doc.username, discordUser: author._doc.discordUser }
+        post = { ...post, author: null }
     } catch (e) { }
 
     try {
@@ -36,26 +43,32 @@ export async function getStaticProps(context) {
         info = info._doc.content
     } catch (e) { }
 
-    console.log(info)
+    try {
+        categories = (await ListCategories({})).result
+    } catch (e) { }
+
     return {
         props: {
             post,
             recommend,
-            info
+            info,
+            author,
+            categories
         },
         revalidate: 1
     }
 }
 
-function Blog({ post, recommend, info }) {
+function Blog({ post, recommend, info, author, categories }) {
 
     return (
         <>
             <Head>
+                <link rel="stylesheet" href="/css/post.css" />
                 <title>{`${post?.title} - ${info?.websiteName}`} </title>
                 <link href="/icon.png" rel="icon" />
                 <meta name="description" content={post?.description?.toString()} />
-                <meta name="author" content="" />
+                <meta name="author" content={author?.username?.toString()} />
                 <link rel="canonical" href={process.env.API_URL + "post/" + post?.link} />
 
 
@@ -68,8 +81,8 @@ function Blog({ post, recommend, info }) {
                 <meta property="og:locale" content="pt_BR" />
                 <meta property="og:type" content="article" />
 
-                {/* <meta property="article:published_time" content={post?.publishDate?.toString()} />
-                <meta property="article:modified_time" content={post?.publishDate?.toString()} /> */}
+                <meta property="article:published_time" content={(new Date(post?.publishDate))?.toString()} />
+                <meta property="article:modified_time" content={(new Date(post?.publishDate))?.toString()} />
 
                 <meta name="twitter:card" content="summary" />
                 <meta name="twitter:description" content={post?.description?.toString()} />
@@ -78,7 +91,7 @@ function Blog({ post, recommend, info }) {
                 <meta name="twitter:site" content="@" />
                 <meta name="twitter:creator" content="@" />
             </Head>
-            <Navbar info={info} />
+            <Navbar categories={categories} info={info} />
             <div className="col-span-3 w-full mx-auto relative" style={{ height: "24em" }}>
                 <div className="absolute left-0 bottom-0 w-full h-full z-10"
                     style={{ backgroundImage: "linear-gradient(180deg,transparent,rgba(0,0,0,.7))" }}></div>
@@ -90,11 +103,28 @@ function Blog({ post, recommend, info }) {
                         <h1 className="md:text-4xl font-semibold text-gray-100 text-2xl leading-tight">
                             {post?.title}
                         </h1>
-                        <div className="flex mt-3">
-                            {/* <img src="https://randomuser.me/api/portraits/men/97.jpg"
-                                className="h-10 w-10 rounded-full mr-2 object-cover" /> */}
+                        <div className="flex items-center mt-3">
                             <div>
-                                {/* <p className="text-gray-300 font-semibold">{post?.publishDate ? (("0" + (new Date(post?.publishDate)).getDate()).slice(-2)) + "/" + (("0" + ((new Date(post?.publishDate)).getMonth() + 1)).slice(-2)) + "/" + (new Date(post?.publishDate)).getFullYear() : ""}</p> */}
+                                <img src="https://randomuser.me/api/portraits/men/97.jpg"
+                                    className="h-10 w-10 rounded-full mr-2 object-cover" />
+                            </div>
+                            <div className="grid grid-cols-3">
+                                <div className="col-span-2">
+                                    <div className="text-gray-300 font-semibold">
+                                        <div className="inline-block px-1">
+                                            Autor: <a className="font-normal">{author?.username}</a>,
+                                        </div>
+                                        <div className="inline-block px-1">
+                                            Discord: <a className="font-normal">{author?.discordUser}</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="col-span-1">
+                                    <div className="text-sm text-gray-300 font-semibold text-right">
+                                        <div className="inline-block px-1">Publicado em:</div>
+                                        <div className="inline-block px-1 font-normal">{post?.publishDate}</div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -102,11 +132,15 @@ function Blog({ post, recommend, info }) {
             </div>
             <div className="container mx-auto grid grid-cols-3">
                 <div className="col-span-3 md:col-span-2">
-                    <div className="border mx-4 mt-6 shadow-lg p-4 rounded-md" dangerouslySetInnerHTML={{ __html: post?.content }}>
+                    <div className="border mx-4 mt-6 shadow-lg p-4 pt-0 rounded-md" >
+                        <div className="post" dangerouslySetInnerHTML={{ __html: post?.content }}>
+
+                        </div>
                     </div>
+
                 </div>
                 <div className="col-span-3 mx-4 md:col-span-1 md:mx-0">
-                    <Sidebar />
+                    <Sidebar categories={categories} />
                 </div>
             </div>
             <div className="container mx-auto grid grid-cols-4">

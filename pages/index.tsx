@@ -7,12 +7,13 @@ import Sidebar from '../components/sidebar'
 import '../components/LoadClasses'
 import ReactHtmlParser from 'react-html-parser'
 import DbConnect, { Config, Post } from "./../database/connection"
+import { ListCategories } from './api/category/list'
 
 
 export async function getStaticProps() {
   await DbConnect()
 
-  let { info, homePageInfo, posts } = { info: null, homePageInfo: null, posts: null }
+  let { info, homePageInfo, posts, categories } = { info: null, homePageInfo: null, posts: null, categories: null }
   try {
     let perPage = 6
     posts = (await Post.aggregate([{ $sample: { size: perPage + 1 } }])).map(p => { return { image: p.image, link: p.link, title: p.title, description: p.description } })
@@ -28,18 +29,22 @@ export async function getStaticProps() {
     homePageInfo = homePageInfo._doc.content
   } catch (e) { }
 
+  try {
+    categories = (await ListCategories({})).result
+  } catch (e) { }
 
   return {
     props: {
       posts,
       homePageInfo,
-      info
+      info,
+      categories
     },
     revalidate: 1
   }
 }
 
-const Index = ({ posts, homePageInfo, info }: { posts: { title: string, description: string, image: string, link: string }[], homePageInfo: any, info: any }) => {
+const Index = ({ posts, homePageInfo, info, categories }) => {
   return (
     <>
       <div>
@@ -69,7 +74,7 @@ const Index = ({ posts, homePageInfo, info }: { posts: { title: string, descript
           {ReactHtmlParser(homePageInfo?.head)}
         </Head>
 
-        <Navbar info={info} />
+        <Navbar categories={categories} info={info} />
         <div className="col-span-3 mb-4 md:mb-0 w-full mx-auto bg-cover bg-center relative"
           style={{ backgroundImage: `url(${homePageInfo?.banner})` }}>
           <div className={`left-0 bottom-0 w-full h-full absolute z-10 flex items-center opacity-70 bg-gradient-to-t from-${info?.colors?.background?.color || "gray-500"} to-${"black"}`}
@@ -83,8 +88,8 @@ const Index = ({ posts, homePageInfo, info }: { posts: { title: string, descript
             <div className="p-4 h-full grid grid-cols-2 z-20 items-center container mx-auto">
               <div className="md:hidden col-span-2 md:col-span-1 pt-4">
                 <span className={`text-sm bg-${info?.colors?.background?.color || "gray-500"} text-${info?.colors?.text?.color || "white"} font-extrabold px-4 py-2`}>Featured</span>
-                <div className={`bg-white ring-4 ring-${info?.colors?.text?.shadow || "gray-700"} ring-opacity-70 rounded-lg flex items-center justify-center mt-6 p-2`}>
-                  <img src={posts ? posts[0]?.image : ""} className=" max-w-full" alt={posts ? posts[0]?.title : ""} />
+                <div className={`ring-4 ring-${info?.colors?.text?.shadow || "gray-700"} ring-opacity-70 rounded-lg flex items-center justify-center mt-6 p-2`}>
+                  <img src={posts ? posts[0]?.image : ""} className="w-full" alt={posts ? posts[0]?.title : ""} />
                 </div>
               </div>
               <div className="col-span-2 md:col-span-1 px-2 py-4">
@@ -100,8 +105,8 @@ const Index = ({ posts, homePageInfo, info }: { posts: { title: string, descript
                 </Link>
               </div>
               <div className="hidden md:block col-span-2 md:col-span-1">
-                <div className={`bg-white ring-4 ring-${info?.colors?.text?.shadow || "gray-700"} ring-opacity-70 flex items-center justify-center rounded-lg p-4`}>
-                  <img src={posts ? posts[0]?.image : ""} className={`rounded max-w-full`} alt={posts ? posts[0]?.title : ""} />
+                <div className={` ring-4 ring-${info?.colors?.text?.shadow || "gray-700"} ring-opacity-70 flex items-center justify-center rounded-lg p-1`}>
+                  <img src={posts ? posts[0]?.image : ""} className={`rounded w-full`} alt={posts ? posts[0]?.title : ""} />
                 </div>
               </div>
             </div>
@@ -124,7 +129,7 @@ const Index = ({ posts, homePageInfo, info }: { posts: { title: string, descript
               }
             </div>
             <div className="col-span-3 mx-4 md:col-span-1 md:mx-0">
-              <Sidebar />
+              <Sidebar categories={categories} />
             </div>
           </div>
         </div>

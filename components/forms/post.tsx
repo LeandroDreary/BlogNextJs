@@ -18,15 +18,12 @@ interface PostI {
 }
 
 export default function index({ _id, content, title, link, description, publishDate, category, image, info }: PostI) {
-    publishDate = publishDate || new Date()
     const [post, setPost] = _id ? useState<PostI>({ _id, content, title, link, description, publishDate, category, image }) : useState<PostI>();
     const [editorTab, setEditorTab] = useState<number>(0)
     const [imageFile, setImageFile] = useState<{ preview: any; file: File }>({
         preview: post?.image || undefined,
         file: undefined
     })
-
-    
 
     const [categories, setCategories] = useState<{ name: string, color: string }[]>([{ color: "", name: "" }])
 
@@ -35,15 +32,14 @@ export default function index({ _id, content, title, link, description, publishD
             setCategories(response.data?.result?.map(c => { return { name: c.name, color: c.color } }))
         })
     }
-   
+
 
     useEffect(() => {
         LoadCategories()
 
         var now = new Date(publishDate) || new Date()
-        var today = now.getFullYear() + "-" + (("0" + (now.getMonth() + 1)).slice(-2)) + "-" + (("0" + now.getDate()).slice(-2));
         setPost({ ...post, publishDate: now })
-        $('#publishDate').val(today);
+
 
         const loadSummernote = () => {
             const script = document.createElement('script');
@@ -132,6 +128,7 @@ export default function index({ _id, content, title, link, description, publishD
     return (
         <>
             <Head>
+                <link rel="stylesheet" href="/css/post.css" />
                 <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"></script>
                 <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
                 <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet" />
@@ -177,7 +174,7 @@ export default function index({ _id, content, title, link, description, publishD
                                         Editor
                                 </button>
                                 </div>
-                                <div className="col-span-1 text-center">
+                                <div className="col-span-1 text-center post">
                                     <button type="button" onClick={() => setEditorTab(1)} className={(editorTab === 1 ? `bg-${info?.colors?.background?.shadow} ` : "") + `py-4 text-${info?.colors?.text?.color} font-semibold w-full`}>
                                         Preview
                                 </button>
@@ -217,7 +214,7 @@ export default function index({ _id, content, title, link, description, publishD
                                 <span className={`font-semibold text-${info?.colors?.text?.color}`}>Publish Date</span>
                             </div>
                             <div className="p-4  border shadow-md">
-                                <input onChange={e => setPost({ ...post, publishDate: new Date(e.target.value) })} className="shadow w-full appearance-none border border-red rounded py-2 px-3 text-grey-400 mb-3" name="publishDate" type="date" id="publishDate" placeholder="Publish Date" />
+                                <input onChange={e => setPost({ ...post, publishDate: new Date(e.target.value) })} value={(new Date(post?.publishDate)).toISOString().substr(0, 10)} className="shadow w-full appearance-none border border-red rounded py-2 px-3 text-grey-400 mb-3" name="publishDate" type="date" id="publishDate" placeholder="Publish Date" />
                             </div>
                         </div>
                         <div className="my-4">
@@ -235,7 +232,7 @@ export default function index({ _id, content, title, link, description, publishD
                                     })
                                     }
                                 </div>
-                                
+
                             </div>
                         </div>
 

@@ -7,30 +7,32 @@ import { FaSearch } from 'react-icons/fa'
 import { useRouter } from 'next/router'
 import '../../components/LoadClasses'
 import Navigation from '../../components/navigation'
-import { loadInfo } from '../../services/loadApi'
+import DbConnect, { Config } from "./../../database/connection"
+import { ListCategories } from '../api/category/list'
 
 export async function getStaticProps() {
-    let { Info, categories } = { Info: null, categories: null }
+    await DbConnect()
+    let { info, categories } = { info: null, categories: null }
+
     try {
-        Info = (await (await fetch(process.env.API_URL + '/api/config?name=info')).json())?.result?.content
+        info = await Config.findOne({ name: "info" }).select(`-_id`).exec()
+        info = info._doc.content
     } catch (e) { }
 
     try {
-        categories = (await (await fetch(process.env.API_URL + '/api/category')).json())?.result
+        categories = (await ListCategories({})).result
     } catch (e) { }
 
     return {
         props: {
-            Info,
+            info,
             categories
         },
         revalidate: 1
     }
 }
 
-const Index = ({ Info, categories }: { Info: any, categories }) => {
-    const [info, setInfo] = useState(Info)
-
+const Index = ({ info, categories }: { info: any, categories }) => {
     const Router = useRouter()
 
     const [posts, setPosts] = useState<{ link: string, image: string, title: string, description: string }[]>()
@@ -68,14 +70,13 @@ const Index = ({ Info, categories }: { Info: any, categories }) => {
             func()
             LoadQuery()
         }
-        loadInfo(Info, setInfo)
-    }, [Router, Info])
+    }, [Router])
 
     return (
         <>
             <Head>
             </Head>
-            <Navbar info={info} />
+            <Navbar categories={categories} info={info} />
             <div className="container mx-auto">
 
                 <div className="box pt-6">

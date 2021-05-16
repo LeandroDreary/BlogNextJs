@@ -18,10 +18,20 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
 
     user = await HandleAuth(cookies.get("auth") || "na")
 
-    return {
-        props: {
-            info,
-            user: { username: user.username, email: user.email }
+    if (user?.username) {
+        return {
+            props: {
+                info,
+                user: { username: user.username }
+            }
+        }
+    } else {
+        cookies.get("set")
+        return {
+            redirect: {
+                destination: '/admin/signin',
+                permanent: false,
+            }
         }
     }
 }

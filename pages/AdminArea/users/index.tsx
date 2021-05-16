@@ -67,7 +67,7 @@ const Index = ({ info, user }) => {
                 <div className="grid grid-cols-12">
                     <div className="col-span-12">
                         <Link href="/AdminArea/users/create">
-                             <a>
+                            <a>
                                 <button className={`mr-5 my-4 bg-${info?.colors.background?.color} hover:bg-${info?.colors.background?.shadow} text-${info?.colors.text?.shadow} hover:text-${info?.colors.text?.color} font-bold py-2 px-6 rounded-lg`}>
                                     Create
                                 </button>
@@ -102,14 +102,21 @@ const Index = ({ info, user }) => {
                         {!loading ?
                             users?.map(user => {
                                 return (
-                                    <div className="grid grid-cols-4 shadow border my-4 rounded" key={user._id}>
-                                        <div className="col-span-1 text-2xl text-gray-700 font-semibold text-center p-4">
-                                            {user.username}
+                                    <div className="grid grid-cols-3 shadow border my-4 rounded" key={user?._id}>
+                                        <div className="col-span-2 md:col-span-1 text-2xl text-gray-700 font-semibold text-center py-4 px-2 align-middle">
+                                            {user?.username}
                                         </div>
-                                        <div className="col-span-1 text-2xl text-gray-700 font-semibold text-center p-4">
-                                            {user.discordUser}
+                                        <div className="col-span-2 md:col-span-1 text-2xl text-gray-700 font-semibold text-center py-4 px-2 align-middle">
+                                            {user?.discordUser}
                                         </div>
-                                        <div className="col-span-2">
+                                        <div className="col-span-4 md:col-span-1 text-center">
+                                            <Link href={`/AdminArea/users/edit/${user?.username}`}>
+                                                <a>
+                                                    <button className={`mr-5 my-4 bg-${info?.colors.background?.color} hover:bg-${info?.colors.background?.shadow} text-${info?.colors.text?.shadow} hover:text-${info?.colors.text?.color} font-bold py-2 px-6 rounded-lg`}>
+                                                        Edit
+                                                    </button>
+                                                </a>
+                                            </Link>
                                         </div>
                                     </div>
                                 )
