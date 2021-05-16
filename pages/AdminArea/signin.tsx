@@ -40,7 +40,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
         return {
             props: {
                 warnings,
-                inputs: { username }
+                inputs: { username:username || "" }
             }
         }
     }
