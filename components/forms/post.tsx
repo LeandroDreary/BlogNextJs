@@ -28,7 +28,7 @@ export default function index({ _id, content, title, link, description, publishD
     const [categories, setCategories] = useState<{ name: string, color: string }[]>([{ color: "", name: "" }])
 
     const LoadCategories = () => {
-        Api.get('/api/category', { withCredentials: true }).then(response => {
+        Api.get('/api/category/list', { withCredentials: true }).then(response => {
             setCategories(response.data?.result?.map(c => { return { name: c.name, color: c.color } }))
         })
     }
