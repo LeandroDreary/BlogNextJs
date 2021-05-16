@@ -35,7 +35,7 @@ export const ListCategories = async (params: ListCategoriesParams) => {
         .limit(perPage)
         .exec()
     return {
-        result: category.map(c => { return { color: c.color, name: c.name, _id: String(c._id) } }),
+        result: category?.map(c => { return { color: c.color, name: c.name, _id: String(c._id) } }),
         count,
         perPage,
         page,
