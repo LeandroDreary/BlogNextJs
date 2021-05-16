@@ -57,7 +57,7 @@ class Login extends React.Component<MyProps, MyState> {
                 <div className="menu w-full flex-grow lg:flex lg:items-center lg:w-auto lg:px-3 px-8">
                     <div className="text-md font-bold lg:flex-grow">
                         {
-                            this.props.categories.map(category => {
+                            this.props?.categories?.map(category => {
                                 return (
                                     <Link key={category.name} href={'/category/' + encodeURI(category.name)}>
                                         <a className="text-gray-100 hover:text-gray-300 block mt-4 lg:inline-block lg:mt-0 px-4 py-2 rounded mr-2">

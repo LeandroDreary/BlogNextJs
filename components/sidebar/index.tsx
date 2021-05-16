@@ -27,7 +27,7 @@ class Sidebar extends React.Component<MyProps, MyState> {
                     <p className="text-2xl font-semibold pb-3 mx-2 text-center text-gray-800">Categories</p>
                     <hr />
                     <div className="p-2">
-                        {this.props.categories?.map(category => {
+                        {this.props?.categories?.map(category => {
                             return (
                                 <Link key={category.name} href={'/category/' + encodeURI(category.name)}>
                                     <a>
