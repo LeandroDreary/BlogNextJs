@@ -3,8 +3,13 @@ import React, { useState, useEffect } from 'react'
 import Api from './../../services/api'
 import UploadImage from './../../services/uploadImage'
 import Router from 'next/router'
-import Editor from './../editor'
+import 'suneditor/dist/css/suneditor.min.css';
+import dynamic from 'next/dynamic'
 
+const Editor = dynamic(
+    () => import('./../editor'),
+    { ssr: false }
+)
 interface PostI {
     _id?: string,
     content?: any,
@@ -18,16 +23,29 @@ interface PostI {
 }
 
 export default function index({ _id, content, title, link, description, publishDate, category, image, info }: PostI) {
-    const [post, setPost] = _id ? useState<PostI>({ _id, content, title, link, description, publishDate, category, image }) : useState<PostI>({ publishDate: new Date() });
+    const [post, setPost] = _id ? useState<PostI>({ _id, content, title, link, description, publishDate, category, image }) : useState<PostI>({ category: "", content: "", image: "", link: "", title: "", description: "", publishDate: new Date() });
     const [editorTab, setEditorTab] = useState<number>(0)
+    const [Content, setContent] = useState()
     const [imageFile, setImageFile] = useState<{ preview: any; file: File }>({
         preview: post?.image || undefined,
         file: undefined
     })
 
-    const [Content, setContent] = useState(content)
-
     const [categories, setCategories] = useState<{ name: string, color: string }[]>([{ color: "", name: "" }])
+
+    const handleChangeLink = (value) => {
+        value = String(value || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+        value = value.toLowerCase();
+        value = value.split(' ').join('-');
+        value = value.split(':').join('-');
+        value = value.split('?').join('-');
+        value = value.split('/').join('-');
+        value = value.split('!').join('-');
+        while (value.includes('--')) {
+            value = value.split('--').join('-');
+        }
+        return value
+    }
 
     const LoadCategories = () => {
         Api.get('/api/category/list', { withCredentials: true }).then(response => {
@@ -42,6 +60,7 @@ export default function index({ _id, content, title, link, description, publishD
     const HandleSubmitPost = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const save = (image: string) => {
+            console.log(post)
             if (_id) {
                 Api.put("/api/post", { ...post, image, content: Content }, { withCredentials: true }).then(response => {
                     Router.push('/admin/post')
@@ -59,29 +78,11 @@ export default function index({ _id, content, title, link, description, publishD
         }
     }
 
-    const handleChangeLink = (v) => {
-        let value: string = v;
-        value = value.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-        value = value.toLowerCase();
-        value = value.split(' ').join('-');
-        value = value.split(':').join('-');
-        value = value.split('?').join('-');
-        value = value.split('/').join('-');
-        while (value.includes('--')) {
-            value = value.split('--').join('-');
-        }
-        setPost({ ...post, link: value })
-    }
 
-    const handleChangeTitle = e => {
-        setPost({ ...post, title: String(e.target.value) });
-        handleChangeLink(e.target.value)
-    }
 
     return (
         <>
             <Head>
-                <link rel="stylesheet" href="/css/post.css" />
             </Head>
             <div>
                 <form onSubmit={HandleSubmitPost}>
@@ -94,7 +95,7 @@ export default function index({ _id, content, title, link, description, publishD
                                     <span className={`font-semibold text-${info?.colors?.text?.color}`}>Title</span>
                                 </div>
                                 <div className="p-4 border shadow-md">
-                                    <input defaultValue={title} onChange={handleChangeTitle} className="shadow w-full appearance-none border border-red rounded py-2 px-3 text-grey-400 mb-3" name="title" id="title" type="text" placeholder="title" />
+                                    <input value={post?.title} onChange={(e) => setPost({ ...post, title: String(e.target.value), link: handleChangeLink(String(e.target.value)) })} className="shadow w-full appearance-none border border-red rounded py-2 px-3 text-grey-400 mb-3" name="title" id="title" type="text" placeholder="title" />
                                     <div>
                                         {post?.title?.length < 10 || post?.title?.length > 60 ?
                                             <>
@@ -112,7 +113,7 @@ export default function index({ _id, content, title, link, description, publishD
                                     <span className={`font-semibold text-${info?.colors?.text?.color}`}>Link</span>
                                 </div>
                                 <div className="p-4 border shadow-md">
-                                    <input value={post.link} onChange={(e) => handleChangeLink(e.target.value)} className="shadow w-full appearance-none border border-red rounded py-2 px-3 text-grey-400 mb-3" name="link" id="link" type="text" placeholder="link" />
+                                    <input value={post?.link} onChange={(e) => setPost({ ...post, link: handleChangeLink(String(e.target.value)) })} className="shadow w-full appearance-none border border-red rounded py-2 px-3 text-grey-400 mb-3" name="link" id="link" type="text" placeholder="link" />
                                 </div>
                             </div>
 
@@ -136,7 +137,7 @@ export default function index({ _id, content, title, link, description, publishD
 
                                     </div>
                                     <div className={(editorTab === 1 ? "hidden" : "")}>
-                                        <Editor content={Content} setContent={setContent} />
+                                        <Editor content={content} setContent={c => setContent(c)} />
                                     </div>
                                 </div>
                             </div>

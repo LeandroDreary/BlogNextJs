@@ -48,9 +48,6 @@ function Blog({ info, link }) {
         <>
             <Head>
                 <title>Edit post - {post?.title}</title>
-                <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"></script>
-                <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
-                <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet" />
             </Head>
             <Navbar info={info} user={user} />
             <div className="container mx-auto">

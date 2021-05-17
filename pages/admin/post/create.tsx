@@ -7,12 +7,15 @@ import Post from './../../../components/forms/post'
 import { GetServerSideProps } from 'next'
 import '../../../components/LoadClasses'
 import HandleAuth from '../../../services/auth'
+import DbConnect, { Config } from '../../../database/connection'
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
+    await DbConnect()
     const cookies = new Cookies(req, res)
     let { info, user } = { info: null, user: null }
     try {
-        info = (await (await fetch(process.env.API_URL + '/api/config?name=info')).json())?.result?.content
+        info = await Config.findOne({ name: "info" }).select(`-_id`).exec()
+        info = info._doc.content
     } catch (e) { }
 
     user = await HandleAuth(cookies.get("auth") || "na")
@@ -40,10 +43,6 @@ const Index = ({ info, user }) => {
         <>
             <Head>
                 <title>Create post</title>
-
-                <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"></script>
-                <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
-                <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet" />
             </Head>
 
             <Navbar info={info} user={user} />

@@ -1,23 +1,19 @@
-import React, { useRef } from 'react';
-import dynamic from 'next/dynamic';
+// Typescript Version
+import React from "react";
+import SunEditor, { buttonList } from 'suneditor-react';
+import 'suneditor/dist/css/suneditor.min.css';
 
-const importJodit = () => import('jodit-react');
+const MyComponent = ({ content, setContent }: { content: any, setContent: any }) => {
 
-const JoditEditor = dynamic(importJodit, {
-    ssr: false,
-});
-
-const EditorComponent = ({ content, setContent }) => {
-    
     return (
-        <JoditEditor
-            value={content}
-            // config={config}
-            // tabIndex={1} // tabIndex of textarea
-            onBlur={newContent => setContent(newContent)} // preferred to use only this option to update the content for performance reasons
-            onChange={newContent => { setContent(newContent) }}
-        />
+        <SunEditor lang="pt_br"
+            setDefaultStyle="font-family: Arial; font-size: 16px;"
+            setContents={content}
+            onChange={setContent}
+            setOptions={{
+                lang: undefined,
+                buttonList: [...buttonList.complex]
+            }} />
     );
-}
-
-export default EditorComponent
+};
+export default MyComponent;
