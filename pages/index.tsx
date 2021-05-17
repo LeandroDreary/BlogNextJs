@@ -16,7 +16,7 @@ export async function getStaticProps() {
   let { info, homePageInfo, posts, categories } = { info: null, homePageInfo: null, posts: null, categories: null }
   try {
     let perPage = 6
-    posts = (await Post.aggregate([{ $sample: { size: perPage + 1 } }])).map(p => { return { image: p.image, link: p.link, title: p.title, description: p.description } })
+    posts = (await Post.aggregate([{ $sample: { size: perPage + 1 } }])).map(p => { return { image: p?.image || null, link: p?.link || null, title: p?.title || null, description: p?.description || null } })
   } catch (e) { }
 
   try {
