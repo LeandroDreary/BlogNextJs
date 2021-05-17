@@ -1,13 +1,13 @@
 import Head from 'next/head'
-import { useState, useEffect } from 'react'
-import $ from 'jquery'
+import React, { useState, useEffect } from 'react'
 import Api from './../../services/api'
 import UploadImage from './../../services/uploadImage'
 import Router from 'next/router'
+import Editor from './../editor'
 
 interface PostI {
     _id?: string,
-    content?: string,
+    content?: any,
     title?: string,
     link?: string,
     description?: string,
@@ -18,12 +18,14 @@ interface PostI {
 }
 
 export default function index({ _id, content, title, link, description, publishDate, category, image, info }: PostI) {
-    const [post, setPost] = _id ? useState<PostI>({ _id, content, title, link, description, publishDate, category, image }) : useState<PostI>();
+    const [post, setPost] = _id ? useState<PostI>({ _id, content, title, link, description, publishDate, category, image }) : useState<PostI>({ publishDate: new Date() });
     const [editorTab, setEditorTab] = useState<number>(0)
     const [imageFile, setImageFile] = useState<{ preview: any; file: File }>({
         preview: post?.image || undefined,
         file: undefined
     })
+
+    const [Content, setContent] = useState(content)
 
     const [categories, setCategories] = useState<{ name: string, color: string }[]>([{ color: "", name: "" }])
 
@@ -33,71 +35,19 @@ export default function index({ _id, content, title, link, description, publishD
         })
     }
 
-
     useEffect(() => {
         LoadCategories()
-
-        var now = new Date(publishDate) || new Date()
-        setPost({ ...post, publishDate: now })
-
-
-        const loadSummernote = () => {
-            const script = document.createElement('script');
-
-            $("#code-preview").html(post?.content);
-
-            script.innerHTML = `$("document").ready(() => {
-        $("#summernote").summernote({
-            tabDisable: false,
-            styleTags: [
-                {
-                    tag : 'p',
-                    title : 'paragraph',
-                    className : 'text-gray-800 text-justify pb-2',
-                    value : 'p'
-               },
-                {
-                    tag : 'h2',
-                    title : 'Title',
-                    className : 'text-2xl pt-4 pb-2 text-gray-900',
-                    value : 'h2'
-               },
-                {
-                    tag : 'h3',
-                    title : 'Subtitle',
-                    className : 'text-xl pt-4 pb-2 text-gray-800',
-                    value : 'h3'
-               }
-            ],
-            callbacks: {
-              onChange: function (contents, $editable) {
-                $("#code-preview").html(contents)
-              }
-            },
-            maxHeight: 800,
-          }); 
-          $('#summernote').summernote('code', $("#code-preview").html())
-        })`;
-            script.async = true;
-
-            document.body.appendChild(script);
-
-            return () => {
-                document.body.removeChild(script);
-            }
-        }
-        setTimeout(loadSummernote, 250)
-    }, [process.browser]);
+    }, []);
 
     const HandleSubmitPost = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const save = (image: string) => {
             if (_id) {
-                Api.put("/api/post", { ...post, image, content: $("#code-preview").html() }, { withCredentials: true }).then(response => {
+                Api.put("/api/post", { ...post, image, content: Content }, { withCredentials: true }).then(response => {
                     Router.push('/admin/post')
                 })
             } else {
-                Api.post("/api/post", { ...post, image, content: $("#code-preview").html() }, { withCredentials: true }).then(response => {
+                Api.post("/api/post", { ...post, image, content: Content }, { withCredentials: true }).then(response => {
                     Router.push('/admin/post')
                 })
             }
@@ -109,8 +59,8 @@ export default function index({ _id, content, title, link, description, publishD
         }
     }
 
-    const handleChangeLink = (e: any) => {
-        let value: string = e.target.value;
+    const handleChangeLink = (v) => {
+        let value: string = v;
         value = value.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
         value = value.toLowerCase();
         value = value.split(' ').join('-');
@@ -120,18 +70,18 @@ export default function index({ _id, content, title, link, description, publishD
         while (value.includes('--')) {
             value = value.split('--').join('-');
         }
-        e.target.value = value;
-        setPost({ ...post, link: e.target.value })
+        setPost({ ...post, link: value })
     }
 
+    const handleChangeTitle = e => {
+        setPost({ ...post, title: String(e.target.value) });
+        handleChangeLink(e.target.value)
+    }
 
     return (
         <>
             <Head>
                 <link rel="stylesheet" href="/css/post.css" />
-                <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"></script>
-                <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
-                <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet" />
             </Head>
             <div>
                 <form onSubmit={HandleSubmitPost}>
@@ -144,7 +94,7 @@ export default function index({ _id, content, title, link, description, publishD
                                     <span className={`font-semibold text-${info?.colors?.text?.color}`}>Title</span>
                                 </div>
                                 <div className="p-4 border shadow-md">
-                                    <input defaultValue={title} onChange={e => { $('[name=link]').val(e.target.value); $('[name=link]').trigger("click"); setPost({ ...post, title: String(e.target.value) }); }} className="shadow w-full appearance-none border border-red rounded py-2 px-3 text-grey-400 mb-3" name="title" id="title" type="text" placeholder="title" />
+                                    <input defaultValue={title} onChange={handleChangeTitle} className="shadow w-full appearance-none border border-red rounded py-2 px-3 text-grey-400 mb-3" name="title" id="title" type="text" placeholder="title" />
                                     <div>
                                         {post?.title?.length < 10 || post?.title?.length > 60 ?
                                             <>
@@ -162,7 +112,7 @@ export default function index({ _id, content, title, link, description, publishD
                                     <span className={`font-semibold text-${info?.colors?.text?.color}`}>Link</span>
                                 </div>
                                 <div className="p-4 border shadow-md">
-                                    <input defaultValue={link} onChange={handleChangeLink} onClick={handleChangeLink} className="shadow w-full appearance-none border border-red rounded py-2 px-3 text-grey-400 mb-3" name="link" id="link" type="text" placeholder="link" />
+                                    <input value={post.link} onChange={(e) => handleChangeLink(e.target.value)} className="shadow w-full appearance-none border border-red rounded py-2 px-3 text-grey-400 mb-3" name="link" id="link" type="text" placeholder="link" />
                                 </div>
                             </div>
 
@@ -173,7 +123,7 @@ export default function index({ _id, content, title, link, description, publishD
                                     <div className="col-span-1 text-center">
                                         <button type="button" onClick={() => setEditorTab(0)} className={(editorTab === 0 ? `bg-${info?.colors?.background?.shadow} ` : "") + `py-4 text-${info?.colors?.text?.color} font-semibold w-full`}>
                                             Editor
-                                </button>
+                                    </button>
                                     </div>
                                     <div className="col-span-1 text-center post">
                                         <button type="button" onClick={() => setEditorTab(1)} className={(editorTab === 1 ? `bg-${info?.colors?.background?.shadow} ` : "") + `py-4 text-${info?.colors?.text?.color} font-semibold w-full`}>
@@ -182,12 +132,11 @@ export default function index({ _id, content, title, link, description, publishD
                                     </div>
                                 </div>
                                 <div>
-                                    <div className={(editorTab === 0 ? "hidden" : "") + " border shadow-lg p-4"} style={{ "maxHeight": "850px", "height": "100%", "overflow": "auto" }} id="code-preview">
+                                    <div className={(editorTab === 0 ? "hidden" : "") + " border shadow-lg p-4"} dangerouslySetInnerHTML={{ __html: Content }} style={{ "maxHeight": "850px", "height": "100%", "overflow": "auto" }}>
+
                                     </div>
                                     <div className={(editorTab === 1 ? "hidden" : "")}>
-                                        <div id="summernote">
-
-                                        </div>
+                                        <Editor content={Content} setContent={setContent} />
                                     </div>
                                 </div>
                             </div>
@@ -215,7 +164,7 @@ export default function index({ _id, content, title, link, description, publishD
                                     <span className={`font-semibold text-${info?.colors?.text?.color}`}>Publish Date</span>
                                 </div>
                                 <div className="p-4  border shadow-md">
-                                    <input onChange={e => setPost({ ...post, publishDate: new Date(e.target.value) })} value={(publishDate ? (new Date(post?.publishDate)) : new Date()).toISOString().substr(0, 10)} className="shadow w-full appearance-none border border-red rounded py-2 px-3 text-grey-400 mb-3" name="publishDate" type="date" id="publishDate" placeholder="Publish Date" />
+                                    <input onChange={e => setPost({ ...post, publishDate: new Date(e.target.value) })} value={(new Date(post?.publishDate)).toISOString().substr(0, 10)} className="shadow w-full appearance-none border border-red rounded py-2 px-3 text-grey-400 mb-3" name="publishDate" type="date" id="publishDate" placeholder="Publish Date" />
                                 </div>
                             </div>
                             <div className="my-4">

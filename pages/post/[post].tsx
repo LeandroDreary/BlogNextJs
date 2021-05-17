@@ -132,7 +132,7 @@ function Blog({ post, recommend, info, author, categories }) {
             </div>
             <div className="container mx-auto grid grid-cols-3">
                 <div className="col-span-3 md:col-span-2">
-                    <div className="border mx-4 mt-6 shadow-lg p-4 pt-0 rounded-md" >
+                    <div className="border mx-4 mt-6 shadow-lg p-4 rounded-md" >
                         <div className="post" dangerouslySetInnerHTML={{ __html: post?.content }}>
 
                         </div>
