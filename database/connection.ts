@@ -141,6 +141,7 @@ export const Post = PostModel();
 
 const dbConnect = async () => {
   let state = mongoose.connection.readyState;
+  console.log(state)
   if (state === 0 || state === 3) {
     await mongoose.connect(uri, {
       useNewUrlParser: true,
