@@ -137,7 +137,7 @@ export const PostModel = () => {
 export const Post = PostModel();
 
 
-const connection : any = {}
+const connection: any = {}
 
 async function dbConnect() {
   /* check if we have connection to our databse*/
@@ -151,6 +151,7 @@ async function dbConnect() {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useFindAndModify: false,
+    maxPoolSize: 10
   })
 
   connection.isConnected = db.connections[0].readyState
