@@ -137,19 +137,25 @@ export const PostModel = () => {
 export const Post = PostModel();
 
 
+const connection: any = {}
 
-
-const dbConnect = async () => {
-  let state = mongoose.connection.readyState;
-  if (state === 0 || state === 3) {
-    await mongoose.connect(uri, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-      useFindAndModify: false,
-      maxPoolSize: 5,
-      poolSize: 3
-    });
+async function dbConnect() {
+  /* check if we have connection to our databse*/
+  if (connection?.isConnected) {
+    console.log(connection?.isConnected)
+    return
   }
-};
+  console.log(connection?.isConnected)
+  /* connecting to our database */
+  const db = await mongoose.connect(process.env.MONGODB_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useFindAndModify: false,
+    maxPoolSize: 5,
+    poolSize: 3, 
+  })
 
-export default dbConnect;
+  connection.isConnected = db.connections[0].readyState
+}
+
+export default dbConnect
