@@ -1,10 +1,10 @@
 import Head from 'next/head'
 import React, { useState, useEffect } from 'react'
 import Api from './../../services/api'
-import UploadImage from './../../services/uploadImage'
 import Router from 'next/router'
 import 'suneditor/dist/css/suneditor.min.css';
 import dynamic from 'next/dynamic'
+import FormData from 'form-data'
 
 const Editor = dynamic(
     () => import('./../editor'),
@@ -18,12 +18,12 @@ interface PostI {
     description?: string,
     publishDate?: Date,
     category?: string,
-    image?: string,
+    image?: File,
     info?: any
 }
 
 export default function index({ _id, content, title, link, description, publishDate, category, image, info }: PostI) {
-    const [post, setPost] = _id ? useState<PostI>({ _id, content, title, link, description, publishDate, category, image }) : useState<PostI>({ category: "", content: "", image: "", link: "", title: "", description: "", publishDate: new Date() });
+    const [post, setPost] = _id ? useState<PostI>({ _id, content, title, link, description, publishDate, category, image }) : useState<PostI>({ category: "", content: "", image: null, link: "", title: "", description: "", publishDate: new Date() });
     const [editorTab, setEditorTab] = useState<number>(0)
     const [Content, setContent] = useState()
     const [imageFile, setImageFile] = useState<{ preview: any; file: File }>({
@@ -41,6 +41,7 @@ export default function index({ _id, content, title, link, description, publishD
         value = value.split('?').join('-');
         value = value.split('/').join('-');
         value = value.split('!').join('-');
+        value = value.split('"').join('-');
         while (value.includes('--')) {
             value = value.split('--').join('-');
         }
@@ -59,26 +60,34 @@ export default function index({ _id, content, title, link, description, publishD
 
     const HandleSubmitPost = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        const save = (image: string) => {
-            console.log(post)
-            if (_id) {
-                Api.put("/api/post", { ...post, image, content: Content }, { withCredentials: true }).then(response => {
-                    Router.push('/admin/post')
-                })
-            } else {
-                Api.post("/api/post", { ...post, image, content: Content }, { withCredentials: true }).then(response => {
-                    Router.push('/admin/post')
-                })
-            }
-        }
-        if (imageFile.file) {
-            save((await UploadImage(imageFile.file)).secure_url)
+        let data = new FormData();
+        data.append('image', imageFile.file);
+        data.append('category', post?.category);
+        data.append('content', Content);
+        data.append('description', post?.description);
+        data.append('link', post?.link);
+        data.append('publishDate', String(post?.publishDate));
+        data.append('title', post?.title);
+
+        if (_id) {
+
+            Api.put("/api/post", data, {
+                withCredentials: true, headers: {
+                    'content-type': 'multipart/form-data'
+                }
+            }).then(response => {
+                Router.push('/admin/post')
+            })
         } else {
-            save(post?.image)
+            Api.post("/api/post", data, {
+                withCredentials: true, headers: {
+                    'content-type': 'multipart/form-data'
+                }
+            }).then(response => {
+                Router.push('/admin/post')
+            })
         }
     }
-
-
 
     return (
         <>
