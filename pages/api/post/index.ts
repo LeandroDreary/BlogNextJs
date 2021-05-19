@@ -8,34 +8,39 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
     const form = new formidable.IncomingForm()
-    form.parse(req, async (err, fields, files) => {
-        let post
-        post = { ...fields, image: "" }
-        let base64string = (await sharp(files.image.path).webp().toBuffer()).toString('base64')
-        const options = { apiKey: "d11615f1d7ecafdc0230d615378e4eee", base64string };
-        await imgbbUploader(options).then((response) =>{ post = { ...post, image: response?.url }}).catch((error) => console.error(error));
 
-        let { _id, content, title, category, description, publishDate, image, link } =
-            { _id: post?._id, content: post?.content, title: post?.title, category: post?.category, description: post?.description, publishDate: post?.publishDate, image: post?.image, link: post?.link }
+    form.parse(req, async (err, fields, files) => {
+        let warnings = []
+        let post
+        let { _id, image, content, title, category, description, publishDate, link } =
+            { _id: fields?._id, image: "", content: fields?.content, title: fields?.title, category: fields?.category, description: fields?.description, publishDate: fields?.publishDate, link: fields?.link }
+
+        console.log(_id)
+
 
         const cookies = new Cookies(req, res)
         let UA = await HandleAuth(cookies.get("auth"))
-
         await DbConnect()
-        if (UA?.username) {
+
+        if (!UA?.username)
+            warnings.push({ message: "Você não está autenticado.", input: "" })
+
+        if (warnings?.length <= 0) {
+
+            if (req.method === "POST" || req.method === "PUT") {
+                if (files?.image?.path) {
+                    let base64string = (await sharp(files.image?.path).webp().toBuffer()).toString('base64')
+                    const options = { apiKey: "d11615f1d7ecafdc0230d615378e4eee", base64string };
+                    image = await imgbbUploader(options).then((response) => response?.url).catch((error) => console.error(error));
+                } else {
+                    image = fields?.image
+                }
+            }
+
             switch (req.method) {
                 case "GET":
                     post = await Post.findOne({ link: req.query?.link }).collation({ locale: "en", strength: 1 }).exec()
-                    post = {
-                        _id: post?._id,
-                        content: post?.content,
-                        publishDate: post?.publishDate,
-                        image: post?.image,
-                        link: post?.link,
-                        description: post?.description,
-                        title: post?.title,
-                        category: await Category.findOne({ _id: post?.category }).exec()
-                    }
+                    post = { _id: post?._id, content: post?.content, publishDate: post?.publishDate, image: post?.image, link: post?.link, description: post?.description, title: post?.title, category: await Category.findOne({ _id: post?.category }).exec() }
                     break;
                 case "POST":
                     category = (await Category.findOne({ name: category || "" }).exec())?._id || ""
@@ -49,14 +54,10 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
                     post = await Post.find({ link: req.query?.link }).remove().exec();
                     break;
                 default:
-                    res.status(200).json({})
                     break;
             }
-            res.status(200).json({ result: post })
-
-        } else {
-            res.status(200).json({})
         }
+        res.status(200).json({ result: post, warnings })
     })
 }
 

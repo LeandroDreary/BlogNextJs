@@ -18,7 +18,7 @@ interface PostI {
     description?: string,
     publishDate?: Date,
     category?: string,
-    image?: File,
+    image?: string,
     info?: any
 }
 
@@ -61,29 +61,22 @@ export default function index({ _id, content, title, link, description, publishD
     const HandleSubmitPost = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         let data = new FormData();
-        data.append('image', imageFile.file);
+
+        data.append('image', imageFile?.file || image || "");
         data.append('category', post?.category);
         data.append('content', Content);
         data.append('description', post?.description);
         data.append('link', post?.link);
         data.append('publishDate', String(post?.publishDate));
         data.append('title', post?.title);
+        data.append('_id', post?._id);
 
         if (_id) {
-
-            Api.put("/api/post", data, {
-                withCredentials: true, headers: {
-                    'content-type': 'multipart/form-data'
-                }
-            }).then(response => {
+            Api.put("/api/post", data, { withCredentials: true, headers: { 'content-type': 'multipart/form-data' } }).then(response => {
                 Router.push('/admin/post')
             })
         } else {
-            Api.post("/api/post", data, {
-                withCredentials: true, headers: {
-                    'content-type': 'multipart/form-data'
-                }
-            }).then(response => {
+            Api.post("/api/post", data, { withCredentials: true, headers: { 'content-type': 'multipart/form-data' } }).then(response => {
                 Router.push('/admin/post')
             })
         }
@@ -145,7 +138,7 @@ export default function index({ _id, content, title, link, description, publishD
                                     <div className={(editorTab === 0 ? "hidden" : "") + " border shadow-lg p-4"} dangerouslySetInnerHTML={{ __html: Content }} style={{ "maxHeight": "850px", "height": "100%", "overflow": "auto" }}>
 
                                     </div>
-                                    <div className={(editorTab === 1 ? "hidden" : "")}>
+                                    <div className={(editorTab === 1 ? "hidden" : "")} style={{ "maxHeight": "850px", "height": "100%", "overflow": "auto" }}>
                                         <Editor content={content} setContent={c => setContent(c)} />
                                     </div>
                                 </div>
@@ -202,7 +195,7 @@ export default function index({ _id, content, title, link, description, publishD
                                 </div>
                                 <div className="p-4">
                                     <label aria-label="Banner">
-                                        <input className="hidden" onChange={e => setImageFile({ preview: e.target.files[0] ? URL.createObjectURL(e.target.files[0]) : undefined, file: e.target.files[0] })} type="file" id="file" name="icon" accept="image/x-png,image/jpeg" />
+                                        <input className="hidden" onChange={e => setImageFile({ preview: e.target.files[0] ? URL.createObjectURL(e.target.files[0]) : undefined, file: e.target.files[0] })} type="file" id="file" name="icon" accept="image/x-png,image/jpeg,image/webp" />
                                         <div className="pb-4">
                                             <span className={`bg-${info?.colors?.background?.color} mt-4 hover:bg-${info?.colors?.background?.shadow} rounded px-4 py-2 text-${info?.colors?.text?.shadow} hover:text-${info?.colors?.text?.color} font-semibold`}>Choose Banner</span>
                                         </div>
