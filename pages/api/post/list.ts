@@ -23,13 +23,13 @@ export const listPosts = async (params: postListParams) => {
     authorFilter = Boolean(authorFilter) || false
 
     if (random) {
-        let posts = await Post.aggregate([{ $sample: { size: perPage + 1 } }])
+        let posts = await Post.aggregate([{ $sample: { size: perPage + 1 } }, { $match: { publishDate: { $lte: new Date() } } }])
         posts = posts.filter(p => ne !== p.link).filter((p, i) => i < perPage)
         return {
             result: posts.map(post => { return { image: post.image, link: post.link, title: post.title, description: post.description } })
         }
     } else {
-        let objFind: any = ne ? { link: { $ne: ne } } : {}
+        let objFind: any = ne ? { link: { $ne: ne }, publishDate: { $lte: new Date() } } : { publishDate: { $lte: new Date() } }
 
         if (category) {
             category = await Category.findOne({ name: category }).exec() || false
