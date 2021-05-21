@@ -26,10 +26,19 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
         let warnings = []
         let user: any
 
-
         if (req.method === "PUT") {
-            if ((await User.find({ username, _id: { $ne: mongoose.Types.ObjectId(UA?._id) } }).collation({ locale: "en", strength: 2 }).exec()).length > 0)
-                warnings.push({ message: "Nome de usuário já em uso.", input: "username" })
+            if (UAADM) {
+                if ((await User.find({ username, _id: { $ne: _id ? mongoose.Types.ObjectId(_id) : mongoose.Types.ObjectId(UA?._id) } }).collation({ locale: "en", strength: 2 }).exec()).length > 0)
+                    warnings.push({ message: "Nome de usuário já em uso.", input: "username" })
+                else
+                    _id = _id ? _id : UA?._id
+
+            } else {
+                if ((await User.find({ username, _id: { $ne: mongoose.Types.ObjectId(UA?._id) } }).collation({ locale: "en", strength: 2 }).exec()).length > 0)
+                    warnings.push({ message: "Nome de usuário já em uso.", input: "username" })
+                else
+                    _id = UA?._id
+            }
             try {
                 if (files?.image?.path) {
                     let base64string = (await sharp(files.image?.path).webp().toBuffer()).toString('base64')
@@ -39,6 +48,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
                     image = fields?.image
                 }
             } catch (e) {
+                console.log(e)
                 warnings?.push({ message: "Ocorreu um erro ao tentar enviar a imagem.", input: "" })
             }
         }
@@ -67,15 +77,15 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
                     user = await (new User({ username, discordUser, activated: true, image: "", password: bcrypt.hashSync(password, bcrypt.genSaltSync(10)) })).save();
                     break;
                 case "PUT":
-                    user = await User.findOne(_id).exec();
+                    user = await User.findOne(mongoose.Types.ObjectId(_id)).exec();
                     user.username = username
                     user.discordUser = discordUser
                     user.image = image
-                    if (activated !== null && activated !== undefined)
+                    if (activated !== null && activated !== undefined && UAADM)
                         user.activated = activated
                     if (password !== null && password !== undefined && password !== "")
                         user.password = bcrypt.hashSync(password, bcrypt.genSaltSync(10))
-                    user.save()
+                    await user.save()
                     break;
                 case "DELETE":
                     user = await User.find({ _id }).remove().exec();

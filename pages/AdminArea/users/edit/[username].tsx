@@ -42,7 +42,9 @@ function Blog({ info, username }) {
     const HandleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setWarnings([])
-        await Api.put(`/api/user`, userF, { withCredentials: true }).then(response => setWarnings(response.data?.warnings || []))
+        await Api.put(`/api/user`, userF, { withCredentials: true }).then(response => {
+            setWarnings(response.data?.warnings || [])
+        })
         if (warnings.length <= 0)
             Router.push("/AdminArea/users")
     }

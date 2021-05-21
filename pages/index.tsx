@@ -118,7 +118,7 @@ const Index = ({ posts, homePageInfo, info, categories }) => {
           <div className="grid grid-cols-3">
             <div className="col-span-3 md:col-span-2">
               <div className="px-4 mt-4">
-                <p className="text-4xl px-2 text-semibold text-gray-700">{homePageInfo?.title}</p>
+                <p className="text-4xl px-2 text-semibold text-gray-700">Recentes:</p>
                 <hr className="my-2" />
               </div>
               {posts ?

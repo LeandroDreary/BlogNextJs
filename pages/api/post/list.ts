@@ -11,11 +11,13 @@ interface postListParams {
     ne?: any,
     random?: any,
     authorFilter?: any,
-    UA?: any
+    UA?: any,
+    beforeDate?: Date;
+    afterDate?: Date;
 }
 
 export const listPosts = async (params: postListParams) => {
-    let { perPage, page, search, select, category, ne, random, authorFilter, UA } = params
+    let { perPage, page, search, select, category, ne, random, authorFilter, beforeDate, afterDate, UA } = params
     const rgx = (pattern) => (new RegExp(`.*${pattern}.*`));
 
     perPage = Number(perPage)
@@ -29,37 +31,46 @@ export const listPosts = async (params: postListParams) => {
             result: posts.map(post => { return { image: post.image, link: post.link, title: post.title, description: post.description } })
         }
     } else {
-        let objFind: any = ne ? { link: { $ne: ne }, publishDate: { $lte: new Date() } } : { publishDate: { $lte: new Date() } }
+        let objFind = {}
 
-        if (category) {
-            category = await Category.findOne({ name: category }).exec() || false
-            objFind = category ? { ...objFind, category: category._id } : objFind
-        }
+        if (beforeDate !== undefined)
+            objFind = { ...objFind, publishDate: { $lte: beforeDate } }
 
-        if (authorFilter) {
+        if (afterDate !== undefined)
+            objFind = { ...objFind, publishDate: { $gte: afterDate } }
+
+        if (ne !== undefined)
+            objFind = { ...objFind, link: { $ne: ne } }
+
+        if (search !== undefined)
+            objFind = {
+                ...objFind, $and: {
+                    $or: [{ title: { $regex: rgx(search), $options: "i" } },
+                    { description: { $regex: rgx(search), $options: "i" } }
+                    ]
+                }
+            }
+
+        if (category !== undefined)
+            objFind = { ...objFind, category: category }
+
+        if (authorFilter !== undefined) {
             authorFilter = await User.findOne({ _id: UA?._id }).exec() || false
             objFind = authorFilter ? { ...objFind, author: authorFilter?._id } : objFind
         }
 
-        let posts: any = Post.find(objFind)
-        let count: any = Post.find(objFind)
+        let posts: any = await Post.find(
+            objFind,
+            `${select} ${UA?.username ? "" : "-_id"}`,
+            { skip: perPage * (((page >= 1) ? page : 1) - 1), limit: perPage, sort: { publishDate: -1 } })
+            .collation({ locale: "en", strength: 2 }).exec()
 
-        if (search) {
-            let or = [
-                { title: { $regex: rgx(search), $options: "i" } },
-                { description: { $regex: rgx(search), $options: "i" } }
-            ]
-            count = count.or(or).collation({ locale: "en", strength: 2 })
-            posts = posts.or(or).collation({ locale: "en", strength: 2 })
-        }
+        let count: any = await Post.find(
+            objFind,
+            `${select} ${UA?.username ? "" : "-_id"}`,
+            {}).collation({ locale: "en", strength: 2 }).countDocuments({}).exec()
 
-        posts = posts.select(`${select} ${UA?.username ? "" : "-_id"}`)
-        count = count.select(`${select} ${UA?.username ? "" : "-_id"}`)
 
-        count = await count.countDocuments({}).exec()
-        posts = await posts.skip(perPage * (((page >= 1) ? page : 1) - 1))
-            .limit(perPage)
-            .exec()
         return {
             result: posts.map(post => { return { image: post.image, link: post.link, title: post.title, description: post.description } }),
             count,
@@ -76,9 +87,9 @@ async function handler(req, res) {
     const cookies = new Cookies(req, res)
     let UA = await HandleAuth(cookies.get("auth"))
 
-    let { perPage, page, search, select, category, ne, random, authorFilter } = req.query
+    let { perPage, page, search, select, category, ne, random, authorFilter, beforeDate, afterDate } = req.query
 
-    res.status(200).json(await listPosts({ perPage, page, search, select, category, ne, random, authorFilter, UA }))
+    res.status(200).json(await listPosts({ perPage, page, search, select, category, ne, random, authorFilter, UA, beforeDate, afterDate }))
 }
 
 

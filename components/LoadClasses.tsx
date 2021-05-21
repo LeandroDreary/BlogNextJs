@@ -1003,6 +1003,206 @@ const Index = () => {
                 "to-gray-900 "
             }>
             </div>
+
+            {/* red */}
+            <div className={
+                "ring-red-50 " +
+                "ring-red-100 " +
+                "ring-red-200 " +
+                "ring-red-300 " +
+                "ring-red-400 " +
+                "ring-red-500 " +
+                "ring-red-600 " +
+                "ring-red-700 " +
+                "ring-red-800 " +
+                "ring-red-900 " +
+                "hover:ring-red-50 " +
+                "hover:ring-red-100 " +
+                "hover:ring-red-200 " +
+                "hover:ring-red-300 " +
+                "hover:ring-red-400 " +
+                "hover:ring-red-500 " +
+                "hover:ring-red-600 " +
+                "hover:ring-red-700 " +
+                "hover:ring-red-800 " +
+                "hover:ring-red-900 "
+            }>
+            </div>
+
+            {/* green */}
+            <div className={
+                "ring-green-50 " +
+                "ring-green-100 " +
+                "ring-green-200 " +
+                "ring-green-300 " +
+                "ring-green-400 " +
+                "ring-green-500 " +
+                "ring-green-600 " +
+                "ring-green-700 " +
+                "ring-green-800 " +
+                "ring-green-900 " +
+                "hover:ring-green-50 " +
+                "hover:ring-green-100 " +
+                "hover:ring-green-200 " +
+                "hover:ring-green-300 " +
+                "hover:ring-green-400 " +
+                "hover:ring-green-500 " +
+                "hover:ring-green-600 " +
+                "hover:ring-green-700 " +
+                "hover:ring-green-800 " +
+                "hover:ring-green-900 "
+            }>
+            </div>
+
+            {/* blue */}
+            <div className={
+                "ring-blue-50 " +
+                "ring-blue-100 " +
+                "ring-blue-200 " +
+                "ring-blue-300 " +
+                "ring-blue-400 " +
+                "ring-blue-500 " +
+                "ring-blue-600 " +
+                "ring-blue-700 " +
+                "ring-blue-800 " +
+                "ring-blue-900 " +
+                "hover:ring-blue-50 " +
+                "hover:ring-blue-100 " +
+                "hover:ring-blue-200 " +
+                "hover:ring-blue-300 " +
+                "hover:ring-blue-400 " +
+                "hover:ring-blue-500 " +
+                "hover:ring-blue-600 " +
+                "hover:ring-blue-700 " +
+                "hover:ring-blue-800 " +
+                "hover:ring-blue-900 "
+            }>
+            </div>
+
+            {/* indigo */}
+            <div className={
+                "ring-indigo-50 " +
+                "ring-indigo-100 " +
+                "ring-indigo-200 " +
+                "ring-indigo-300 " +
+                "ring-indigo-400 " +
+                "ring-indigo-500 " +
+                "ring-indigo-600 " +
+                "ring-indigo-700 " +
+                "ring-indigo-800 " +
+                "ring-indigo-900 " +
+                "hover:ring-indigo-50 " +
+                "hover:ring-indigo-100 " +
+                "hover:ring-indigo-200 " +
+                "hover:ring-indigo-300 " +
+                "hover:ring-indigo-400 " +
+                "hover:ring-indigo-500 " +
+                "hover:ring-indigo-600 " +
+                "hover:ring-indigo-700 " +
+                "hover:ring-indigo-800 " +
+                "hover:ring-indigo-900 "
+            }>
+            </div>
+
+            {/* purple */}
+            <div className={
+                "ring-purple-50 " +
+                "ring-purple-100 " +
+                "ring-purple-200 " +
+                "ring-purple-300 " +
+                "ring-purple-400 " +
+                "ring-purple-500 " +
+                "ring-purple-600 " +
+                "ring-purple-700 " +
+                "ring-purple-800 " +
+                "ring-purple-900 " +
+                "hover:ring-purple-50 " +
+                "hover:ring-purple-100 " +
+                "hover:ring-purple-200 " +
+                "hover:ring-purple-300 " +
+                "hover:ring-purple-400 " +
+                "hover:ring-purple-500 " +
+                "hover:ring-purple-600 " +
+                "hover:ring-purple-700 " +
+                "hover:ring-purple-800 " +
+                "hover:ring-purple-900 "
+            }>
+            </div>
+
+            {/* pink */}
+            <div className={
+                "ring-pink-50 " +
+                "ring-pink-100 " +
+                "ring-pink-200 " +
+                "ring-pink-300 " +
+                "ring-pink-400 " +
+                "ring-pink-500 " +
+                "ring-pink-600 " +
+                "ring-pink-700 " +
+                "ring-pink-800 " +
+                "ring-pink-900 " +
+                "hover:ring-pink-50 " +
+                "hover:ring-pink-100 " +
+                "hover:ring-pink-200 " +
+                "hover:ring-pink-300 " +
+                "hover:ring-pink-400 " +
+                "hover:ring-pink-500 " +
+                "hover:ring-pink-600 " +
+                "hover:ring-pink-700 " +
+                "hover:ring-pink-800 " +
+                "hover:ring-pink-900 "
+            }>
+            </div>
+
+            {/* yellow */}
+            <div className={
+                "ring-yellow-50 " +
+                "ring-yellow-100 " +
+                "ring-yellow-200 " +
+                "ring-yellow-300 " +
+                "ring-yellow-400 " +
+                "ring-yellow-500 " +
+                "ring-yellow-600 " +
+                "ring-yellow-700 " +
+                "ring-yellow-800 " +
+                "ring-yellow-900 " +
+                "hover:ring-yellow-50 " +
+                "hover:ring-yellow-100 " +
+                "hover:ring-yellow-200 " +
+                "hover:ring-yellow-300 " +
+                "hover:ring-yellow-400 " +
+                "hover:ring-yellow-500 " +
+                "hover:ring-yellow-600 " +
+                "hover:ring-yellow-700 " +
+                "hover:ring-yellow-800 " +
+                "hover:ring-yellow-900 "
+            }>
+            </div>
+
+            {/* gray */}
+            <div className={
+                "ring-gray-50 " +
+                "ring-gray-100 " +
+                "ring-gray-200 " +
+                "ring-gray-300 " +
+                "ring-gray-400 " +
+                "ring-gray-500 " +
+                "ring-gray-600 " +
+                "ring-gray-700 " +
+                "ring-gray-800 " +
+                "ring-gray-900 " +
+                "hover:ring-gray-50 " +
+                "hover:ring-gray-100 " +
+                "hover:ring-gray-200 " +
+                "hover:ring-gray-300 " +
+                "hover:ring-gray-400 " +
+                "hover:ring-gray-500 " +
+                "hover:ring-gray-600 " +
+                "hover:ring-gray-700 " +
+                "hover:ring-gray-800 " +
+                "hover:ring-gray-900 "
+            }>
+            </div>
         </div>
     )
 }
