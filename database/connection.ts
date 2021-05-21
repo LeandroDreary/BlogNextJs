@@ -56,6 +56,7 @@ export const Auth = AuthModel();
 export interface UserI {
   _id?: string;
   username?: string;
+  image?: string;
   discordUser?: string;
   activated?: boolean;
   password?: string;
@@ -64,6 +65,7 @@ export interface UserI {
 let UserSchema = new Schema({
   username: { type: String, unique: true },
   discordUser: { type: String },
+  image: { type: String },
   activated: { type: Boolean },
   password: { type: String }
 });
@@ -116,9 +118,9 @@ export interface PostI {
 }
 
 let PostSchema = new Schema({
-  title: String,
-  link: { type: String, unique: true },
+  title: { type: String },
   content: { type: String },
+  link: { type: String, unique: true },
   author: { type: Schema.Types.ObjectId, ref: "users" },
   category: { type: Schema.Types.ObjectId, ref: "categories" },
   description: { type: String },
@@ -152,7 +154,7 @@ async function dbConnect() {
     useUnifiedTopology: true,
     useFindAndModify: false,
     maxPoolSize: 5,
-    poolSize: 3, 
+    poolSize: 3,
   })
 
   connection.isConnected = db.connections[0].readyState

@@ -17,31 +17,32 @@ export async function getStaticPaths() {
 export async function getStaticProps(context) {
     await DbConnect()
 
-    let { info, post, author, recommend, categories } = { info: null, post: null, author: null, recommend: null, categories: null }
+    let { info, post, author, recommend, categories, warnings } = { info: null, post: null, author: null, recommend: null, categories: null, warnings: [] }
 
     try {
-        post = await Post.findOne({ link: context.params.post }).select(`-_id`).collation({ locale: "en", strength: 1 }).exec()
+        info = await Config.findOne({ name: "info" }).select(`-_id`).exec()
+        info = info._doc.content
+    } catch (e) { }
+
+    try {
+        post = await Post.findOne({ link: context.params.post, publishDate: { $lte: new Date() } }).select(`-_id`).collation({ locale: "en", strength: 1 }).exec()
         let category: any = await Category.findById(post._doc.category).exec()
         post = { ...post._doc, publishDate: post._doc.publishDate.toISOString().substr(0, 10), category: { name: category.name, color: category.color } }
     } catch (e) { }
 
     try {
         author = await User.findOne({ _id: post?.author }).select(`-password -activated -_id`).exec()
-        author = { ...author._doc, username: author._doc.username, discordUser: author._doc.discordUser }
+        author = { ...author._doc, username: author._doc.username, discordUser: author._doc.discordUser, image: author.image }
         post = { ...post, author: null }
     } catch (e) { }
 
     try {
         let perPage = 4
-        let posts = await Post.aggregate([{ $sample: { size: perPage + 1 } }])
+        let posts = await Post.aggregate([{ $sample: { size: perPage + 1 } }, { $match: { publishDate: { $lte: new Date() } } }])
         posts = posts.filter(p => context.params.post !== p.link).filter((p, i) => i < perPage)
         recommend = posts.map(p => { return { image: p.image, link: p.link, title: p.title, description: p.description } })
     } catch (e) { }
 
-    try {
-        info = await Config.findOne({ name: "info" }).select(`-_id`).exec()
-        info = info._doc.content
-    } catch (e) { }
 
     try {
         categories = (await ListCategories({})).result
@@ -97,45 +98,57 @@ function Blog({ post, recommend, info, author, categories }) {
                     style={{ backgroundImage: "linear-gradient(180deg,transparent,rgba(0,0,0,.7))" }}></div>
                 <img src={post?.image} alt="banner" className="absolute left-0 top-0 w-full h-full z-0 object-cover" />
                 <div className="p-4 h-full container mx-auto">
-                    <div className="bottom-0 absolute z-20 p-4">
-                        <a href={"/category/" + post?.category?.name}
-                            style={{ backgroundColor: post?.category?.color }} className="px-4 py-1 bg-black text-gray-200 inline-flex items-center justify-center mb-2">{post?.category?.name}</a>
-                        <h1 className="md:text-4xl font-semibold text-gray-100 text-2xl leading-tight">
-                            {post?.title}
-                        </h1>
-                        <div className="flex items-center mt-3">
-                            <div>
-                                <img src="https://randomuser.me/api/portraits/men/97.jpg"
-                                    className="h-10 w-10 rounded-full mr-2 object-cover" />
-                            </div>
-                            <div className="grid grid-cols-3">
-                                <div className="col-span-2">
-                                    <div className="text-gray-300 font-semibold">
-                                        <div className="inline-block px-1">
-                                            Autor: <a className="font-normal">{author?.username}</a>,
+                    {
+                        (post === null) ?
+                            ("") :
+                            (
+                                <div className="bottom-0 absolute z-20 p-4">
+                                    <a href={"/category/" + post?.category?.name}
+                                        style={{ backgroundColor: post?.category?.color }} className="px-4 py-1 bg-black text-gray-200 inline-flex items-center justify-center mb-2">{post?.category?.name}</a>
+                                    <h1 className="md:text-4xl font-semibold text-gray-100 text-2xl leading-tight">
+                                        {post?.title}
+                                    </h1>
+
+                                    <div className="flex items-center mt-3">
+                                        <div>
+                                            <img src={author?.image}
+                                                className="h-10 w-10 rounded-full mr-2 object-cover" />
                                         </div>
-                                        <div className="inline-block px-1">
-                                            Discord: <a className="font-normal">{author?.discordUser}</a>
+                                        <div className="grid grid-cols-3">
+                                            <div className="col-span-2">
+                                                <div className="text-gray-300 font-semibold">
+                                                    <div className="inline-block px-1">
+                                                        Autor: <a className="font-normal">{author?.username}</a>,
+                                        </div>
+                                                    <div className="inline-block px-1">
+                                                        Discord: <a className="font-normal">{author?.discordUser}</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="col-span-1">
+                                                <div className="text-sm text-gray-300 font-semibold text-right">
+                                                    <div className="inline-block px-1">Publicado em:</div>
+                                                    <div className="inline-block px-1 font-normal">{post?.publishDate}</div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div className="col-span-1">
-                                    <div className="text-sm text-gray-300 font-semibold text-right">
-                                        <div className="inline-block px-1">Publicado em:</div>
-                                        <div className="inline-block px-1 font-normal">{post?.publishDate}</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                            )
+
+                    }
                 </div>
             </div>
             <div className="container mx-auto grid grid-cols-3">
                 <div className="col-span-3 md:col-span-2">
                     <div className="border mx-4 mt-6 shadow-lg p-4 rounded-md" >
-                        <div className="post" dangerouslySetInnerHTML={{ __html: post?.content }}>
+                        {
+                            (post === null) ?
+                                (<h2 className="p-16 text-center text-2xl">Post não encontrado.</h2>) :
+                                (<div className="post" dangerouslySetInnerHTML={{ __html: post?.content }}></div>)
+                        }
 
-                        </div>
+
                     </div>
 
                 </div>

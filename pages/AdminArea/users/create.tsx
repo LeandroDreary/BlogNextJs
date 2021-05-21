@@ -23,8 +23,9 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
         info = info._doc.content
     } catch (e) { }
 
-    if ((await User.find({ username }).collation({ locale: "en", strength: 2 }).exec()).length > 0)
-        warnings.push({ message: "Usuário já existe.", input: "username" })
+    if (req.method === "POST")
+        if ((await User.find({ username }).collation({ locale: "en", strength: 2 }).exec()).length > 0)
+            warnings.push({ message: "Usuário já existe.", input: "username" })
 
     if (warnings.length <= 0)
         switch (req.method) {

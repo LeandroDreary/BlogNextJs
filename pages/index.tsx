@@ -6,7 +6,7 @@ import Card from '../components/cards/post'
 import Sidebar from '../components/sidebar'
 import '../components/LoadClasses'
 import ReactHtmlParser from 'react-html-parser'
-import DbConnect, { Config, Post } from "./../database/connection"
+import DbConnect, { Config, Post, PostI } from "./../database/connection"
 import { ListCategories } from './api/category/list'
 
 
@@ -16,7 +16,8 @@ export async function getStaticProps() {
   let { info, homePageInfo, posts, categories } = { info: null, homePageInfo: null, posts: null, categories: null }
   try {
     let perPage = 6
-    posts = (await Post.aggregate([{ $sample: { size: perPage + 1 } }])).map(p => { return { image: p?.image || null, link: p?.link || null, title: p?.title || null, description: p?.description || null } })
+    posts = (await Post.find({ publishDate: { $lte: new Date() } }, ["image", "link", "title", "description", "-_id"], { skip: 0, limit: perPage, sort: { publishDate: -1 } }).exec())
+      .map((post: any) => { return { image: String(post?.image || ""), link: String(post?.link || ""), title: String(post?.title || ""), description: String(post?.description || "") } })
   } catch (e) { }
 
   try {

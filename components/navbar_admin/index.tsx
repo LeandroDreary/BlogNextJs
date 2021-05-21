@@ -17,7 +17,7 @@ class Login extends React.Component<MyProps, MyState> {
     constructor(props: any) {
         super(props);
         this.state = { ...props }
-    } 
+    }
 
     componentDidMount() {
         if (this.props?.user) {
@@ -80,8 +80,12 @@ class Login extends React.Component<MyProps, MyState> {
                         </Link>
                     </div>
                     <div className="flex">
-                        <button
-                            className={`block text-md px-4 py-2 rounded text-${this.props?.info?.colors?.text?.color || this.state?.info?.colors?.text?.color || "white"} ml-2 hover:text-${this.props?.info?.colors?.text?.color || this.state?.info?.colors?.text?.color || "gray-100"} font-bold mt-4 lg:mt-0`}>{this.props?.user?.username || this.state?.user?.username || "Carregando"}</button>
+                        <Link href='/admin/user'>
+                            <a>
+                                <button
+                                    className={`block text-md px-4 py-2 rounded text-${this.props?.info?.colors?.text?.color || this.state?.info?.colors?.text?.color || "white"} ml-2 hover:text-${this.props?.info?.colors?.text?.color || this.state?.info?.colors?.text?.color || "gray-100"} font-bold mt-4 lg:mt-0`}>{this.props?.user?.username || this.state?.user?.username || "Carregando"}</button>
+                            </a>
+                        </Link>
                         <button className={`block text-md px-4 py-2 rounded text-${this.props?.info?.colors?.text?.color || this.state?.info?.colors?.text?.color || "white"} ml-2 hover:text-${this.props?.info?.colors?.text?.color || this.state?.info?.colors?.text?.color || "gray-100"} font-bold mt-4 lg:mt-0`}>Logout</button>
                     </div>
                 </div>

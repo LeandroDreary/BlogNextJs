@@ -4,6 +4,7 @@ import DbConnect, { Post, Category } from "./../../../database/connection";
 import sharp from 'sharp';
 import formidable from 'formidable';
 import imgbbUploader from 'imgbb-uploader';
+import validator from 'validator'
 import type { NextApiRequest, NextApiResponse } from 'next'
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
