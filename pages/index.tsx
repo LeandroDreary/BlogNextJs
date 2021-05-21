@@ -88,20 +88,20 @@ const Index = ({ posts, homePageInfo, info, categories }) => {
 
             <div className="p-4 h-full grid grid-cols-2 z-20 items-center container mx-auto">
               <div className="md:hidden col-span-2 md:col-span-1 pt-4">
-                <span className={`text-sm bg-${info?.colors?.background?.color || "gray-500"} text-${info?.colors?.text?.color || "white"} font-extrabold px-4 py-2`}>Featured</span>
+                <span className={`text-sm bg-${info?.colors?.background?.color || "gray-500"} text-${info?.colors?.text?.color || "white"} font-extrabold px-4 py-2`}>Destaque</span>
                 <div className={`ring-4 ring-${info?.colors?.text?.shadow || "gray-700"} ring-opacity-70 rounded-lg flex items-center justify-center mt-6 p-2`}>
                   <img src={posts ? posts[0]?.image : ""} className="w-full" alt={posts ? posts[0]?.title : ""} />
                 </div>
               </div>
               <div className="col-span-2 md:col-span-1 px-2 py-4">
-                <span className={`text-sm bg-${info?.colors?.background?.color || "gray-500"} text-${info?.colors?.text?.color || "white"} font-extrabold px-4 py-2 hidden md:inline-block`}>Featured</span>
+                <span className={`text-sm bg-${info?.colors?.background?.color || "gray-500"} text-${info?.colors?.text?.color || "white"} font-extrabold px-4 py-2 hidden md:inline-block`}>Destaque</span>
                 <h1 className="text-2xl font-bold text-white mt-4 mb-2">
                   {posts ? posts[0]?.title : ""}
                 </h1>
                 <p className="text-lg text-gray-100">{posts ? posts[0]?.description?.substr(0, 200) + (posts[0]?.description?.length > 100 ? "..." : "") : ""}</p>
                 <Link href={"/post/" + (posts ? posts[0]?.link : "")}>
                   <a>
-                    <button className={`bg-${info?.colors?.background?.color || "gray-500"} text-${info?.colors?.text?.color || "white"} font-extrabold px-4 py-2 my-4`}>Finish Read</button>
+                    <button className={`bg-${info?.colors?.background?.color || "gray-500"} text-${info?.colors?.text?.color || "white"} font-extrabold px-4 py-2 my-4`}>Continuar lendo...</button>
                   </a>
                 </Link>
               </div>
@@ -118,7 +118,7 @@ const Index = ({ posts, homePageInfo, info, categories }) => {
           <div className="grid grid-cols-3">
             <div className="col-span-3 md:col-span-2">
               <div className="px-4 mt-4">
-                <p className="text-4xl px-2 text-semibold text-gray-700">Home Page</p>
+                <p className="text-4xl px-2 text-semibold text-gray-700">{homePageInfo?.title}</p>
                 <hr className="my-2" />
               </div>
               {posts ?

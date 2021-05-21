@@ -66,7 +66,7 @@ function Blog({ post, recommend, info, author, categories }) {
         <>
             <Head>
                 <link rel="stylesheet" href="/css/post.css" />
-                <title>{`${post?.title} - ${info?.websiteName}`} </title>
+                <title>{post === undefined ? "Carregando..." : `${post?.title || "Post não encontrado"} - ${info?.websiteName}`} </title>
                 <link href="/icon.png" rel="icon" />
                 <meta name="description" content={post?.description?.toString()} />
                 <meta name="author" content={author?.username?.toString()} />
@@ -96,7 +96,14 @@ function Blog({ post, recommend, info, author, categories }) {
             <div className="col-span-3 w-full mx-auto relative" style={{ height: "24em" }}>
                 <div className="absolute left-0 bottom-0 w-full h-full z-10"
                     style={{ backgroundImage: "linear-gradient(180deg,transparent,rgba(0,0,0,.7))" }}></div>
-                <img src={post?.image} alt="banner" className="absolute left-0 top-0 w-full h-full z-0 object-cover" />
+                {post === undefined ?
+                    <></> :
+                    post === null ?
+                        (<></>) : (<img src={post?.image} alt="banner" className="absolute left-0 top-0 w-full h-full z-0 object-cover" />)
+                }
+
+                <h2 className="p-16 text-center text-2xl font-semibold text-gray-700">Post não encontrado.</h2>
+
                 <div className="p-4 h-full container mx-auto">
                     {
                         (post === null) ?
@@ -144,7 +151,7 @@ function Blog({ post, recommend, info, author, categories }) {
                     <div className="border mx-4 mt-6 shadow-lg p-4 rounded-md" >
                         {
                             (post === null) ?
-                                (<h2 className="p-16 text-center text-2xl">Post não encontrado.</h2>) :
+                                (<h3 className="p-16 text-center text-xl">Página sem conteúdo.</h3>) :
                                 (<div className="post" dangerouslySetInnerHTML={{ __html: post?.content }}></div>)
                         }
 
