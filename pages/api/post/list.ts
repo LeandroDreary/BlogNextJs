@@ -42,6 +42,7 @@ export const listPosts = async (params: postListParams) => {
         if (ne !== undefined)
             objFind = { ...objFind, link: { $ne: ne } }
 
+        console.log(search)
         if (search !== undefined)
             objFind = {
                 ...objFind, $and: {

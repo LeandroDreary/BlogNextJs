@@ -1,14 +1,14 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import $ from 'jquery'
 import Head from 'next/head'
 import Cookies from 'cookies'
 import Api from '../../services/api'
 import Navbar from '../../components/navbar_admin_area'
 import '../../components/LoadClasses'
-import uploadImages from '../../services/uploadImage'
 import bcrypt from 'bcryptjs'
 import { GetServerSideProps } from 'next'
 import DbConnect, { Config } from '../../database/connection'
+import FormData from 'form-data'
 
 interface info {
     websiteName: string,
@@ -39,16 +39,23 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
 
     const cookies = new Cookies(req, res)
     let Info = null
+    let HomePageInfo = null
     try {
         Info = await Config.findOne({ name: "info" }).select(`-_id`).exec()
         Info = Info._doc.content
+    } catch (e) { }
+
+    try {
+        HomePageInfo = await Config.findOne({ name: "homePageInfo" }).select(`-_id`).exec()
+        HomePageInfo = HomePageInfo._doc.content
     } catch (e) { }
 
     if (bcrypt.compareSync(`${process.env.ADMINPASSWORD}_${process.env.ADMINUSERNAME}`, cookies.get('AdminAreaAuth'))) {
         return {
             props: {
                 Info,
-                user: { username: process.env.ADMINUSERNAME }
+                user: { username: process.env.ADMINUSERNAME },
+                HomePageInfo
             }
         }
     } else {
@@ -61,12 +68,12 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
     }
 }
 
-const Index = ({ Info, user }) => {
+const Index = ({ Info, user, HomePageInfo }) => {
     const [info, setInfo] = useState<info>(Info)
     const [infoInputs, setInfoInputs] = useState<info>(Info)
 
-    const [homePageInfo, setHomePageInfo] = useState<homePageInfo>()
-    const [homePageInfoInputs, setHomePageInfoInputs] = useState<homePageInfo>({ title: "", description: "", banner: "", head: "" })
+    const [homePageInfo, setHomePageInfo] = useState<homePageInfo>(HomePageInfo)
+    const [homePageInfoInputs, setHomePageInfoInputs] = useState<homePageInfo>(HomePageInfo)
 
     const [bannerFile, setBannerFile] = useState<{ preview: any; file: File }>({
         preview: homePageInfoInputs?.banner || undefined,
@@ -84,52 +91,38 @@ const Index = ({ Info, user }) => {
 
     const HandleInformationsSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        let data = new FormData();
 
-        const save = (icon: string) => {
-            Api.post('/api/config?name=info', { content: { ...infoInputs, icon } }, { withCredentials: true }).then(response => {
-                loadInfo1()
-            })
-        }
+        data.append('icon', iconFile?.file || infoInputs?.icon || "");
+        data.append('colors',JSON.stringify(infoInputs?.colors));
+        data.append('description', infoInputs?.description);
+        data.append('keywords', infoInputs?.keywords);
+        data.append('websiteName', infoInputs?.websiteName);
+        data.append('name', "info");
 
-        if (iconFile.file) {
-            save((await uploadImages(iconFile.file)).secure_url)
-        } else {
-            save(info?.icon)
-        }
+        Api.post('/api/config', data, { withCredentials: true, headers: { 'content-type': 'multipart/form-data' } }).then(res => {
+            setInfo(res.data?.result)
+            setInfoInputs(res.data?.result)
+        })
     }
+
 
     const HandleHomePageSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        let data = new FormData();
 
-        const save = (banner: string) => {
-            Api.post('/api/config?name=homePageInfo', { content: { ...homePageInfoInputs, banner } }, { withCredentials: true }).then(response => {
-                loadHomePageInfo()
-            })
-        }
+        data.append('banner', bannerFile?.file || homePageInfoInputs?.banner || "");
+        data.append('description', homePageInfoInputs?.description);
+        data.append('head', homePageInfoInputs?.head);
+        data.append('title', homePageInfoInputs?.title);
+        data.append('name', "homePageInfo");
 
-        if (bannerFile.file) {
-            save((await uploadImages(bannerFile.file)).secure_url)
-        } else {
-            save(homePageInfo?.banner)
-        }
+        Api.post('/api/config', data, { withCredentials: true, headers: { 'content-type': 'multipart/form-data' } }).then(res => {
+            setHomePageInfo(res.data?.content)
+            setHomePageInfoInputs(res.data?.content)
+        })
+
     }
-
-
-
-    const loadInfo1 = () => Api.get('/api/config?name=info').then(response => {
-        setInfo(response.data?.result?.content)
-        setInfoInputs(response.data?.result?.content)
-    })
-
-    const loadHomePageInfo = () => Api.get('/api/config?name=homePageInfo').then(response => {
-        setHomePageInfo(response.data?.result?.content)
-        setHomePageInfoInputs(response.data?.result?.content)
-    })
-
-    useEffect(() => {
-        loadInfo1()
-        loadHomePageInfo()
-    }, [Info])
 
     let colors = ["green", "blue", , "indigo", "purple", "pink", "red", "yellow", "gray"]
     let intonations = ["50", "100", "200", "300", "400", "500", "600", "700", "800", "900"]
@@ -288,7 +281,7 @@ const Index = ({ Info, user }) => {
                             </div>
                             <div className="py-1 pt-5 md:pt-0">
                                 <label htmlFor="description" className="font-semibold text-gray-700">Palavras chaves: </label><br />
-                                <textarea value={infoInputs?.keywords} onChange={e => setInfoInputs({ ...infoInputs, keywords: e.target.value })} className="shadow w-64 appearance-none border max-w-full rounded py-1 px-3 text-gray-700" name="description"></textarea>
+                                <textarea value={infoInputs?.keywords} onChange={e => setInfoInputs({ ...infoInputs, keywords: e.target.value })} className="shadow w-64 appearance-none border max-w-full rounded py-1 px-3 text-gray-700" name="keywords"></textarea>
                             </div>
                         </div>
                         <div className="col-span-3 md:col-span-1 pt-4 pb-4 px-4">

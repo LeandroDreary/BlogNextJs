@@ -16,9 +16,6 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
         let { _id, image, content, title, category, description, publishDate, link } =
             { _id: fields?._id, image: "", content: fields?.content, title: fields?.title, category: fields?.category, description: fields?.description, publishDate: fields?.publishDate, link: fields?.link }
 
-        console.log(_id)
-
-
         const cookies = new Cookies(req, res)
         let UA = await HandleAuth(cookies.get("auth"))
         await DbConnect()

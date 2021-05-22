@@ -17,7 +17,7 @@ export async function getStaticPaths() {
 export async function getStaticProps(context) {
     await DbConnect()
 
-    let { info, post, author, recommend, categories, warnings } = { info: null, post: null, author: null, recommend: null, categories: null, warnings: [] }
+    let { info, post, author, recommend, categories } = { info: null, post: null, author: null, recommend: null, categories: null }
 
     try {
         info = await Config.findOne({ name: "info" }).select(`-_id`).exec()
@@ -38,7 +38,7 @@ export async function getStaticProps(context) {
 
     try {
         let perPage = 4
-        let posts = await Post.aggregate([{ $sample: { size: perPage + 1 } }, { $match: { publishDate: { $lte: new Date() } } }])
+        let posts = await Post.aggregate([{ $sample: { size: perPage + 1 } }])
         posts = posts.filter(p => context.params.post !== p.link).filter((p, i) => i < perPage)
         recommend = posts.map(p => { return { image: p.image, link: p.link, title: p.title, description: p.description } })
     } catch (e) { }

@@ -119,7 +119,7 @@ const Index = ({ info, categories }: { info: any, categories }) => {
                 </div>
 
 
-                {!loading ? posts.length > 0 ?
+                {!loading ? posts?.length > 0 ?
                     <div className="grid grid-cols-4 py-2"> {posts?.map((post, index) => {
                         return (
                             <Link key={index} href={"/post/" + post?.link}>
