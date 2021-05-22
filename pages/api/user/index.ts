@@ -1,9 +1,8 @@
 import bcrypt from 'bcryptjs'
 import Cookies from 'cookies'
-import validator from 'validator'
 import HandleAuth from '../../../services/auth'
 import formidable from 'formidable';
-import DbConnect, { User, UserI } from "./../../../database/connection"
+import DbConnect, { User } from "./../../../database/connection"
 import sharp from 'sharp';
 import imgbbUploader from 'imgbb-uploader';
 import type { NextApiRequest, NextApiResponse } from 'next'
@@ -43,12 +42,12 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
                 if (files?.image?.path) {
                     let base64string = (await sharp(files.image?.path).webp().toBuffer()).toString('base64')
                     const options = { apiKey: "d11615f1d7ecafdc0230d615378e4eee", base64string };
-                    image = await imgbbUploader(options).then((response) => response?.url).catch((error) => console.error(error));
+                    image = await imgbbUploader(options).then((response) => response?.url);
                 } else {
                     image = fields?.image
                 }
             } catch (e) {
-                console.log(e)
+                console.error(e)
                 warnings?.push({ message: "Ocorreu um erro ao tentar enviar a imagem.", input: "" })
             }
         }

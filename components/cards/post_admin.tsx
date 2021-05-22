@@ -54,17 +54,17 @@ class Post extends React.Component<MyProps, MyState> {
                                 <div className="bg-white rounded z-20">
                                     <div className="w-full grid grid-cols-6 bg-red-600">
                                         <div className="col-span-5 text-lg text-white font-semibold p-2">
-                                            Delete Post
+                                            Apagar post
                                         </div>
                                         <div className="col-span-1 p-2 text-right">
                                             <button className="text-lg p-1 text-white" onClick={HandleDeletePopup}><FaWindowClose /></button>
                                         </div>
                                     </div>
                                     <div className="p-5">
-                                        <p className="pb-2 text-gray-800">Do you really want to delete this post?</p>
+                                        <p className="pb-2 text-gray-800">Você quer realmente apagar o post?</p>
                                         <hr className="my-2" />
                                         <button onClick={HandleDeletePost} className="mr-5 mt-2 bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-6 rounded-lg">
-                                            Delete
+                                            Apagar
                                         </button>
                                     </div>
 
@@ -89,11 +89,11 @@ class Post extends React.Component<MyProps, MyState> {
                         <div className="p-4">
                             <a href={'/admin/post/edit/' + encodeURI(this.state?.link)}>
                                 <button className={`mr-5 bg-${this.state?.info?.colors?.background?.color} hover:bg-${this.state?.info?.colors?.background?.shadow} text-${this.state?.info?.colors?.text?.shadow} hover:text-${this.state?.info?.colors?.text?.color} font-bold py-2 px-6 rounded-lg`}>
-                                    Edit
+                                    Editar
                                 </button>
                             </a>
                             <button onClick={HandleDeletePopup} className="mr-5 bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-6 rounded-lg">
-                                Delete
+                                Apagar
                             </button>
                         </div>
                     </div>

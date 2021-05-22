@@ -111,24 +111,24 @@ const Index = ({ info, user }) => {
                             <div className="bg-white rounded z-20">
                                 <div className="w-full grid grid-cols-6 bg-red-600">
                                     <div className="col-span-5 text-lg text-white font-semibold p-2">
-                                        Delete category
+                                        Apagar categoria
                                     </div>
                                     <div className="col-span-1 p-2 text-right">
                                         <button className="text-lg p-1 text-white" onClick={() => { $("body").css({ "overflow-y": "auto" }); setDeletePopup({ ...deletePopup, show: false }) }}><FaWindowClose /></button>
                                     </div>
                                 </div>
                                 <div className="p-5">
-                                    <p className="pb-2 text-gray-800">Do you really want to delete this category? Type the name to be sure.</p>
+                                    <p className="pb-2 text-gray-800">Você quer realmente apagar essa categoria? Coloque o nome da categoria para confirmar.</p>
                                     <p className="pb-2 font-semibold text-gray-800">{deletePopup?.name}</p>
                                     <input onChange={e => setDeletePopup({ ...deletePopup, able: e.target.value === deletePopup.name })} className="shadow appearance-none font-semibold text-gray-700 border rounded w-64 py-1 px-3 text-grey-400 mx-auto" type="text" />
                                     <hr className="my-2" />
                                     {deletePopup.able ?
                                         <button onClick={HandleDelete} type="button" className="mr-5 mt-2 bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-6 rounded-lg">
-                                            Delete
+                                            Apagar
                                         </button> :
                                         <div className="pt-4 pb-1">
                                             <span className="mr-5 bg-gray-100 text-gray-800 font-bold py-2 px-6 rounded-lg">
-                                                Delete
+                                                Apgar
                                             </span>
                                         </div>
                                     }
@@ -148,7 +148,7 @@ const Index = ({ info, user }) => {
                             <div className="bg-white rounded z-20">
                                 <div className="w-full grid grid-cols-6 bg-red-600">
                                     <div className="col-span-5 text-lg text-white font-semibold p-2">
-                                        Create category
+                                        Criar categoria
                                     </div>
                                     <div className="col-span-1 p-2 text-right">
                                         <button className="text-lg p-1 text-white" onClick={() => { $("body").css({ "overflow-y": "auto" }); setCreatePopup({ ...createPopup, show: false }) }}><FaWindowClose /></button>
@@ -160,11 +160,11 @@ const Index = ({ info, user }) => {
                                     <hr className="my-2" />
                                     {createPopup.able ?
                                         <button onClick={CreateCategory} type="button" className="mr-5 mt-2 bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-6 rounded-lg">
-                                            Create
+                                            Nova categoria
                                         </button> :
                                         <div className="pt-4 pb-1">
                                             <span className="mr-5 bg-gray-100 text-gray-800 font-bold py-2 px-6 rounded-lg">
-                                                Create
+                                                Nova categoria
                                             </span>
                                         </div>
                                     }
@@ -183,10 +183,10 @@ const Index = ({ info, user }) => {
                 <div className="grid grid-cols-12">
                     <div className="col-span-12">
                         <button onClick={() => { $("body").css({ "overflow-y": "hidden" }); setCreatePopup({ show: true, able: false }) }} className={`mr-5 my-4 bg-${info?.colors.background?.color} hover:bg-${info?.colors.background?.shadow} text-${info?.colors.text?.shadow} hover:text-${info?.colors.text?.color} font-bold py-2 px-6 rounded-lg`}>
-                            Create
+                            Nova categoria
                         </button>
                         <button onClick={() => LoadCategories()} className="mr-5 my-4 bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-2 px-6 rounded-lg">
-                            Reload
+                            Recarregar
                         </button>
                         <hr />
                     </div>
@@ -236,7 +236,7 @@ const Index = ({ info, user }) => {
                                                     </div>
                                                 }
                                                 <div onClick={() => { $("body").css({ "overflow-y": "hidden" }); setDeletePopup({ _id: category._id, name: categories?.filter(c => c._id === category._id)[0].name, show: true, able: false }) }} className="my-4 text-white font-semibold px-4 py-2 bg-red-700 hover:bg-red-800 mx-2 cursor-pointer">
-                                                    Delete
+                                                    Apagar
                                                 </div>
                                             </div>
                                         </div>

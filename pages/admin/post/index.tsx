@@ -74,11 +74,11 @@ const Index = ({ info, user }) => {
                     <div className="col-span-12">
                         <a href="/admin/post/create">
                             <button className={`mr-5 my-4 bg-${info?.colors.background?.color} hover:bg-${info?.colors.background?.shadow} text-${info?.colors.text?.shadow} hover:text-${info?.colors.text?.color} font-bold py-2 px-6 rounded-lg`}>
-                                Create
+                                Novo post
                             </button>
                         </a>
                         <button onClick={() => LoadPost()} className="mr-5 my-4 bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-2 px-6 rounded-lg">
-                            Reload
+                            Recarregar
                         </button>
                         <hr />
                     </div>
@@ -86,7 +86,7 @@ const Index = ({ info, user }) => {
                         <form onSubmit={(e) => { e.preventDefault(); LoadPost(); }}>
                             <div className={`bg-${info?.colors.background?.color} py-4 px-6 mx-4 rounded-lg shadow-md box-wrapper`}>
                                 <div className={`rounded flex items-center w-full p-3 shadow-sm border border-${info?.colors?.text?.color} text-${info?.colors?.text?.color}`}>
-                                    <input onChange={e => setFilters({ ...filters, search: e.target.value })} type="search" placeholder="search" x-model="q" className={`placeholder-${info?.colors?.text?.shadow} font-semibold w-full text-sm outline-none focus:outline-none bg-transparent`} />
+                                    <input onChange={e => setFilters({ ...filters, search: e.target.value })} type="search" placeholder="Procurar" x-model="q" className={`placeholder-${info?.colors?.text?.shadow} font-semibold w-full text-sm outline-none focus:outline-none bg-transparent`} />
                                     <button type="submit" className="outline-none focus:outline-none px-4">
                                         <FaSearch />
                                     </button>

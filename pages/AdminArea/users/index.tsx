@@ -69,12 +69,12 @@ const Index = ({ info, user }) => {
                         <Link href="/AdminArea/users/create">
                             <a>
                                 <button className={`mr-5 my-4 bg-${info?.colors.background?.color} hover:bg-${info?.colors.background?.shadow} text-${info?.colors.text?.shadow} hover:text-${info?.colors.text?.color} font-bold py-2 px-6 rounded-lg`}>
-                                    Create
+                                    Novo usuário
                                 </button>
                             </a>
                         </Link>
                         <button onClick={() => LoadUsers()} className="mr-5 my-4 bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-2 px-6 rounded-lg">
-                            Reload
+                            Recarregar
                         </button>
                         <hr />
                     </div>
@@ -102,18 +102,18 @@ const Index = ({ info, user }) => {
                         {!loading ?
                             users?.map(user => {
                                 return (
-                                    <div className="grid grid-cols-3 shadow border my-4 rounded" key={user?._id}>
-                                        <div className="col-span-2 md:col-span-1 text-2xl text-gray-700 font-semibold text-center py-4 px-2 align-middle">
+                                    <div className="grid grid-cols-4 shadow border my-4 rounded" key={user?._id}>
+                                        <div className="col-span-2 md:col-span-1 text-lg text-gray-700 font-semibold text-center py-4 px-2 align-middle">
                                             {user?.username}
                                         </div>
-                                        <div className="col-span-2 md:col-span-1 text-2xl text-gray-700 font-semibold text-center py-4 px-2 align-middle">
+                                        <div className="col-span-2 md:col-span-1 text-lg text-gray-700 font-semibold text-center py-4 px-2 align-middle">
                                             {user?.discordUser}
                                         </div>
-                                        <div className="col-span-4 md:col-span-1 text-center">
+                                        <div className="col-span-4 md:col-span-2 text-center">
                                             <Link href={`/AdminArea/users/edit/${user?.username}`}>
                                                 <a>
                                                     <button className={`mr-5 my-4 bg-${info?.colors.background?.color} hover:bg-${info?.colors.background?.shadow} text-${info?.colors.text?.shadow} hover:text-${info?.colors.text?.color} font-bold py-2 px-6 rounded-lg`}>
-                                                        Edit
+                                                        Editar
                                                     </button>
                                                 </a>
                                             </Link>

@@ -34,16 +34,12 @@ export default function index({ _id, content, title, link, description, publishD
 
     const handleChangeLink = (value) => {
         value = String(value || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-        value = value.toLowerCase();
-        value = value.split(' ').join('-');
-        value = value.split(':').join('-');
-        value = value.split('?').join('-');
-        value = value.split('/').join('-');
-        value = value.split('!').join('-');
-        value = value.split('"').join('-');
+        let accepted = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890-"
+        value = value.toLowerCase().split("")?.map(letter => accepted.includes(letter) ? letter : "-").join("");
         while (value.includes('--')) {
             value = value.split('--').join('-');
         }
+        value = value.split("")?.map((letter, i) => ((letter === "-" && i === 0) || (letter === "-" && i === value.length - 1)) ? "" : letter).join("");
         return value
     }
 
@@ -93,16 +89,16 @@ export default function index({ _id, content, title, link, description, publishD
 
                             <div className="my-4">
                                 <div className={`bg-${info?.colors?.background?.color} p-2 px-4`}>
-                                    <span className={`font-semibold text-${info?.colors?.text?.color}`}>Title</span>
+                                    <span className={`font-semibold text-${info?.colors?.text?.color}`}>Tílulo:</span>
                                 </div>
                                 <div className="p-4 border shadow-md">
-                                    <input value={post?.title} onChange={(e) => setPost({ ...post, title: String(e.target.value), link: handleChangeLink(String(e.target.value)) })} className="shadow w-full appearance-none border border-red rounded py-2 px-3 text-grey-400 mb-3" name="title" id="title" type="text" placeholder="title" />
+                                    <input value={post?.title} onChange={(e) => setPost({ ...post, title: String(e.target.value), link: handleChangeLink(String(e.target.value)) })} className="shadow w-full appearance-none border border-red rounded py-2 px-3 text-grey-400 mb-3" name="title" id="title" type="text" placeholder="Título" />
                                     <div>
-                                        {post?.title?.length < 10 || post?.title?.length > 60 ?
+                                        {/* {post?.title?.length < 10 || post?.title?.length > 60 ?
                                             <>
                                                 <span className="text-sm text-yellow-500">We recommend a title with more than 10 chacteres and less than 60.</span><br />
                                             </>
-                                            : ""}
+                                            : ""} */}
                                     </div>
                                 </div>
                             </div>
@@ -111,7 +107,7 @@ export default function index({ _id, content, title, link, description, publishD
 
                             <div className="my-4">
                                 <div className={`bg-${info?.colors?.background?.color} p-2 px-4`}>
-                                    <span className={`font-semibold text-${info?.colors?.text?.color}`}>Link</span>
+                                    <span className={`font-semibold text-${info?.colors?.text?.color}`}>Link:</span>
                                 </div>
                                 <div className="p-4 border shadow-md">
                                     <input value={post?.link} onChange={(e) => setPost({ ...post, link: handleChangeLink(String(e.target.value)) })} className="shadow w-full appearance-none border border-red rounded py-2 px-3 text-grey-400 mb-3" name="link" id="link" type="text" placeholder="link" />
@@ -127,17 +123,19 @@ export default function index({ _id, content, title, link, description, publishD
                                             Editor
                                     </button>
                                     </div>
-                                    <div className="col-span-1 text-center post">
+                                    <div className=" col-span-1 text-center post">
                                         <button type="button" onClick={() => setEditorTab(1)} className={(editorTab === 1 ? `bg-${info?.colors?.background?.shadow} ` : "") + `py-4 text-${info?.colors?.text?.color} font-semibold w-full`}>
-                                            Preview
+                                            Pré-visualização
                                 </button>
                                     </div>
                                 </div>
                                 <div>
-                                    <div className={(editorTab === 0 ? "hidden" : "") + " border shadow-lg p-4"} dangerouslySetInnerHTML={{ __html: Content }} style={{ "maxHeight": "850px", "height": "100%", "overflow": "auto" }}>
+                                    <div className={(editorTab === 0 ? "hidden" : "") + " border shadow-lg p-4"} style={{ "maxHeight": "850px", "height": "100%", "overflow": "auto" }}>
+                                        <div className="sun-editor-editable" dangerouslySetInnerHTML={{ __html: Content }}>
 
+                                        </div>
                                     </div>
-                                    <div className={(editorTab === 1 ? "hidden" : "")} style={{ "maxHeight": "850px", "height": "100%", "overflow": "auto" }}>
+                                    <div className={(editorTab === 1 ? "hidden" : "")}>
                                         <Editor content={content} setContent={c => setContent(c)} />
                                     </div>
                                 </div>
@@ -148,22 +146,22 @@ export default function index({ _id, content, title, link, description, publishD
                         <div className="col-span-3 lg:col-span-1 py-6">
                             <div className="my-4">
                                 <div className={`bg-${info?.colors?.background?.color} p-2 px-4`}>
-                                    <span className={`font-semibold text-${info?.colors?.text?.color}`}>Description</span>
+                                    <span className={`font-semibold text-${info?.colors?.text?.color}`}>Descrição:</span>
                                 </div>
                                 <div className="p-4  border shadow-md">
                                     <textarea style={{ width: "100%" }} defaultValue={description} onChange={e => setPost({ ...post, description: e.target.value })} className="shadow w-full appearance-none border border-red rounded py-2 px-3 text-grey-400 mb-3" name="description" id="autoresizing" placeholder="Description"></textarea>
                                     <div>
-                                        {post?.description?.length < 100 || post?.description?.length > 320 ?
+                                        {/* {post?.description?.length < 100 || post?.description?.length > 320 ?
                                             <>
                                                 <span className="text-sm text-yellow-500">We recommend a description with more than 100 chacteres and less than 320.</span><br />
                                             </>
-                                            : ""}
+                                            : ""} */}
                                     </div>
                                 </div>
                             </div>
                             <div className="my-4">
                                 <div className={`bg-${info?.colors?.background?.color} p-2 px-4`}>
-                                    <span className={`font-semibold text-${info?.colors?.text?.color}`}>Publish Date</span>
+                                    <span className={`font-semibold text-${info?.colors?.text?.color}`}>Data de publicação:</span>
                                 </div>
                                 <div className="p-4  border shadow-md">
                                     <input onChange={e => setPost({ ...post, publishDate: new Date(e.target.value) })} value={(new Date(post?.publishDate)).toISOString().substr(0, 10)} className="shadow w-full appearance-none border border-red rounded py-2 px-3 text-grey-400 mb-3" name="publishDate" type="date" id="publishDate" placeholder="Publish Date" />
@@ -171,7 +169,7 @@ export default function index({ _id, content, title, link, description, publishD
                             </div>
                             <div className="my-4">
                                 <div className={`bg-${info?.colors?.background?.color} p-2 px-4`}>
-                                    <span className={`font-semibold text-${info?.colors?.text?.color}`}>Category</span>
+                                    <span className={`font-semibold text-${info?.colors?.text?.color}`}>Categoria:</span>
                                 </div>
                                 <div className="p-4 border shadow-md">
                                     <div className="pb-5">
@@ -190,13 +188,13 @@ export default function index({ _id, content, title, link, description, publishD
 
                             <div className="my-4 shadow-md">
                                 <div className={`bg-${info?.colors?.background?.color} p-2 px-4`}>
-                                    <span className={`font-semibold text-${info?.colors?.text?.color}`}>Image</span>
+                                    <span className={`font-semibold text-${info?.colors?.text?.color}`}>Banner:</span>
                                 </div>
                                 <div className="p-4">
                                     <label aria-label="Banner">
                                         <input className="hidden" onChange={e => setImageFile({ preview: e.target.files[0] ? URL.createObjectURL(e.target.files[0]) : undefined, file: e.target.files[0] })} type="file" id="file" name="icon" accept="image/x-png,image/jpeg,image/webp" />
                                         <div className="pb-4">
-                                            <span className={`bg-${info?.colors?.background?.color} mt-4 hover:bg-${info?.colors?.background?.shadow} rounded px-4 py-2 text-${info?.colors?.text?.shadow} hover:text-${info?.colors?.text?.color} font-semibold`}>Choose Banner</span>
+                                            <span className={`bg-${info?.colors?.background?.color} mt-4 hover:bg-${info?.colors?.background?.shadow} rounded px-4 py-2 text-${info?.colors?.text?.shadow} hover:text-${info?.colors?.text?.color} font-semibold`}>Escolher Banner</span>
                                         </div>
 
                                         <div style={{ maxWidth: "25em" }} className={`w-full h-44 p-4 bg-${info?.colors?.background?.color} shadow-lg border border-${info?.colors?.background?.shadow}`}>
@@ -214,13 +212,11 @@ export default function index({ _id, content, title, link, description, publishD
                         </div>
                         <div className="col-span-3 text-center">
                             <hr />
-                            <input type="submit" className={`my-6 bg-${info?.colors?.background?.color} hover:bg-${info?.colors?.background?.color} text-${info?.colors?.text?.color} hover:text-${info?.colors?.text?.shadow} px-6 py-2 font-semibold`} value={_id ? "Update Post" : "Create Post"} />
+                            <input type="submit" className={`my-6 bg-${info?.colors?.background?.color} hover:bg-${info?.colors?.background?.color} text-${info?.colors?.text?.color} hover:text-${info?.colors?.text?.shadow} px-6 py-2 font-semibold`} value={_id ? "Atualizar post" : "Criar post"} />
                         </div>
                     </div>
                 </form>
             </div>
-
-            <script src="/javascript/summernote/summernote.js"></script>
         </>
     )
 }

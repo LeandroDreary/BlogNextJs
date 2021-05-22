@@ -152,7 +152,7 @@ function Blog({ post, recommend, info, author, categories }) {
                         {
                             (post === null) ?
                                 (<h3 className="p-16 text-center text-xl">Página sem conteúdo.</h3>) :
-                                (<div className="post" dangerouslySetInnerHTML={{ __html: post?.content }}></div>)
+                                (<div className="post sun-editor-editable" dangerouslySetInnerHTML={{ __html: post?.content }}></div>)
                         }
 
 

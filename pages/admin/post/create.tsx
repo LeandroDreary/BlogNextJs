@@ -42,14 +42,14 @@ const Index = ({ info, user }) => {
     return (
         <>
             <Head>
-                <title>Create post</title>
+                <title>Novo post</title>
             </Head>
 
             <Navbar info={info} user={user} />
             <div className="container mx-auto">
                 <div>
                     <button onClick={() => Router.push('/admin/post')} className={`mr-5 bg-${info?.colors?.background?.color} hover:bg-${info?.colors?.background?.shadow} text-${info?.colors?.text?.shadow} hover:text-${info?.colors?.text?.color} m-4 font-bold py-2 px-6 rounded-lg`}>
-                        Back
+                        Voltar
                     </button>
                 </div>
                 <hr />
