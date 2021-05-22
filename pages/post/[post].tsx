@@ -38,7 +38,7 @@ export async function getStaticProps(context) {
 
     try {
         let perPage = 4
-        let posts = await Post.aggregate([{ $sample: { size: perPage + 1 } }])
+        let posts = await Post.aggregate([{ $sample: { size: perPage + 1 } }, { $match: { publishDate: { $lte: new Date() } } }])
         posts = posts.filter(p => context.params.post !== p.link).filter((p, i) => i < perPage)
         recommend = posts.map(p => { return { image: p.image, link: p.link, title: p.title, description: p.description } })
     } catch (e) { }

@@ -27,7 +27,6 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
     }
 
     if (bcrypt.compareSync(`${process.env.ADMINPASSWORD}_${process.env.ADMINUSERNAME}`, auth)) {
-
         return {
             redirect: {
                 destination: '/AdminArea',
@@ -40,7 +39,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
         return {
             props: {
                 warnings,
-                inputs: { username:username || "" }
+                inputs: { username: username || "" }
             }
         }
     }
