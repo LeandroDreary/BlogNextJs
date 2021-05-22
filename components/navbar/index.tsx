@@ -13,7 +13,6 @@ interface MyProps {
 
 interface MyState {
     info: any,
-    search: string,
     categories: {
         name: string,
         color: string
@@ -22,14 +21,18 @@ interface MyState {
 }
 
 class Login extends React.Component<MyProps, MyState> {
+    search: React.RefObject<HTMLInputElement>;
+
     constructor(props: any) {
         super(props);
-        this.state = { ...props, search: "", menuClass: "hidden", categories: [{ name: "", color: "" }] }
+        this.state = { ...props, menuClass: "hidden", categories: [{ name: "", color: "" }] }
+        this.search = React.createRef<HTMLInputElement>();
     }
 
     componentDidUpdate() {
         if (this.state.info !== this.props.info)
-            this.setState({ ...this.props, menuClass: this.state.menuClass, search: "" })
+            this.setState({ ...this.props, menuClass: this.state.menuClass })
+        this.search.current.value = String(Router.query.q || "")
     }
 
     render() {
@@ -74,13 +77,11 @@ class Login extends React.Component<MyProps, MyState> {
                     <form onSubmit={e => {
                         e.preventDefault(); Router.push({
                             pathname: '/search',
-                            search: `?q=${this.state.search}`
+                            search: this.search.current?.value ? `?q=${this.search.current?.value}` : ""
                         })
                     }} className={`relative mx-auto text-${this.state?.info?.colors?.text?.color || "white"} font-semibold lg:block hidden`}>
                         <label aria-label="search">
-                            <input defaultValue={process.browser ? Router.query.q : ""}
-                                onChange={e => this.setState({ ...this.props, menuClass: this.state.menuClass, search: e.target.value })}
-                                className={`placeholder-${this.state?.info?.colors?.text?.shadow || "white"} font-semibold border-2 border-${this.state?.info?.colors?.text?.color || "white"} bg-${this.state?.info?.colors?.background?.color || "gray-500"} h-10 pl-2 pr-8 rounded-lg text-sm focus:outline-none`}
+                            <input ref={this.search} className={`placeholder-${this.state?.info?.colors?.text?.shadow || "white"} font-semibold border-2 border-${this.state?.info?.colors?.text?.color || "white"} bg-${this.state?.info?.colors?.background?.color || "gray-500"} h-10 pl-2 pr-8 rounded-lg text-sm focus:outline-none`}
                                 type="text" name="search" id="search" placeholder="Procurar" />
                         </label>
                         <button type="submit" aria-label="submit" className={`text-${this.state?.info?.colors?.text?.color || "white"} absolute right-0 top-0 mt-3 mr-2`}>

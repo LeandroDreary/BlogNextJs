@@ -49,6 +49,7 @@ const Index = ({ info, user }) => {
         setLoading(true)
         Api.get(`/api/post/list?authorFilter=true&select=title%20description%20image%20link&${`page=${page || filters.page || 1}&`
             }${`perPage=${perPage || filters.perPage || 12}&`
+            }${`authenticate=true&`
             }${(q || filters.search) ? `search=${q || filters.search || ""}` : ""
             }`, { withCredentials: true }
         ).then(response => {

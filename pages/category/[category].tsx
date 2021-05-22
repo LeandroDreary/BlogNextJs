@@ -55,7 +55,7 @@ const Index = ({ posts, category, info, categories }) => {
     return (
         <div>
             <Head>
-                <title>{posts === undefined ? "Carregando" : category?.name || "Not Found"}</title>
+                <title>{posts === undefined ? "Carregando..." : category?.name || "Não encontrado"}{info === undefined ? "" : " - " + (info?.websiteName || "")}</title>
             </Head>
             <Navbar categories={categories} info={info} />
             <div className="container mx-auto">

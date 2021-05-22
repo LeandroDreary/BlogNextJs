@@ -1,5 +1,6 @@
 import Cookies from 'cookies'
 import HandleAuth from '../../../services/auth';
+import bcrypt from 'bcryptjs'
 import DbConnect, { Post, Category, User } from "./../../../database/connection"
 
 interface postListParams {
@@ -10,19 +11,17 @@ interface postListParams {
     category?: any,
     ne?: any,
     random?: any,
-    authorFilter?: any,
+    author?: any,
     UA?: any,
     beforeDate?: Date;
     afterDate?: Date;
 }
 
 export const listPosts = async (params: postListParams) => {
-    let { perPage, page, search, select, category, ne, random, authorFilter, beforeDate, afterDate, UA } = params
+    let { perPage, page, search, select, category, ne, random, author, beforeDate, afterDate, UA } = params
     const rgx = (pattern) => (new RegExp(`.*${pattern}.*`));
-
     perPage = Number(perPage)
     page = Number(page)
-    authorFilter = Boolean(authorFilter) || false
 
     if (random) {
         let posts = await Post.aggregate([{ $sample: { size: perPage + 1 } }, { $match: { publishDate: { $lte: new Date() } } }])
@@ -33,32 +32,27 @@ export const listPosts = async (params: postListParams) => {
     } else {
         let objFind = {}
 
-        if (beforeDate !== undefined)
+        if (beforeDate)
             objFind = { ...objFind, publishDate: { $lte: beforeDate } }
 
-        if (afterDate !== undefined)
+        if (afterDate < beforeDate && afterDate)
             objFind = { ...objFind, publishDate: { $gte: afterDate } }
 
-        if (ne !== undefined)
+        if (ne)
             objFind = { ...objFind, link: { $ne: ne } }
 
-        console.log(search)
-        if (search !== undefined)
+        if (search)
             objFind = {
-                ...objFind, $and: {
-                    $or: [{ title: { $regex: rgx(search), $options: "i" } },
-                    { description: { $regex: rgx(search), $options: "i" } }
-                    ]
-                }
+                ...objFind,
+                $or: [{ title: { $regex: rgx(search), $options: "i" } },
+                { description: { $regex: rgx(search), $options: "i" } }]
             }
 
-        if (category !== undefined)
+        if (category)
             objFind = { ...objFind, category: category }
 
-        if (authorFilter !== undefined) {
-            authorFilter = await User.findOne({ _id: UA?._id }).exec() || false
-            objFind = authorFilter ? { ...objFind, author: authorFilter?._id } : objFind
-        }
+        if (author)
+            objFind = author ? { ...objFind, author: author } : objFind
 
         let posts: any = await Post.find(
             objFind,
@@ -87,10 +81,26 @@ async function handler(req, res) {
 
     const cookies = new Cookies(req, res)
     let UA = await HandleAuth(cookies.get("auth"))
+    let UAADMIN = bcrypt.compareSync(`${process.env.ADMINPASSWORD}_${process.env.ADMINUSERNAME}`, (cookies.get('AdminAreaAuth') || ""))
 
-    let { perPage, page, search, select, category, ne, random, authorFilter, beforeDate, afterDate } = req.query
+    let { perPage, page, search, select, category, ne, random, author, beforeDate, afterDate, authenticate } = req.query
 
-    res.status(200).json(await listPosts({ perPage, page, search, select, category, ne, random, authorFilter, UA, beforeDate, afterDate }))
+    if (!authenticate) {
+        beforeDate = (new Date(beforeDate) > new Date()) || !beforeDate ? new Date() : new Date(beforeDate)
+        afterDate = (new Date(afterDate) > new Date()) || !afterDate ? new Date() : new Date(afterDate)
+    } else {
+        if (UA?._id) {
+            author = UA?._id
+        } else if (!UAADMIN) {
+            author = ''
+            beforeDate = (new Date(beforeDate) > new Date()) || !beforeDate ? new Date() : new Date(beforeDate)
+            afterDate = (new Date(afterDate) > new Date()) || !afterDate ? new Date() : new Date(afterDate)
+        }
+    }
+    category = await Category.findOne({ name: category }).exec()
+    category = category?._id || ""
+
+    res.status(200).json(await listPosts({ perPage, page, search, select, category, ne, random, author, UA, beforeDate, afterDate }))
 }
 
 

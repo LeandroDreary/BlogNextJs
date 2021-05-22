@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import Head from 'next/head'
 import Navbar from '../../components/navbar'
 import Link from 'next/link'
@@ -32,8 +32,11 @@ export async function getStaticProps() {
     }
 }
 
-const Index = ({ info, categories }: { info: any, categories }) => {
+const Index = ({ info, categories }) => {
+
     const Router = useRouter()
+
+    const search = useRef<HTMLInputElement>()
 
     const [posts, setPosts] = useState<{ link: string, image: string, title: string, description: string }[]>()
 
@@ -41,33 +44,35 @@ const Index = ({ info, categories }: { info: any, categories }) => {
 
     const [loading, setLoading] = useState<boolean>(true)
 
-    const func = () => {
-        setQuery({
-            page: Number(Router.query?.page),
-            perPage: Number(Router.query?.perPage),
-            pages: 0,
-            q: String(Router.query?.q || ""),
-            category: String(Router.query?.category || "")
-        })
-    }
+
+
 
     const LoadQuery = (page?: number, perPage?: number, q?: string, category?: string) => {
         setLoading(true)
-        api.get(`/api/post/list?select=title%20description%20image%20link` +
-            `${perPage || Router.query?.perPage ? "&perPage=" + (perPage || Router.query?.perPage) : "&perPage=12"}` +
-            `${page || Router.query?.page ? "&page=" + (page || Router.query?.page) : "&page=1"}` +
-            `${category || Router.query?.category ? "&category=" + encodeURI((category || Router.query?.category).toString()) : ""}` +
-            `${q || Router.query?.q ? "&search=" + encodeURI(String(q || Router.query?.q)) : ""}`
-        ).then((response) => {
-            setPosts(response.data?.result)
-            setQuery({ ...query, ...response.data })
+
+        let qry = "?select=title%20description%20image%20link"
+        qry += `&perPage=${perPage || Router.query?.perPage || 12}`
+        qry += `&page=${page || Router.query?.page || 1}`
+        qry += `&category=${encodeURI((category || Router.query?.category || "").toString())}`
+        qry += `&search=${encodeURI(String(q || search.current?.value || ""))}`
+
+        api.get(`/api/post/list${qry}`).then(res => {
+            setPosts(res.data?.result)
+            setQuery({ ...query, ...res.data })
             setLoading(false)
         }).catch(() => { setLoading(false) })
     }
 
     useEffect(() => {
-        if (process.browser) {
-            func()
+        if (Router.isReady) {
+            search.current.value = String(Router.query?.q || "")
+            setQuery({
+                page: Number(Router.query?.page),
+                perPage: Number(Router.query?.perPage),
+                pages: 0,
+                q: String(search.current?.value || ""),
+                category: String(Router.query?.category || "")
+            })
             LoadQuery()
         }
     }, [Router])
@@ -87,13 +92,13 @@ const Index = ({ info, categories }: { info: any, categories }) => {
                             search: `${query?.perPage ? "&perPage=" + query?.perPage : ""}` +
                                 `${query?.page ? "&page=" + query?.page : ""}` +
                                 `${query?.category ? "&category=" + encodeURI(query?.category) : ""}` +
-                                `${query?.q ? "&q=" + encodeURI(query?.q) : ""}`
+                                `${search.current?.value ? "&q=" + encodeURI(search.current?.value) : ""}`
                         })
                     }}>
 
                         <div className={`bg-${info?.colors?.background?.color} py-4 px-6 mx-4 rounded-lg shadow-md box-wrapper`}>
                             <div className={`rounded flex items-center w-full p-3 shadow-sm border border-${info?.colors?.text?.color} text-${info?.colors?.text?.color}`}>
-                                <input type="search" defaultValue={Router.query?.q} onChange={e => setQuery({ ...query, q: e.target.value })} placeholder="search" x-model="q" className={`placeholder-${info?.colors?.text?.shadow} font-semibold w-full text-sm outline-none focus:outline-none bg-transparent`} />
+                                <input ref={search} type="search" placeholder="search" x-model="q" className={`placeholder-${info?.colors?.text?.shadow} font-semibold w-full text-sm outline-none focus:outline-none bg-transparent`} />
                                 <button className="outline-none focus:outline-none px-4">
                                     <FaSearch />
                                 </button>
@@ -102,7 +107,7 @@ const Index = ({ info, categories }: { info: any, categories }) => {
                                         <option className={`bg-white text-gray-700`} value="">All</option>
                                         {
                                             categories?.map(category => {
-                                                return <option key={category?._id} className={`bg-white text-gray-700`} value={category?.name || ""}>{category?.name}</option>
+                                                return <option key={`${category?.name + category?.color}`} className={`bg-white text-gray-700`} value={category?.name || ""}>{category?.name}</option>
                                             })
                                         }
                                     </select>
@@ -120,9 +125,9 @@ const Index = ({ info, categories }: { info: any, categories }) => {
 
 
                 {!loading ? posts?.length > 0 ?
-                    <div className="grid grid-cols-4 py-2"> {posts?.map((post, index) => {
+                    <div className="grid grid-cols-4 py-2"> {posts?.map(post => {
                         return (
-                            <Link key={index} href={"/post/" + post?.link}>
+                            <Link key={post.link} href={"/post/" + post?.link}>
                                 <a className="col-span-4 sm:col-span-2 lg:col-span-1 p-4">
                                     <div className="cursor-pointer p-4 border shadow-md h-full rounded-md">
                                         <div className="flex justify-center items-center p-3">
