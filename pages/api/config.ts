@@ -15,8 +15,8 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
         switch (name) {
             case "info":
                 {
-                    let { websiteName, description, keywords, icon, colors } =
-                        { websiteName: fields?.websiteName || "", description: fields?.description || "", keywords: fields?.keywords || "", icon: fields?.icon || "", colors: fields?.colors ? JSON.parse(fields?.colors) : null };
+                    let { websiteName, description, keywords, icon, colors, customLayoutStyles, customLayout } =
+                        { websiteName: fields?.websiteName || "", description: fields?.description || "", keywords: fields?.keywords || "", icon: fields?.icon || "", colors: fields?.colors ? JSON.parse(fields?.colors) : null, customLayoutStyles: fields?.customLayoutStyles || "", customLayout: fields?.customLayout ? JSON.parse(fields?.customLayout) : null };
                     try {
                         if (files?.icon?.path) {
                             let base64string = (await sharp(files.icon?.path).webp().toBuffer()).toString('base64')
@@ -28,7 +28,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
                     } catch (e) {
 
                     }
-                    content = { websiteName, description, keywords, icon, colors }
+                    content = { websiteName, description, keywords, icon, colors, customLayoutStyles, customLayout }
                 }
                 break;
             case "homePageInfo":

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import $ from 'jquery'
 import Head from 'next/head'
 import Cookies from 'cookies'
@@ -8,6 +8,7 @@ import '../../components/LoadClasses'
 import bcrypt from 'bcryptjs'
 import { GetServerSideProps } from 'next'
 import DbConnect, { Config } from '../../database/connection'
+import ReactHtmlParser from 'react-html-parser'
 import FormData from 'form-data'
 
 interface info {
@@ -23,6 +24,19 @@ interface info {
         text: {
             shadow: string,
             color: string
+        }
+    },
+    customLayoutStyles: string,
+    customLayout: {
+        colors: {
+            background: {
+                shadow: string,
+                color: string
+            },
+            text: {
+                shadow: string,
+                color: string
+            }
         }
     }
 }
@@ -94,18 +108,49 @@ const Index = ({ Info, user, HomePageInfo }) => {
         let data = new FormData();
 
         data.append('icon', iconFile?.file || infoInputs?.icon || "");
-        data.append('colors',JSON.stringify(infoInputs?.colors));
+        data.append('colors', JSON.stringify(infoInputs?.colors));
         data.append('description', infoInputs?.description);
         data.append('keywords', infoInputs?.keywords);
         data.append('websiteName', infoInputs?.websiteName);
+        data.append('customLayout', JSON.stringify(infoInputs?.customLayout));
+        data.append('customLayoutStyles', infoInputs?.customLayoutStyles);
         data.append('name', "info");
 
         Api.post('/api/config', data, { withCredentials: true, headers: { 'content-type': 'multipart/form-data' } }).then(res => {
-            setInfo(res.data?.result)
-            setInfoInputs(res.data?.result)
+            setInfo({ ...infoInputs, ...res.data?.result })
+            setInfoInputs({ ...infoInputs, ...res.data?.result })
         })
     }
 
+    useEffect(() => {
+        let customLayoutStyles = `<style>
+        .bg-custom{
+            background-color: ${infoInputs?.customLayout?.colors?.background?.color}
+        }
+         .hover:bg-custom:hover{
+            background-color: ${infoInputs?.customLayout?.colors?.background?.color}
+        }
+            .bg-custom2{
+                background-color: ${infoInputs?.customLayout?.colors?.background?.shadow}
+            }
+            .hover:bg-custom2:hover{
+                background-color: ${infoInputs?.customLayout?.colors?.background?.shadow}
+            }
+            .text-custom{
+                color: ${infoInputs?.customLayout?.colors?.text?.color}
+            }
+             .hover:text-custom:hover{
+                color: ${infoInputs?.customLayout?.colors?.text?.color}
+            }
+            .text-custom2{
+                color: ${infoInputs?.customLayout?.colors?.text?.shadow}
+            }
+             .hover:text-custom:hover{
+                color: ${infoInputs?.customLayout?.colors?.text?.shadow}
+            }
+            </style>`
+        setInfoInputs({ ...infoInputs, customLayoutStyles })
+    }, [infoInputs.customLayout])
 
     const HandleHomePageSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -154,6 +199,16 @@ const Index = ({ Info, user, HomePageInfo }) => {
                                         )
                                     })
                                 }
+                                <label htmlFor="shadow" className="font-semibold text-gray-700 py-4">Customizado: </label><br />
+                                <div className="py-1">
+                                    <div className="inline-flex">
+                                        <input type="radio" id={`custom-BoxColor`} name="boxColor" className={`background-radio bg-custom`} />
+                                        <label onClick={(e) => setInfoInputs({ ...infoInputs, colors: { ...infoInputs?.colors, background: { ...infoInputs?.colors?.background, color: `custom` } } })} className={`bg-custom ring-1 px-1 m-1`} htmlFor={`custom-BoxColor`}></label>
+                                    </div>
+                                    <div className="col-span-1 flex items-center justify-end sm:justify-center">
+                                        <input defaultValue={infoInputs?.customLayout?.colors?.background?.color} onChange={e => setInfoInputs({ ...infoInputs, customLayout: { ...infoInputs?.customLayout, colors: { ...infoInputs?.customLayout?.colors, background: { ...infoInputs?.customLayout?.colors?.background, color: e.target.value } } } })} className="mr-4 sm:mr-0" name={"color_selector_bg_custom"} type="color" />
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -187,6 +242,16 @@ const Index = ({ Info, user, HomePageInfo }) => {
                                         )
                                     })
                                 }
+                                <label htmlFor="shadow" className="font-semibold text-gray-700 py-4">Customizado: </label><br />
+                                <div className="py-1">
+                                    <div className="inline-flex">
+                                        <input type="radio" id={`custom2-ShadowBoxColor`} name="ShadowBoxColor" className={`background-radio bg-custom2`} />
+                                        <label onClick={(e) => setInfoInputs({ ...infoInputs, colors: { ...infoInputs?.colors, background: { ...infoInputs?.colors?.background, shadow: `custom2` } } })} className={`bg-custom2 ring-1 px-1 m-1`} htmlFor={`custom2-ShadowBoxColor`}></label>
+                                    </div>
+                                    <div className="col-span-1 flex items-center justify-end sm:justify-center">
+                                        <input defaultValue={infoInputs?.customLayout?.colors?.background?.shadow} onChange={e => setInfoInputs({ ...infoInputs, customLayout: { ...infoInputs?.customLayout, colors: { ...infoInputs?.customLayout?.colors, background: { ...infoInputs?.customLayout?.colors?.background, shadow: e.target.value } } } })} className="mr-4 sm:mr-0" name={"color_selector_bg_custom2"} type="color" />
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -220,6 +285,16 @@ const Index = ({ Info, user, HomePageInfo }) => {
                                         )
                                     })
                                 }
+                                <label htmlFor="shadow" className="font-semibold text-gray-700 py-4">Customizado: </label><br />
+                                <div className="py-1">
+                                    <div className="inline-flex">
+                                        <input type="radio" id={`custom-textColor`} name="textColor" className={`text-radio text-custom`} />
+                                        <label onClick={(e) => setInfoInputs({ ...infoInputs, colors: { ...infoInputs?.colors, text: { ...infoInputs?.colors?.text, color: `custom` } } })} className={`text-custom ring-1 px-1 m-1`} htmlFor={`custom-textColor`}>Aa</label>
+                                    </div>
+                                    <div className="col-span-1 flex items-center justify-end sm:justify-center">
+                                        <input defaultValue={infoInputs?.customLayout?.colors?.text?.color} onChange={e => setInfoInputs({ ...infoInputs, customLayout: { ...infoInputs?.customLayout, colors: { ...infoInputs?.customLayout?.colors, text: { ...infoInputs?.customLayout?.colors?.background, color: e.target.value } } } })} className="mr-4 sm:mr-0" name={"color_selector_text_custom"} type="color" />
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -244,7 +319,7 @@ const Index = ({ Info, user, HomePageInfo }) => {
                                                         return (
                                                             <div key={`${color}-${intonation}-ShadowTextColor`} className="inline-flex">
                                                                 <input type="radio" id={`${color}-${intonation}-ShadowTextColor`} name="ShadowTextColor" className={`text-radio text-${color}-${intonation}`} />
-                                                                <label onClick={(e) => setInfoInputs({ ...infoInputs, colors: { ...infoInputs?.colors, text: { ...infoInputs?.colors?.text, shadow: `${color}-${intonation}` } } })} className={`text-${color}-${intonation}`} htmlFor={`${color}-${intonation}-ShadowTextColor`}>Aa</label>
+                                                                <label onClick={(e) => setInfoInputs({ ...infoInputs, colors: { ...infoInputs?.colors, text: { ...infoInputs?.colors?.text, shadow: `${color}-${intonation}` } } })} className={`text-${color}-${intonation}`} htmlFor={`custom2-ShadowTextColor`}>Aa</label>
                                                             </div>
                                                         )
                                                     })
@@ -253,6 +328,16 @@ const Index = ({ Info, user, HomePageInfo }) => {
                                         )
                                     })
                                 }
+                                <label htmlFor="shadow" className="font-semibold text-gray-700 py-4">Customizado: </label><br />
+                                <div className="py-1">
+                                    <div className="inline-flex">
+                                        <input type="radio" id={`custom2-ShadowTextColor`} name="ShadowTextColor" className={`text-radio text-custom2`} />
+                                        <label onClick={(e) => setInfoInputs({ ...infoInputs, colors: { ...infoInputs?.colors, text: { ...infoInputs?.colors?.text, shadow: `custom2` } } })} className={`text-custom2 ring-1 px-1 m-1`} htmlFor={`custom2-ShadowTextColor`}>Aa</label>
+                                    </div>
+                                    <div className="col-span-1 flex items-center justify-end sm:justify-center">
+                                        <input defaultValue={infoInputs?.customLayout?.colors?.text?.shadow} onChange={e => setInfoInputs({ ...infoInputs, customLayout: { ...infoInputs?.customLayout, colors: { ...infoInputs?.customLayout?.colors, text: { ...infoInputs?.customLayout?.colors?.text, shadow: e.target.value } } } })} className="mr-4 sm:mr-0" name={"color_selector_text_custom2"} type="color" />
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -262,6 +347,7 @@ const Index = ({ Info, user, HomePageInfo }) => {
             <Head>
                 <title>Configurações</title>
                 <link rel="stylesheet" href="/css/admin/config.css" />
+                {ReactHtmlParser(infoInputs?.customLayoutStyles)}
             </Head>
             <Navbar info={infoInputs} user={user} />
             <div className="container py-4 mx-auto">

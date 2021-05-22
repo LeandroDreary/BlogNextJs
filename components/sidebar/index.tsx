@@ -23,10 +23,10 @@ class Sidebar extends React.Component<MyProps, MyState> {
     render() {
         return (
             <>
-                <div className="w-full my-6 rounded border p-2 shadow-lg">
+                <div className="w-full my-6 rounded border p-3 shadow-lg">
                     <p className="text-2xl font-semibold pb-3 mx-2 text-center text-gray-800">Categorias</p>
                     <hr />
-                    <div className="p-2">
+                    <div className="py-2">
                         {this.props?.categories?.map(category => {
                             return (
                                 <Link key={category.name} href={'/category/' + encodeURI(category.name)}>
@@ -39,6 +39,12 @@ class Sidebar extends React.Component<MyProps, MyState> {
                             )
                         })
                         }
+                    </div>
+                    <hr />
+                    <p className="text-2xl font-semibold pb-3 pt-2 mx-2 text-center text-gray-800">Clube do Jornalzinho - Podcast</p>
+                    <hr />
+                    <div className="py-4 px-2">
+                        <iframe src="https://open.spotify.com/embed/show/4nBsQLdWBRIExO4lINjdxi" width="100%" height="232" frameBorder="0" allowTransparency={true} allow="encrypted-media"></iframe>
                     </div>
                 </div>
             </>

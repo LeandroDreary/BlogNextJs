@@ -143,7 +143,7 @@ const Index = ({ info, categories }) => {
                         )
                     })}
                     </div> : <div className="my-32">
-                        <h2 className="text-center font-semibold text-2xl text-gray-700">Not Found.</h2>
+                        <h2 className="text-center font-semibold text-2xl text-gray-700">Nenhum resultado encontrado.</h2>
                     </div> :
                     <div className="my-32">
                         <img src="https://i.stack.imgur.com/kOnzy.gif" className="w-10 mx-auto" alt="loading" />
