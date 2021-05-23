@@ -73,7 +73,7 @@ const Index = ({ posts, category, info, categories }) => {
                                 Carregando...
                     </div> :
                             posts?.result?.length > 0 ?
-                                posts?.result?.map(post => <Card description={post.description} image={post.image} link={post.link} title={post.title} key={post.link} />) :
+                                posts?.result?.map(post => <Card info={info} description={post.description} image={post.image} link={post.link} title={post.title} key={post.link} />) :
                                 <div className="text-gray-500 flex justify-center items-center h-64">
                                     Sem resultados encontrados.
                                 </div>
