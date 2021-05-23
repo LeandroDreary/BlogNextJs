@@ -73,6 +73,7 @@ const Index = ({ posts, homePageInfo, info, categories }) => {
           <meta name="twitter:creator" content="@" />
 
           {ReactHtmlParser(homePageInfo?.head)}
+          {ReactHtmlParser(info?.customLayoutStyles)}
         </Head>
 
         <Navbar categories={categories} info={info} />

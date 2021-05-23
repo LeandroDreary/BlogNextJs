@@ -7,6 +7,8 @@ import '../../components/LoadClasses'
 import DbConnect, { Category, Config } from "./../../database/connection"
 import { listPosts } from "./../api/post/list"
 import { ListCategories } from '../api/category/list'
+import ReactHtmlParser from 'react-html-parser'
+
 export async function getStaticPaths() {
     return {
         paths: [],
@@ -56,6 +58,7 @@ const Index = ({ posts, category, info, categories }) => {
         <div>
             <Head>
                 <title>{posts === undefined ? "Carregando..." : category?.name || "Não encontrado"}{info === undefined ? "" : " - " + (info?.websiteName || "")}</title>
+                {ReactHtmlParser(info?.customLayoutStyles)}
             </Head>
             <Navbar categories={categories} info={info} />
             <div className="container mx-auto">

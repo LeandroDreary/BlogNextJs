@@ -9,6 +9,7 @@ import '../../components/LoadClasses'
 import Navigation from '../../components/navigation'
 import DbConnect, { Config } from "./../../database/connection"
 import { ListCategories } from '../api/category/list'
+import ReactHtmlParser from 'react-html-parser'
 
 export async function getStaticProps() {
     await DbConnect()
@@ -80,6 +81,8 @@ const Index = ({ info, categories }) => {
     return (
         <>
             <Head>
+                <title>Procurar</title>
+                {ReactHtmlParser(info?.customLayoutStyles)}
             </Head>
             <Navbar categories={categories} info={info} />
             <div className="container mx-auto">

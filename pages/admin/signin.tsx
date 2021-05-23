@@ -70,15 +70,16 @@ const Index = ({ warnings, inputs }) => {
     return (
         <div>
             <Head>
+                Entrar
             </Head>
             <div className="container h-screen flex justify-center items-center mx-auto">
                 {/* <Login /> */}
                 <form method="post" className="bg-white shadow-md rounded px-8 pt-6 pb-8 flex flex-col">
                     <div className="mb-4">
                         <label className="block text-grey-400 text-sm font-bold mb-2" htmlFor="username">
-                            Username
+                            Usuário:
                         </label>
-                        <input className="shadow w-64 appearance-none border rounded py-2 px-3 text-grey-400" defaultValue={inputs.username} type="text" name="username" placeholder="username" />
+                        <input className="shadow w-64 appearance-none border rounded py-2 px-3 text-grey-400" defaultValue={inputs.username} type="text" name="username" placeholder="Usuário" />
                         {
                             warnings.map(warning => {
                                 if (warning.input === "username")
@@ -88,7 +89,7 @@ const Index = ({ warnings, inputs }) => {
                     </div>
                     <div className="mb-6">
                         <label className="block text-grey-400 text-sm font-bold mb-2" htmlFor="password">
-                            Password
+                            Senha:
                         </label>
                         <input className="shadow w-64 appearance-none border border-red rounded py-2 px-3 text-grey-400 mb-3" type="password" name="password" placeholder="*********" />
                         {

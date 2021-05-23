@@ -6,6 +6,7 @@ import '../../components/LoadClasses'
 import { GetServerSideProps } from 'next'
 import bcrypt from 'bcryptjs'
 import DbConnect, { Config } from '../../database/connection'
+import ReactHtmlParser from 'react-html-parser'
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
     await DbConnect()
@@ -38,6 +39,8 @@ const Index = ({ info, user }) => {
     return (
         <>
             <Head>
+                <title>Página Inicial</title>
+                {ReactHtmlParser(info?.customLayoutStyles)}
             </Head>
             <Navbar info={info} user={user} />
             <div className="container">

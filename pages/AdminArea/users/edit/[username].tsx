@@ -7,6 +7,7 @@ import Navbar from '../../../../components/navbar_admin_area'
 import DbConnect, { Config, UserI } from "../../../../database/connection"
 import Link from 'next/link'
 import Router from 'next/router'
+import ReactHtmlParser from 'react-html-parser'
 
 export async function getStaticPaths() {
     return {
@@ -62,10 +63,8 @@ function Blog({ info, username }) {
     return (
         <>
             <Head>
-                <title>Edit User - {username?.title}</title>
-                <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"></script>
-                <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
-                <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet" />
+                <title>Editar usuário - {username?.title}</title>
+                {ReactHtmlParser(info?.customLayoutStyles)}
             </Head>
             <Navbar info={info} user={user} />
             <div className="container mx-auto">

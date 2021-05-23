@@ -8,6 +8,7 @@ import { GetServerSideProps } from 'next'
 import '../../../components/LoadClasses'
 import HandleAuth from '../../../services/auth'
 import DbConnect, { Config } from '../../../database/connection'
+import ReactHtmlParser from 'react-html-parser'
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
     await DbConnect()
@@ -43,6 +44,7 @@ const Index = ({ info, user }) => {
         <>
             <Head>
                 <title>Novo post</title>
+                {ReactHtmlParser(info?.customLayoutStyles)}
             </Head>
 
             <Navbar info={info} user={user} />

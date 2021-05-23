@@ -6,6 +6,7 @@ import Link from 'next/link'
 import '../../components/LoadClasses'
 import DbConnect, { Category, Config, Post, User } from "./../../database/connection"
 import { ListCategories } from '../api/category/list'
+import ReactHtmlParser from 'react-html-parser'
 
 export async function getStaticPaths() {
     return {
@@ -91,6 +92,7 @@ function Blog({ post, recommend, info, author, categories }) {
                 <meta name="twitter:title" content={`${post?.title} - ${info?.websiteName}`} />
                 <meta name="twitter:site" content="@" />
                 <meta name="twitter:creator" content="@" />
+                {ReactHtmlParser(info?.customLayoutStyles)}
             </Head>
             <Navbar categories={categories} info={info} />
             <div className="col-span-3 w-full mx-auto relative" style={{ height: "24em" }}>

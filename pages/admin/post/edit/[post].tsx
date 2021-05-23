@@ -7,7 +7,7 @@ import { GetStaticProps } from 'next'
 import '../../../../components/LoadClasses'
 import Navbar from '../../../../components/navbar_admin'
 import DbConnect, { Config } from "./../../../../database/connection"
-
+import ReactHtmlParser from 'react-html-parser'
 
 export async function getStaticPaths() {
     return {
@@ -48,6 +48,7 @@ function Blog({ info, link }) {
         <>
             <Head>
                 <title>Editar post - {post?.title}</title>
+                {ReactHtmlParser(info?.customLayoutStyles)}
             </Head>
             <Navbar info={info} user={user} />
             <div className="container mx-auto">

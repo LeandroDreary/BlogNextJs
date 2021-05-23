@@ -10,6 +10,7 @@ import Navigation from '../../../components/navigation'
 import Link from 'next/link';
 import DbConnect, { Config } from '../../../database/connection'
 import { FaSearch } from 'react-icons/fa'
+import ReactHtmlParser from 'react-html-parser'
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
     await DbConnect()
@@ -61,6 +62,8 @@ const Index = ({ info, user }) => {
     return (
         <>
             <Head>
+                Usuários
+                {ReactHtmlParser(info?.customLayoutStyles)}
             </Head>
             <Navbar info={info} user={user} />
             <div className="container mx-auto">

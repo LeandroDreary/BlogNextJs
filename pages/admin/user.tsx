@@ -8,6 +8,7 @@ import HandleAuth from '../../services/auth'
 import DbConnect, { Config } from '../../database/connection'
 import Api from './../../services/api'
 import FormData from 'form-data'
+import ReactHtmlParser from 'react-html-parser'
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
     await DbConnect()
@@ -73,6 +74,8 @@ const Index = ({ info, User }) => {
     return (
         <>
             <Head>
+                <title>Usuário</title>
+                {ReactHtmlParser(info?.customLayoutStyles)}
             </Head>
             <Navbar info={info} user={user} />
             <div className="container mx-auto px-3 md:px-0">

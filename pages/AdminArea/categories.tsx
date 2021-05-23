@@ -10,6 +10,7 @@ import Navigation from '../../components/navigation'
 import { GetServerSideProps } from 'next'
 import bcrypt from 'bcryptjs'
 import DbConnect, { Config } from '../../database/connection'
+import ReactHtmlParser from 'react-html-parser'
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
     await DbConnect()
@@ -176,7 +177,8 @@ const Index = ({ info, user }) => {
                     : ""
             }
             <Head>
-                <title>Categories</title>
+                <title>Categorias</title>
+                {ReactHtmlParser(info?.customLayoutStyles)}
             </Head>
             <Navbar info={info} user={user} />
             <div className="container mx-auto">

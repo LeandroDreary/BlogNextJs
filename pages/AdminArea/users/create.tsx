@@ -8,6 +8,7 @@ import { GetServerSideProps } from 'next'
 import bcrypt from 'bcryptjs'
 import DbConnect, { Config, User } from '../../../database/connection'
 import Link from 'next/link'
+import ReactHtmlParser from 'react-html-parser'
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
     await DbConnect()
@@ -66,6 +67,8 @@ const Index = ({ info, user, warnings, inputs }) => {
     return (
         <>
             <Head>
+                <title>Novo usuário</title>
+                {ReactHtmlParser(info?.customLayoutStyles)}
             </Head>
             <Navbar info={info} user={user} />
             <div className="container mx-auto">
