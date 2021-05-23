@@ -124,31 +124,31 @@ const Index = ({ Info, user, HomePageInfo }) => {
 
     useEffect(() => {
         let customLayoutStyles = `<style>
-        .bg-custom{
-            background-color: ${infoInputs?.customLayout?.colors?.background?.color}
-        }
-         .hover:bg-custom:hover{
-            background-color: ${infoInputs?.customLayout?.colors?.background?.color}
-        }
-            .bg-custom2{
-                background-color: ${infoInputs?.customLayout?.colors?.background?.shadow}
-            }
-            .hover:bg-custom2:hover{
-                background-color: ${infoInputs?.customLayout?.colors?.background?.shadow}
-            }
-            .text-custom{
-                color: ${infoInputs?.customLayout?.colors?.text?.color}
-            }
-             .hover:text-custom:hover{
-                color: ${infoInputs?.customLayout?.colors?.text?.color}
-            }
-            .text-custom2{
-                color: ${infoInputs?.customLayout?.colors?.text?.shadow}
-            }
-             .hover:text-custom:hover{
-                color: ${infoInputs?.customLayout?.colors?.text?.shadow}
-            }
-            </style>`
+    .bg-custom{
+        background-color: ${infoInputs?.customLayout?.colors?.background?.color} !important;
+    }
+    .bg-custom-h:hover{
+        background-color:${infoInputs?.customLayout?.colors?.background?.color} !important;
+    }
+    .bg-custom2{
+        background-color:${infoInputs?.customLayout?.colors?.background?.shadow} !important;
+    }
+    .bg-custom2-h:hover{
+        background-color:${infoInputs?.customLayout?.colors?.background?.shadow} !important;
+    }
+    .text-custom{
+        color:${infoInputs?.customLayout?.colors?.text?.color} !important;
+    }
+    .text-custom-h:hover{
+        color:${infoInputs?.customLayout?.colors?.text?.color} !important;
+    }
+    .text-custom2{
+        color:${infoInputs?.customLayout?.colors?.text?.shadow} !important;
+    }
+    .text-custom2-h:hover{
+        color:${infoInputs?.customLayout?.colors?.text?.shadow} !important;
+    }
+</style>`
         setInfoInputs({ ...infoInputs, customLayoutStyles })
     }, [infoInputs.customLayout])
 
@@ -376,7 +376,7 @@ const Index = ({ Info, user, HomePageInfo }) => {
                                 <label aria-label="icon">
                                     <input className="hidden" onChange={e => { setIconFile({ file: e.target.files[0], preview: e.target.files[0] ? URL.createObjectURL(e.target.files[0]) : undefined }); setInfoInputs({ ...infoInputs, icon: "" }) }} type="file" id="file" name="icon" accept="image/x-png,image/jpeg" />
                                     <div className="pb-4">
-                                        <span className={`bg-${infoInputs?.colors?.background?.color} mt-4 hover:bg-${infoInputs?.colors?.background?.shadow} rounded px-4 py-2 text-${infoInputs?.colors?.text?.shadow} hover:text-${infoInputs?.colors?.text?.color} font-semibold`}>Escolher Ícone</span>
+                                        <span className={`bg-${infoInputs?.colors?.background?.color} mt-4 hover:bg-${infoInputs?.colors?.background?.shadow} bg-custom2-h rounded px-4 py-2 text-${infoInputs?.colors?.text?.shadow} hover:text-${infoInputs?.colors?.text?.color} text-custom2-h font-semibold`}>Escolher Ícone</span>
                                     </div>
 
                                     <div style={{ maxWidth: "17em" }} className={`w-full mx-auto md:ml-0 h-36 p-4 bg-${infoInputs?.colors?.background?.color} shadow-lg border border-${infoInputs?.colors?.background?.shadow}`}>
@@ -395,25 +395,25 @@ const Index = ({ Info, user, HomePageInfo }) => {
                             <div className="py-1">
                                 <label htmlFor="websiteName" className="font-semibold text-gray-700">Cor de fundo 1: </label><br />
                                 <div className="flex items-center justify-center md:justify-start">
-                                    <button type="button" className={`px-4 py-2 bg-${infoInputs?.colors?.background?.color || "gray-500"} hover:bg-${infoInputs?.colors?.background?.shadow || "gray-700"} inline-flex text-${infoInputs?.colors?.text?.color || "white"} hover:text-${infoInputs?.colors?.text?.shadow || "gray-100"} my-2 font-semibold`} onClick={() => setBackgroundColorPopup(true)}>Select Color</button><div className={"w-8 h-8 m-2 bg-" + (infoInputs?.colors?.background?.color || "gray-500")}></div>
+                                    <button type="button" className={`px-4 py-2 bg-${infoInputs?.colors?.background?.color || "gray-500"} hover:bg-${infoInputs?.colors?.background?.shadow || "gray-700"} bg-custom2-h inline-flex text-${infoInputs?.colors?.text?.color || "white"} hover:text-${infoInputs?.colors?.text?.shadow || "gray-100"} my-2 font-semibold`} onClick={() => setBackgroundColorPopup(true)}>Select Color</button><div className={"w-8 h-8 m-2 bg-" + (infoInputs?.colors?.background?.color || "gray-500")}></div>
                                 </div>
                             </div>
                             <div className="py-1 pt-5 md:pt-0">
                                 <label htmlFor="websiteName" className="font-semibold text-gray-700">Cor de fundo 2: </label><br />
                                 <div className="flex items-center justify-center md:justify-start">
-                                    <button type="button" className={`px-4 py-2 bg-${infoInputs?.colors?.background?.color || "gray-500"} hover:bg-${infoInputs?.colors?.background?.shadow || "gray-700"} inline-flex text-${infoInputs?.colors?.text?.color || "white"} hover:text-${infoInputs?.colors?.text?.shadow || "gray-100"} my-2 font-semibold`} onClick={() => setBackgroundShadowPopup(true)}>Select Color</button><div className={"w-8 h-8 m-2 bg-" + (infoInputs?.colors?.background?.shadow || "gray-700")}></div>
+                                    <button type="button" className={`px-4 py-2 bg-${infoInputs?.colors?.background?.color || "gray-500"} hover:bg-${infoInputs?.colors?.background?.shadow || "gray-700"} bg-custom2-h inline-flex text-${infoInputs?.colors?.text?.color || "white"} hover:text-${infoInputs?.colors?.text?.shadow || "gray-100"} my-2 font-semibold`} onClick={() => setBackgroundShadowPopup(true)}>Select Color</button><div className={"w-8 h-8 m-2 bg-" + (infoInputs?.colors?.background?.shadow || "gray-700")}></div>
                                 </div>
                             </div>
                             <div className="py-1 pt-5 md:pt-0">
                                 <label htmlFor="websiteName" className="font-semibold text-gray-700">Cor de texto 1: </label><br />
                                 <div className="flex items-center justify-center md:justify-start">
-                                    <button type="button" className={`px-4 py-2 bg-${infoInputs?.colors?.background?.color || "gray-500"} hover:bg-${infoInputs?.colors?.background?.shadow || "gray-700"} inline-flex text-${infoInputs?.colors?.text?.color || "white"} hover:text-${infoInputs?.colors?.text?.shadow || "gray-100"} my-2 font-semibold`} onClick={() => setTextColorPopup(true)}>Select Color</button><div className={"text-2xl m-2 text-" + (infoInputs?.colors?.text?.color || "gray-500")}>Aa</div>
+                                    <button type="button" className={`px-4 py-2 bg-${infoInputs?.colors?.background?.color || "gray-500"} hover:bg-${infoInputs?.colors?.background?.shadow || "gray-700"} bg-custom2-h inline-flex text-${infoInputs?.colors?.text?.color || "white"} hover:text-${infoInputs?.colors?.text?.shadow || "gray-100"} my-2 font-semibold`} onClick={() => setTextColorPopup(true)}>Select Color</button><div className={"text-2xl m-2 text-" + (infoInputs?.colors?.text?.color || "gray-500")}>Aa</div>
                                 </div>
                             </div>
                             <div className="py-1 pt-5 md:pt-0">
                                 <label htmlFor="websiteName" className="font-semibold text-gray-700">Cor de texto 2: </label><br />
                                 <div className="flex items-center justify-center md:justify-start">
-                                    <button type="button" className={`px-4 py-2 bg-${infoInputs?.colors?.background?.color || "gray-500"} hover:bg-${infoInputs?.colors?.background?.shadow || "gray-700"} inline-flex text-${infoInputs?.colors?.text?.color || "white"} hover:text-${infoInputs?.colors?.text?.shadow || "gray-100"} my-2 font-semibold`} onClick={() => setTextShadowPopup(true)}>Select Color</button><div className={"text-2xl m-2 text-" + (infoInputs?.colors?.text?.shadow || "gray-700")}>Aa</div>
+                                    <button type="button" className={`px-4 py-2 bg-${infoInputs?.colors?.background?.color || "gray-500"} hover:bg-${infoInputs?.colors?.background?.shadow || "gray-700"} bg-custom2-h inline-flex text-${infoInputs?.colors?.text?.color || "white"} hover:text-${infoInputs?.colors?.text?.shadow || "gray-100"} my-2 font-semibold`} onClick={() => setTextShadowPopup(true)}>Select Color</button><div className={"text-2xl m-2 text-" + (infoInputs?.colors?.text?.shadow || "gray-700")}>Aa</div>
                                 </div>
                             </div>
                         </div>
@@ -423,7 +423,7 @@ const Index = ({ Info, user, HomePageInfo }) => {
                                 info === infoInputs ?
                                     <button className="bg-gray-100 mt-4 hover:bg-gray-200 rounded px-4 py-2 text-gray-900 font-semibold" type="button">Salvar</button>
                                     :
-                                    <button className={`bg-${infoInputs?.colors?.background?.color} mt-4 hover:bg-${infoInputs?.colors?.background?.shadow} rounded px-4 py-2 text-${infoInputs?.colors?.text?.shadow} hover:text-${infoInputs?.colors?.text?.color} font-semibold`} type="submit">Salvar</button>
+                                    <button className={`bg-${infoInputs?.colors?.background?.color} mt-4 hover:bg-${infoInputs?.colors?.background?.shadow} bg-custom2-h rounded px-4 py-2 text-${infoInputs?.colors?.text?.shadow} hover:text-${infoInputs?.colors?.text?.color} text-custom2-h font-semibold`} type="submit">Salvar</button>
                             }
                         </div>
                     </div>
@@ -454,7 +454,7 @@ const Index = ({ Info, user, HomePageInfo }) => {
                                 <label aria-label="Banner">
                                     <input className="hidden" onChange={e => { setBannerFile({ file: e.target.files[0], preview: e.target.files[0] ? URL.createObjectURL(e.target.files[0]) : undefined }); setHomePageInfoInputs({ ...homePageInfoInputs, banner: "" }) }} type="file" id="file" name="icon" accept="image/x-png,image/jpeg" />
                                     <div className="pb-4">
-                                        <span className={`bg-${infoInputs?.colors?.background?.color} mt-4 hover:bg-${infoInputs?.colors?.background?.shadow} rounded px-4 py-2 text-${infoInputs?.colors?.text?.shadow} hover:text-${infoInputs?.colors?.text?.color} font-semibold`}>Escolher Banner</span>
+                                        <span className={`bg-${infoInputs?.colors?.background?.color} mt-4 hover:bg-${infoInputs?.colors?.background?.shadow} bg-custom2-h rounded px-4 py-2 text-${infoInputs?.colors?.text?.shadow} hover:text-${infoInputs?.colors?.text?.color} text-custom2-h font-semibold`}>Escolher Banner</span>
                                     </div>
 
                                     <div style={{ maxWidth: "25em" }} className={`w-full h-44 p-4 bg-${infoInputs?.colors?.background?.color} shadow-lg border border-${infoInputs?.colors?.background?.shadow}`}>
@@ -475,7 +475,7 @@ const Index = ({ Info, user, HomePageInfo }) => {
                                 homePageInfo === homePageInfoInputs ?
                                     <button className="bg-gray-100 mt-4 hover:bg-gray-200 rounded px-4 py-2 text-gray-900 font-semibold" type="button">Salvar</button>
                                     :
-                                    <button className={`bg-${infoInputs?.colors?.background?.color} mt-4 hover:bg-${infoInputs?.colors?.background?.shadow} rounded px-4 py-2 text-${infoInputs?.colors?.text?.shadow} hover:text-${infoInputs?.colors?.text?.color} font-semibold`} type="submit">Salvar</button>
+                                    <button className={`bg-${infoInputs?.colors?.background?.color} mt-4 hover:bg-${infoInputs?.colors?.background?.shadow} bg-custom2-h rounded px-4 py-2 text-${infoInputs?.colors?.text?.shadow} hover:text-${infoInputs?.colors?.text?.color} text-custom2-h font-semibold`} type="submit">Salvar</button>
                             }
                         </div>
                     </div>

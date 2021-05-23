@@ -150,14 +150,12 @@ function Blog({ post, recommend, info, author, categories }) {
             </div>
             <div className="container mx-auto grid grid-cols-3">
                 <div className="col-span-3 md:col-span-2">
-                    <div className="border mx-4 mt-6 shadow-lg p-4 rounded-md" >
+                    <div className="lg:px-16 md:mx-6 mt-2 py-4 rounded-md" >
                         {
                             (post === null) ?
                                 (<h3 className="p-16 text-center text-xl">Página sem conteúdo.</h3>) :
                                 (<div className="post sun-editor-editable" dangerouslySetInnerHTML={{ __html: post?.content }}></div>)
                         }
-
-
                     </div>
 
                 </div>

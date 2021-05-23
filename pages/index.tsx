@@ -123,7 +123,7 @@ const Index = ({ posts, homePageInfo, info, categories }) => {
                 <hr className="my-2" />
               </div>
               {posts ?
-                posts?.filter((v, i) => i !== 0)?.map(post => <Card description={post.description} image={post.image} link={post.link} title={post.title} key={post.link} />)
+                posts?.filter((v, i) => i !== 0)?.map(post => <Card info={info} description={post.description} image={post.image} link={post.link} title={post.title} key={post.link} />)
                 :
                 <div className="flex justify-center items-center h-64">
                   not Found.
