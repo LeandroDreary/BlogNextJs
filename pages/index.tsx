@@ -46,6 +46,7 @@ export async function getStaticProps() {
 }
 
 const Index = ({ posts, homePageInfo, info, categories }) => {
+  console.log(info)
   return (
     <>
       <div>
@@ -90,7 +91,7 @@ const Index = ({ posts, homePageInfo, info, categories }) => {
             <div className="p-4 h-full grid grid-cols-2 z-20 items-center container mx-auto">
               <div className="md:hidden col-span-2 md:col-span-1 pt-4">
                 <span className={`text-sm bg-${info?.colors?.background?.color || "gray-500"} text-${info?.colors?.text?.color || "white"} font-extrabold px-4 py-2`}>Destaque</span>
-                <div className={`ring-4 ring-${info?.colors?.text?.shadow || "gray-700"} ring-opacity-70 rounded-lg flex items-center justify-center mt-6 p-2`}>
+                <div className={`border-4 border-${info?.colors?.background?.color || "gray-500"} rounded-lg flex items-center justify-center mt-6 p-2`}>
                   <img src={posts ? posts[0]?.image : ""} className="w-full" alt={posts ? posts[0]?.title : ""} />
                 </div>
               </div>
@@ -107,7 +108,7 @@ const Index = ({ posts, homePageInfo, info, categories }) => {
                 </Link>
               </div>
               <div className="hidden md:block col-span-2 md:col-span-1">
-                <div className={` ring-4 ring-${info?.colors?.text?.shadow || "gray-700"} ring-opacity-70 flex items-center justify-center rounded-lg p-1`}>
+                <div className={`border-4 border-${info?.colors?.background?.color || "gray-500"} flex items-center justify-center rounded-lg p-1`}>
                   <img src={posts ? posts[0]?.image : ""} className={`rounded w-full`} alt={posts ? posts[0]?.title : ""} />
                 </div>
               </div>
