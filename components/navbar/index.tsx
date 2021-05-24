@@ -39,12 +39,16 @@ class Login extends React.Component<MyProps, MyState> {
 
         return (
             <nav
-                className={`flex items-center justify-between flex-wrap bg-${this.state?.info?.colors?.background?.color || "gray-500"} py-4 lg:px-12 shadow-lg border-solid border-t-2 border-${this.state?.info?.colors?.background?.shadow || "gray-700"}`}>
+                className={`flex items-center justify-between flex-wrap bg-${this.state?.info?.colors?.background?.color || "gray-500"} py-2 lg:px-12 shadow-lg border-solid border-t-2 border-${this.state?.info?.colors?.background?.shadow || "gray-700"}`}>
                 <div className={`flex justify-between lg:w-auto w-full lg:border-b-0 pl-6 pr-2 border-solid border-b-2 border-${this.state?.info?.colors?.text?.color || "white"} pb-5 lg:pb-0`}>
-                    <div className={`flex items-center flex-shrink-0 text-${this.state?.info?.colors?.text?.color || "white"} mr-12`}>
+                    <div className={`flex items-center flex-shrink-0 text-${this.state?.info?.colors?.text?.color || "white"} mr-6`}>
                         <Link href="/">
                             <a>
-                                <button className="font-semibold text-2xl tracking-tight flex items-center"><FaHome /><i className="ml-2">{this.state?.info?.websiteName || "Home"}</i></button>
+                                <button className="font-semibold text-2xl tracking-tight flex items-center">
+                                    {this.state?.info?.icon ?
+                                        (<img className="h-20 mr-6" src={this.state?.info?.icon} />) :
+                                        (<FaHome />)}
+                                    <i className="ml-2">{this.state?.info?.websiteName || "Home"}</i></button>
                             </a>
                         </Link>
                     </div>
@@ -98,7 +102,7 @@ class Login extends React.Component<MyProps, MyState> {
                     </div>
                 </div>
 
-            </nav>
+            </nav >
         )
     }
 }

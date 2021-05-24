@@ -66,7 +66,6 @@ function Blog({ post, recommend, info, author, categories }) {
     return (
         <>
             <Head>
-                <link rel="stylesheet" href="/css/post.css" />
                 <title>{post === undefined ? "Carregando..." : `${post?.title || "Post não encontrado"} - ${info?.websiteName}`} </title>
                 <link href="/icon.png" rel="icon" />
                 <meta name="description" content={post?.description?.toString()} />
