@@ -1,6 +1,6 @@
 const Index = () => {
     return (
-        <div className="hidden">
+        <div className="hidden lg:px-16 md:mx-6 mt-2 py-4 rounded-md">
             {/* red */}
             <div className={
                 "bg-red-50 " +
