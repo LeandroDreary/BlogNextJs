@@ -11,7 +11,6 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
         const name = fields?.name
         let content
         let config
-        console.log(fields?.customLayout)
         switch (name) {
             case "info":
                 {

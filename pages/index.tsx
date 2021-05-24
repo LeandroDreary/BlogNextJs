@@ -46,7 +46,6 @@ export async function getStaticProps() {
 }
 
 const Index = ({ posts, homePageInfo, info, categories }) => {
-  console.log(info)
   return (
     <>
       <div>

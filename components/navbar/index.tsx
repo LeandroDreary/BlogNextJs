@@ -46,7 +46,7 @@ class Login extends React.Component<MyProps, MyState> {
                             <a>
                                 <button className="font-semibold text-2xl tracking-tight flex items-center">
                                     {this.state?.info?.icon ?
-                                        (<img className="h-20 mr-6" src={this.state?.info?.icon} />) :
+                                        (<img className="mr-6" style={{height:"5rem"}} src={this.state?.info?.icon} />) :
                                         (<FaHome />)}
                                     <i className="ml-2">{this.state?.info?.websiteName || "Home"}</i></button>
                             </a>
