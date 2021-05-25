@@ -165,24 +165,39 @@ function Blog({ post, recommend, info, author, categories }) {
             </div>
             <div className="container mx-auto grid grid-cols-4">
                 <div className="px-4 mt-4 col-span-4">
-                    <p className="text-4xl px-2 text-semibold text-gray-700">Recommends</p>
+                    <p className="text-4xl px-2 text-semibold text-gray-700">Recomendados:</p>
                     <hr className="my-2" />
                 </div>
                 {recommend?.map((post, index) => {
                     return (
-                        <Link key={index} href={"/post/" + post?.link}>
-                            <a className="col-span-4 sm:col-span-2 lg:col-span-1 p-4">
-                                <div className="cursor-pointer p-4 border shadow-md h-full rounded-md">
-                                    <div className="flex justify-center items-center p-3">
-                                        <img className="w-full max-h-64 object-cover" src={post?.image} alt={post?.title} />
+                        <div className="col-span-4 sm:col-span-2 lg:col-span-1 p-4">
+                            <div className="relative h-full pb-12 shadow-md border border-gray-100">
+                                <div className="cursor-pointer p-4 h-full rounded-md">
+                                    <div className="relative flex justify-center items-center mx-1 py-1">
+                                        <Link key={index} href={"/post/" + post?.link}>
+                                            <a>
+                                                <img className="w-full h-36 object-cover" src={post?.image} alt={post?.title} />
+                                            </a>
+                                        </Link>
                                     </div>
-                                    <div className="p-4">
-                                        <h2 className="text-gray-900 font-semibold text-lg">{post?.title}</h2>
+                                    <div className="px-4 pt-1">
+                                        <Link key={index} href={"/post/" + post?.link}>
+                                            <a>
+                                                <h2 className="text-gray-900 font-semibold text-lg">{post?.title}</h2>
+                                            </a>
+                                        </Link>
                                         <p className="text-gray-800 text-sm">{post?.description?.substr(0, 200) + (post?.description.length > 100 ? "..." : "")}</p>
                                     </div>
                                 </div>
-                            </a>
-                        </Link>
+                                <div className="bottom-0 right-0 absolute pr-4">
+                                    <Link key={index} href={"/post/" + post?.link}>
+                                        <a>
+                                            <button className={`w-full bg-${info?.colors?.background?.color || "gray-500"} hover:bg-${info?.colors?.background?.shadow || "gray-500"} hover:text-${info?.colors?.text?.shadow || "gray-500"} text-${info?.colors?.text?.color || "white"} font-extrabold px-4 my-3 py-2`}>Ler mais</button>
+                                        </a>
+                                    </Link>
+                                </div>
+                            </div>
+                        </div>
                     )
                 })}
             </div>
