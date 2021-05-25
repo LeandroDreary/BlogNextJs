@@ -6,7 +6,8 @@ import Api from '../../../../services/api'
 import { GetStaticProps } from 'next'
 import '../../../../components/LoadClasses'
 import Navbar from '../../../../components/navbar_admin'
-import DbConnect, { Config } from "./../../../../database/connection"
+import { Config } from "../../../../database/models"
+import DbConnect from './../../../../utils/dbConnect'
 import ReactHtmlParser from 'react-html-parser'
 
 export async function getStaticPaths() {

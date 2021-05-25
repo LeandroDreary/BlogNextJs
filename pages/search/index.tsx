@@ -7,7 +7,8 @@ import { FaSearch } from 'react-icons/fa'
 import { useRouter } from 'next/router'
 import '../../components/LoadClasses'
 import Navigation from '../../components/navigation'
-import DbConnect, { Config } from "./../../database/connection"
+import { Config } from "../../database/models"
+import DbConnect from './../../utils/dbConnect'
 import { ListCategories } from '../api/category/list'
 import ReactHtmlParser from 'react-html-parser'
 

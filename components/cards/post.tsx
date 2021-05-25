@@ -45,7 +45,7 @@ class Post extends React.Component<MyProps, MyState> {
                                 <p className="text-gray-600">{this.state.description?.substr(0, 200) + (this.state?.description?.length > 100 ? "..." : "")}</p>
                                 <Link href={"/post/" + this.state.link}>
                                     <a>
-                                        <button className={`px-3 py-1 my-2 text-${this.props.info?.colors?.text?.color} bg-${this.props.info?.colors?.background?.color} bg-${this.props.info?.colors?.background?.shadow}-h`}>Ler mais</button>
+                                        <button className={`px-3 py-1 my-2 text-${this.props.info?.colors?.text?.color} hover:text-${this.props.info?.colors?.text?.shadow} bg-${this.props.info?.colors?.background?.color} hover:bg-${this.props.info?.colors?.background?.shadow}`}>Ler mais</button>
                                     </a>
                                 </Link>
                             </div>

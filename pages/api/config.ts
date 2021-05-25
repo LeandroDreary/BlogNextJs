@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import dbConnect, { Config } from "../../database/connection"
+import { Config } from "../../database/models"
+import dbConnect from './../../utils/dbConnect'
 import sharp from 'sharp';
 import formidable from 'formidable';
 import imgbbUploader from 'imgbb-uploader';

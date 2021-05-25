@@ -8,7 +8,8 @@ import { GetServerSideProps } from 'next'
 import bcrypt from 'bcryptjs'
 import Navigation from '../../../components/navigation'
 import Link from 'next/link';
-import DbConnect, { Config } from '../../../database/connection'
+import { Config } from '../../../database/models'
+import DbConnect from './../../../utils/dbConnect'
 import { FaSearch } from 'react-icons/fa'
 import ReactHtmlParser from 'react-html-parser'
 

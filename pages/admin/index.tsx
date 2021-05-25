@@ -5,7 +5,8 @@ import Navbar from './../../components/navbar_admin'
 import '../../components/LoadClasses'
 import { GetServerSideProps } from 'next'
 import HandleAuth from '../../services/auth'
-import DbConnect, { Config } from '../../database/connection'
+import { Config } from '../../database/models'
+import DbConnect from './../../utils/dbConnect'
 import ReactHtmlParser from 'react-html-parser'
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {

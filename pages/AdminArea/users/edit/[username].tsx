@@ -4,7 +4,8 @@ import Api from '../../../../services/api'
 import { GetStaticProps } from 'next'
 import '../../../../components/LoadClasses'
 import Navbar from '../../../../components/navbar_admin_area'
-import DbConnect, { Config, UserI } from "../../../../database/connection"
+import { Config, UserI } from "../../../../database/models"
+import DbConnect from './../../../../utils/dbConnect'
 import Link from 'next/link'
 import Router from 'next/router'
 import ReactHtmlParser from 'react-html-parser'

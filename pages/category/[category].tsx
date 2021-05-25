@@ -4,7 +4,8 @@ import Navbar from '../../components/navbar'
 import Card from '../../components/cards/post'
 import Sidebar from '../../components/sidebar'
 import '../../components/LoadClasses'
-import DbConnect, { Category, Config } from "./../../database/connection"
+import { Category, Config } from "../../database/models"
+import DbConnect from './../../utils/dbConnect'
 import { listPosts } from "./../api/post/list"
 import { ListCategories } from '../api/category/list'
 import ReactHtmlParser from 'react-html-parser'

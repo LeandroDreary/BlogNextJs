@@ -1,7 +1,8 @@
 import Cookies from 'cookies'
 import HandleAuth from '../../../services/auth';
 import bcrypt from 'bcryptjs'
-import DbConnect, { Post, Category, User } from "./../../../database/connection"
+import { Post, Category, User } from "../../../database/models"
+import DbConnect from './../../../utils/dbConnect'
 
 interface postListParams {
     perPage?: any,

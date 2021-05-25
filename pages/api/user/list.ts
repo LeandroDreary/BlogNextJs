@@ -1,6 +1,7 @@
 import bcrypt from 'bcryptjs'
 import Cookies from 'cookies'
-import DbConnect, { User } from "./../../../database/connection"
+import { User } from "../../../database/models"
+import DbConnect from './../../../utils/dbConnect'
 
 async function handler(req, res) {
     await DbConnect()

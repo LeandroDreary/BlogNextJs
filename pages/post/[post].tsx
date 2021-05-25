@@ -4,7 +4,8 @@ import Navbar from '../../components/navbar'
 import Sidebar from '../../components/sidebar'
 import Link from 'next/link'
 import '../../components/LoadClasses'
-import DbConnect, { Category, Config, Post, User } from "./../../database/connection"
+import { Category, Config, Post, User } from "../../database/models"
+import DbConnect from './../../utils/dbConnect'
 import { ListCategories } from '../api/category/list'
 import ReactHtmlParser from 'react-html-parser'
 
@@ -92,22 +93,6 @@ function Blog({ post, recommend, info, author, categories }) {
                 <meta name="twitter:site" content="@" />
                 <meta name="twitter:creator" content="@" />
                 {ReactHtmlParser(info?.customLayoutStyles)}
-                <style>
-                    {`
-                    @media (min-width: 1024px){
-                        .lg${"\\"}:px-16 {
-                            padding-left: 4rem;
-                            padding-right: 4rem;
-                        }
-                    }
-                    @media (min-width: 768px){
-                        .md${"\\"}:mx-6 {
-                            margin-left: 1.5rem;
-                            margin-right: 1.5rem;
-                        }
-                    }
-                    `}
-                </style>
             </Head>
             <Navbar categories={categories} info={info} />
             <div className="col-span-3 w-full mx-auto relative" style={{ height: "24em" }}>

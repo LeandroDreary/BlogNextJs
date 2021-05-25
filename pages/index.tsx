@@ -6,8 +6,9 @@ import Card from '../components/cards/post'
 import Sidebar from '../components/sidebar'
 import '../components/LoadClasses'
 import ReactHtmlParser from 'react-html-parser'
-import DbConnect, { Config, Post, PostI } from "./../database/connection"
+import { Config, Post, PostI } from "../database/models"
 import { ListCategories } from './api/category/list'
+import DbConnect from './../utils/dbConnect'
 
 
 export async function getStaticProps() {
@@ -79,7 +80,7 @@ const Index = ({ posts, homePageInfo, info, categories }) => {
         <Navbar categories={categories} info={info} />
         <div className="col-span-3 mb-4 md:mb-0 w-full mx-auto bg-cover bg-center relative"
           style={{ backgroundImage: `url(${homePageInfo?.banner})` }}>
-          <div className={`left-0 bottom-0 w-full h-full absolute z-10 flex items-center opacity-70 bg-gradient-to-t from-${info?.colors?.background?.color || "gray-500"} to-${"black"}`}
+          <div className={`left-0 bottom-0 w-full h-full absolute z-10 flex items-center opacity-80 bg-gradient-to-t from-black`}
             style={{ minHeight: "30em" }}>
             <div className="h-full w-full bg-black opacity-70">
             </div>
@@ -102,7 +103,7 @@ const Index = ({ posts, homePageInfo, info, categories }) => {
                 <p className="text-lg text-gray-100">{posts ? posts[0]?.description?.substr(0, 200) + (posts[0]?.description?.length > 100 ? "..." : "") : ""}</p>
                 <Link href={"/post/" + (posts ? posts[0]?.link : "")}>
                   <a>
-                    <button className={`bg-${info?.colors?.background?.color || "gray-500"} text-${info?.colors?.text?.color || "white"} font-extrabold px-4 py-2 my-4`}>Continuar lendo...</button>
+                    <button className={`bg-${info?.colors?.background?.color || "gray-500"} hover:bg-${info?.colors?.background?.shadow || "gray-500"} hover:text-${info?.colors?.text?.shadow || "gray-500"} text-${info?.colors?.text?.color || "white"} font-extrabold px-4 py-2 my-4`}>Continuar lendo...</button>
                   </a>
                 </Link>
               </div>

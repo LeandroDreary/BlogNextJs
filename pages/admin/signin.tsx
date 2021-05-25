@@ -6,7 +6,8 @@ import mongoose from "mongoose"
 import bcrypt from 'bcryptjs'
 import '../../components/LoadClasses'
 import { GetServerSideProps, } from 'next'
-import dbConnect, { Auth, AuthI, User, UserI } from '../../database/connection'
+import { Auth, AuthI, User, UserI } from '../../database/models'
+import DbConnect from './../../utils/dbConnect'
 import HandleAuth from '../../services/auth'
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
@@ -20,7 +21,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
     const url = new URL(`${process.env.API_URL}/?` + (await getRawBody(req)).toString("utf-8"));
     const { username, password } = { username: url.searchParams.get("username"), password: url.searchParams.get("password") }
 
-    await dbConnect()
+    await DbConnect()
 
     switch (req.method) {
         case "POST":

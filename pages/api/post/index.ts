@@ -1,6 +1,7 @@
 import Cookies from 'cookies'
 import HandleAuth from "../../../services/auth"
-import DbConnect, { Post, Category } from "./../../../database/connection";
+import { Post, Category } from "../../../database/models";
+import DbConnect from './../../../utils/dbConnect'
 import sharp from 'sharp';
 import formidable from 'formidable';
 import imgbbUploader from 'imgbb-uploader';

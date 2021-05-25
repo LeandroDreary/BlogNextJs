@@ -2,7 +2,8 @@ import bcrypt from 'bcryptjs'
 import Cookies from 'cookies'
 import HandleAuth from '../../../services/auth'
 import formidable from 'formidable';
-import DbConnect, { User } from "./../../../database/connection"
+import { User } from "../../../database/models"
+import DbConnect from './../../../utils/dbConnect'
 import sharp from 'sharp';
 import imgbbUploader from 'imgbb-uploader';
 import type { NextApiRequest, NextApiResponse } from 'next'

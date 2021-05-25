@@ -1,6 +1,6 @@
 import { Document } from 'mongoose'
-import dbConnect, { User, UserI, Auth, AuthI } from '../database/connection'
-
+import { User, UserI, Auth, AuthI } from '../database/models'
+import dbConnect from './../utils/dbConnect'
 
 const HandleAuth = async (_id) => {
     let user: Document & UserI

@@ -1,7 +1,7 @@
 import React from 'react'
 import { FaHome } from 'react-icons/fa'
 import Link from 'next/link';
-import { UserI } from '../../database/connection';
+import { UserI } from '../../database/models';
 
 interface MyProps {
     info: any

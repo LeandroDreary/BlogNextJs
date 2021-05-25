@@ -9,7 +9,8 @@ import '../../components/LoadClasses'
 import Navigation from '../../components/navigation'
 import { GetServerSideProps } from 'next'
 import bcrypt from 'bcryptjs'
-import DbConnect, { Config } from '../../database/connection'
+import { Config } from '../../database/models'
+import DbConnect from './../../utils/dbConnect'
 import ReactHtmlParser from 'react-html-parser'
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {

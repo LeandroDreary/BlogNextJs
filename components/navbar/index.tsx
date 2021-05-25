@@ -44,11 +44,11 @@ class Login extends React.Component<MyProps, MyState> {
                     <div className={`flex items-center flex-shrink-0 text-${this.state?.info?.colors?.text?.color || "white"} mr-6`}>
                         <Link href="/">
                             <a>
-                                <button className="font-semibold text-2xl tracking-tight flex items-center">
+                                <div className="text-2xl tracking-tight flex items-center">
                                     {this.state?.info?.icon ?
-                                        (<img className="h-20 mr-6" src={this.state?.info?.icon} />) :
+                                        (<img className="h-20 mr-2" src={this.state?.info?.icon} />) :
                                         (<FaHome />)}
-                                    <i className="ml-2">{this.state?.info?.websiteName || "Home"}</i></button>
+                                    <i className={`ml-2 not-italic pb-1 hidden md:block text-${this.state?.info?.colors?.text?.color || "gray-100"} hover:text-${this.state?.info?.colors?.text?.shadow || "gray-300"} `}>{this.state?.info?.websiteName || "Home"}</i></div>
                             </a>
                         </Link>
                     </div>
@@ -64,12 +64,12 @@ class Login extends React.Component<MyProps, MyState> {
                 </div>
 
                 <div className={`${this.state.menuClass} menu w-full flex-grow lg:flex lg:items-center lg:w-auto lg:px-3 px-8`}>
-                    <div className="text-md font-bold lg:flex-grow">
+                    <div className="text-md  lg:flex-grow">
                         {
                             this.props?.categories?.map(category => {
                                 return (
                                     <Link key={category.name} href={'/category/' + encodeURI(category.name)}>
-                                        <a className="text-gray-100 hover:text-gray-300 block mt-4 lg:inline-block lg:mt-0 px-4 py-2 rounded mr-2">
+                                        <a className={`text-${this.state?.info?.colors?.text?.color || "gray-100"} hover:text-${this.state?.info?.colors?.text?.shadow || "gray-300"} block mt-4 lg:inline-block lg:mt-0 px-4 py-2 rounded mr-2`}>
                                             {category.name}
                                         </a>
                                     </Link>
@@ -83,9 +83,9 @@ class Login extends React.Component<MyProps, MyState> {
                             pathname: '/search',
                             search: this.search.current?.value ? `?q=${this.search.current?.value}` : ""
                         })
-                    }} className={`relative mx-auto text-${this.state?.info?.colors?.text?.color || "white"} font-semibold lg:block hidden`}>
+                    }} className={`relative mx-auto text-${this.state?.info?.colors?.text?.color || "white"} lg:block hidden`}>
                         <label aria-label="search">
-                            <input ref={this.search} className={`placeholder-${this.state?.info?.colors?.text?.shadow || "white"} font-semibold border-2 border-${this.state?.info?.colors?.text?.color || "white"} bg-${this.state?.info?.colors?.background?.color || "gray-500"} h-10 pl-2 pr-8 rounded-lg text-sm focus:outline-none`}
+                            <input ref={this.search} className={`placeholder-${this.state?.info?.colors?.text?.shadow || "white"} border-2 border-${this.state?.info?.colors?.text?.color || "white"} bg-${this.state?.info?.colors?.background?.color || "gray-500"} h-10 pl-2 pr-8 rounded-lg text-sm focus:outline-none`}
                                 type="text" name="search" id="search" placeholder="Procurar" />
                         </label>
                         <button type="submit" aria-label="submit" className={`text-${this.state?.info?.colors?.text?.color || "white"} absolute right-0 top-0 mt-3 mr-2`}>
