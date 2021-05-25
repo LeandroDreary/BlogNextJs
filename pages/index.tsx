@@ -72,7 +72,22 @@ const Index = ({ posts, homePageInfo, info, categories }) => {
           <meta name="twitter:title" content={`${homePageInfo?.title} - ${info?.websiteName}`} />
           <meta name="twitter:site" content="@" />
           <meta name="twitter:creator" content="@" />
-
+          <style>
+            {`
+            @keyframes slideInFromLeft {
+              0% {
+                transform: translateX(-100%);
+              }
+              100% {
+                transform: translateX(0);
+              }
+            }
+            .banner-image { 
+              animation: 1s ease-out 0s 1 slideInFromLeft;
+            }
+            
+            `}
+          </style>
           {ReactHtmlParser(homePageInfo?.head)}
           {ReactHtmlParser(info?.customLayoutStyles)}
         </Head>
@@ -90,20 +105,20 @@ const Index = ({ posts, homePageInfo, info, categories }) => {
 
             <div className="p-4 h-full grid grid-cols-2 z-20 items-center container mx-auto">
               <div className="md:hidden col-span-2 md:col-span-1 pt-4">
-                <span className={`text-sm bg-${info?.colors?.background?.color || "gray-500"} text-${info?.colors?.text?.color || "white"} font-extrabold px-4 py-2`}>Destaque</span>
+                <span className={`text-sm bg-${info?.colors?.background?.color || "gray-500"} banner-image text-${info?.colors?.text?.color || "white"} font-extrabold px-4 py-2`}>Destaque</span>
                 <div className={`border-4 border-${info?.colors?.background?.color || "gray-500"} rounded-lg flex items-center justify-center mt-6 p-2`}>
                   <img src={posts ? posts[0]?.image : ""} className="w-full" alt={posts ? posts[0]?.title : ""} />
                 </div>
               </div>
               <div className="col-span-2 md:col-span-1 px-2 py-4">
-                <span className={`text-sm bg-${info?.colors?.background?.color || "gray-500"} text-${info?.colors?.text?.color || "white"} font-extrabold px-4 py-2 hidden md:inline-block`}>Destaque</span>
-                <h1 className="text-2xl font-bold text-white mt-4 mb-2">
+                <span className={`text-sm bg-${info?.colors?.background?.color || "gray-500"} banner-image text-${info?.colors?.text?.color || "white"} font-extrabold px-4 py-2 hidden md:inline-block`}>Destaque</span>
+                <h1 className="banner-image text-2xl font-bold text-white mt-4 mb-2">
                   {posts ? posts[0]?.title : ""}
                 </h1>
-                <p className="text-lg text-gray-100">{posts ? posts[0]?.description?.substr(0, 200) + (posts[0]?.description?.length > 100 ? "..." : "") : ""}</p>
+                <p className="banner-image text-lg text-gray-100">{posts ? posts[0]?.description?.substr(0, 200) + (posts[0]?.description?.length > 100 ? "..." : "") : ""}</p>
                 <Link href={"/post/" + (posts ? posts[0]?.link : "")}>
                   <a>
-                    <button className={`bg-${info?.colors?.background?.color || "gray-500"} hover:bg-${info?.colors?.background?.shadow || "gray-500"} hover:text-${info?.colors?.text?.shadow || "gray-500"} text-${info?.colors?.text?.color || "white"} font-extrabold px-4 py-2 my-4`}>Continuar lendo...</button>
+                    <button className={`bg-${info?.colors?.background?.color || "gray-500"} banner-image hover:bg-${info?.colors?.background?.shadow || "gray-500"} hover:text-${info?.colors?.text?.shadow || "gray-500"} text-${info?.colors?.text?.color || "white"} font-extrabold px-4 py-2 my-4`}>Continuar lendo...</button>
                   </a>
                 </Link>
               </div>
