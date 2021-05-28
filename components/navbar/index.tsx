@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React from 'react'
 import Link from 'next/link'
 import { FaHome, FaSearch } from 'react-icons/fa'
 import Router from 'next/router'
@@ -64,7 +64,7 @@ class Login extends React.Component<MyProps, MyState> {
                 </div>
 
                 <div className={`${this.state.menuClass} menu w-full flex-grow lg:flex lg:items-center lg:w-auto lg:px-3 px-8`}>
-                    <div className="text-md  lg:flex-grow">
+                    <div className="text-md lg:flex-grow">
                         {
                             this.props?.categories?.map(category => {
                                 return (
@@ -76,7 +76,16 @@ class Login extends React.Component<MyProps, MyState> {
                                 )
                             })
                         }
-
+                        <Link href="/sobre">
+                            <a className={`text-${this.state?.info?.colors?.text?.color || "gray-100"} hover:text-${this.state?.info?.colors?.text?.shadow || "gray-300"} block mt-4 lg:inline-block lg:mt-0 px-4 py-2 rounded mr-2`}>
+                                Sobre
+                            </a>
+                        </Link>
+                        <Link href="/contato">
+                            <a className={`text-${this.state?.info?.colors?.text?.color || "gray-100"} hover:text-${this.state?.info?.colors?.text?.shadow || "gray-300"} block mt-4 lg:inline-block lg:mt-0 px-4 py-2 rounded mr-2`}>
+                                Contato
+                            </a>
+                        </Link>
                     </div>
                     <form onSubmit={e => {
                         e.preventDefault(); Router.push({

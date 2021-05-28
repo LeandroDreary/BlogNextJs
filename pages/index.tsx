@@ -2,19 +2,20 @@ import React from 'react'
 import Link from 'next/link'
 import Head from 'next/head'
 import Navbar from './../components/navbar'
+import Footer from './../components/footer'
 import Card from '../components/cards/post'
 import Sidebar from '../components/sidebar'
 import '../components/LoadClasses'
 import ReactHtmlParser from 'react-html-parser'
-import { Config, Post, PostI } from "../database/models"
-import { ListCategories } from './api/category/list'
+import { Config, Post, Category } from "../database/models"
 import DbConnect from './../utils/dbConnect'
-
 
 export async function getStaticProps() {
   await DbConnect()
 
-  let { info, homePageInfo, posts, categories } = { info: null, homePageInfo: null, posts: null, categories: null }
+  let { info, homePageInfo, posts, categories } =
+    { info: null, homePageInfo: null, posts: null, categories: null }
+
   try {
     let perPage = 6
     posts = (await Post.find({ publishDate: { $lte: new Date() } }, ["image", "link", "title", "description", "-_id"], { skip: 0, limit: perPage, sort: { publishDate: -1 } }).exec())
@@ -32,7 +33,8 @@ export async function getStaticProps() {
   } catch (e) { }
 
   try {
-    categories = (await ListCategories({})).result
+    categories = await Category.find({}).exec()
+    categories = categories._doc.content
   } catch (e) { }
 
   return {
@@ -40,13 +42,14 @@ export async function getStaticProps() {
       posts,
       homePageInfo,
       info,
-      categories
+      categories: categories?.map(c => { return { color: c?.color, link: c?.link || null, name: c?.name } })
     },
     revalidate: 1
   }
 }
 
-const Index = ({ posts, homePageInfo, info, categories }) => {
+const Index = ({ posts, homePageInfo, info, categories, postsCategories }) => {
+  console.log(postsCategories)
   return (
     <>
       <div>
@@ -151,6 +154,7 @@ const Index = ({ posts, homePageInfo, info, categories }) => {
             </div>
           </div>
         </div>
+        <Footer info={info} />
       </div>
     </>
   )

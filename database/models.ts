@@ -60,6 +60,7 @@ export interface UserI {
   discordUser?: string;
   activated?: boolean;
   password?: string;
+  link?: string;
 }
 
 let UserSchema = new Schema({
@@ -67,7 +68,8 @@ let UserSchema = new Schema({
   discordUser: { type: String },
   image: { type: String },
   activated: { type: Boolean },
-  password: { type: String }
+  password: { type: String },
+  link: { type: String, unique: true }
 });
 
 let UserModel = () => {
@@ -86,11 +88,13 @@ export interface CategoryI {
   _id?: string;
   name?: string;
   color?: string;
+  link?: string;
 }
 
 let CategorySchema = new Schema({
-  name: { type: String, unique: true },
-  color: String
+  name: { type: String },
+  color: { type: String },
+  link: { type: String, unique: true }
 });
 
 let CategoryModel = () => {
@@ -110,11 +114,12 @@ export interface PostI {
   content?: string;
   title?: string;
   link?: string;
-  author: { type: Schema.Types.ObjectId, ref: "users" },
-  category?: { type: Schema.Types.ObjectId, ref: "categories" };
+  author: Schema.Types.ObjectId;
+  category?: Schema.Types.ObjectId;
   description?: string;
   publishDate?: Date;
   image?: string;
+  counter?: number;
 }
 
 let PostSchema = new Schema({
@@ -125,7 +130,8 @@ let PostSchema = new Schema({
   category: { type: Schema.Types.ObjectId, ref: "categories" },
   description: { type: String },
   publishDate: { type: Date },
-  image: { type: String }
+  image: { type: String },
+  counter: { type: Number }
 });
 
 export const PostModel = () => {
