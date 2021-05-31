@@ -33,7 +33,6 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
 }
 
 const Index = ({ info, categories }) => {
-
     return (
         <>
             <Head>
