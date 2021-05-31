@@ -498,7 +498,7 @@ const Index = ({ Info, user, HomePageInfo }) => {
                                 homePageInfo === homePageInfoInputs ?
                                     <button className="bg-gray-100 mt-4 hover:bg-gray-200 rounded px-4 py-2 text-gray-900 font-semibold" type="button">Salvar</button>
                                     :
-                                    <button className={`bg-${infoInputs?.colors?.background?.color} mt-4 hover:bg-${infoInputs?.colors?.background?.shadow} rounded px-4 py-2 text-${infoInputs?.colors?.text?.shadow} hover:text-${infoInputs?.colors?.text?.color} text-custom2-h font-semibold`} type="submit">Salvar</button>
+                                    <button className={`bg-${infoInputs?.colors?.background?.color} mt-4 hover:bg-${infoInputs?.colors?.background?.shadow} rounded px-4 py-2 text-${infoInputs?.colors?.text?.shadow} hover:text-${infoInputs?.colors?.text?.color} font-semibold`} type="submit">Salvar</button>
                             }
                         </div>
                     </div>

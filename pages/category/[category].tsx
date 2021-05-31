@@ -9,6 +9,7 @@ import DbConnect from './../../utils/dbConnect'
 import { listPosts } from "./../api/post/list"
 import { ListCategories } from '../api/category/list'
 import ReactHtmlParser from 'react-html-parser'
+import Footer from './../../components/footer'
 
 export async function getStaticPaths() {
     return {
@@ -86,6 +87,7 @@ const Index = ({ posts, category, info, categories }) => {
                     </div>
                 </div>
             </div>
+            <Footer info={info} />
         </div>
     )
 }
