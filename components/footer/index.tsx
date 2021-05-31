@@ -26,8 +26,22 @@ class Login extends React.Component<MyProps, MyState> {
                             <div className="flex flex-col">
                                 <span className={`font-bold text-${this.state?.info?.colors?.text?.color || "gray-500"} uppercase mb-2`}>Redes sociais</span>
                                 <div className="flex items-center">
-                                    <span className="my-2 mr-4 flex items-center"><a href="" className={`text-${this.state?.info?.colors?.text?.color || "gray-500"} text-md hover:text-${this.state?.info?.colors?.text?.shadow || "gray-500"} items-center`}><span className="pr-2 inline-flex">Twitter</span><span className="inline-flex"><FaTwitter /></span></a></span>
-                                    <span className="my-2 flex flex items-center"><a href="https://discord.gg/gou" className={`text-${this.state?.info?.colors?.text?.color || "gray-500"} text-md hover:text-${this.state?.info?.colors?.text?.shadow || "gray-500"} items-center`}><span className="pr-2 inline-flex">Discord</span><span className="inline-flex"><FaDiscord /></span></a></span>
+                                    <a href="https://twitter.com/pequenojornal" className={`text-${this.state?.info?.colors?.text?.color || "gray-500"} my-2 mr-4 flex items-center text-md hover:text-${this.state?.info?.colors?.text?.shadow || "gray-500"} items-center`}>
+                                        <span className="pr-2">
+                                            Twitter
+                                            </span>
+                                        <span>
+                                            <FaTwitter />
+                                        </span>
+                                    </a>
+                                    <a href="https://discord.gg/gou" className={`text-${this.state?.info?.colors?.text?.color || "gray-500"} my-2 flex flex items-center text-md hover:text-${this.state?.info?.colors?.text?.shadow || "gray-500"} items-center`}>
+                                        <span className="mr-2">
+                                            Discord
+                                        </span>
+                                        <span>
+                                            <FaDiscord />
+                                        </span>
+                                    </a>
                                 </div>
                             </div>
                         </div>

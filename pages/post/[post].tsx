@@ -91,6 +91,7 @@ function Blog({ post, recommend, info, author, categories }) {
                 <meta name="twitter:title" content={`${post?.title} - ${info?.websiteName}`} />
                 <meta name="twitter:site" content="@" />
                 <meta name="twitter:creator" content="@" />
+                <link rel="shortcut icon" href={info?.icon} type="image/x-icon" />
                 {ReactHtmlParser(info?.customLayoutStyles)}
             </Head>
             <Navbar categories={categories} info={info} />

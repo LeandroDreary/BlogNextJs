@@ -91,6 +91,8 @@ const Index = ({ posts, homePageInfo, info, categories, postsCategories }) => {
             
             `}
           </style>
+          
+          <link rel="shortcut icon" href={info?.icon} type="image/x-icon" />
           {ReactHtmlParser(homePageInfo?.head)}
           {ReactHtmlParser(info?.customLayoutStyles)}
         </Head>

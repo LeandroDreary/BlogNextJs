@@ -37,11 +37,12 @@ const Index = ({ info, categories }) => {
         <>
             <Head>
                 <title>Sobre - {info?.websiteName}</title>
+                <link rel="shortcut icon" href={info?.icon} type="image/x-icon" />
                 {ReactHtmlParser(info?.customLayoutStyles)}
             </Head>
             <Navbar info={info} categories={categories} />
             <div className="mx-auto container grid grid-cols-5 pb-4 items-center">
-                <div className="col-span-5 lg:col-span-2 px-3 md:px-6 my-8">
+                <div className="col-span-5 md:col-span-3 px-3 md:px-6 my-8">
                     <h1 className="text-2xl font-semibold text-gray-700 mb-2">Este é o nosso Jornalzinho!</h1>
                     <p className="text-lg text-gray-600 my-6">
                         Pequeno Jornal é uma equipe de jornalistas e colunistas sérios e bem preparados na produção de notícias e artigos sobre vários assuntos, bem como: animes, séries, filmes, jogos, atualidades, tecnologia e afins.
@@ -53,10 +54,9 @@ const Index = ({ info, categories }) => {
                         É um lugar para se expressar, compartilhar conhecimento e fazer amigos.
                     </p>
                 </div>
-                <div className="col-span-5 lg:col-span-3 my-8">
-                    <div className={`mx-4 bg-${info?.colors?.background?.color || "gray-500"}`}>
-                        <img className="h-96 p-6 mx-auto hidden md:block" src={info?.icon} alt="" />
-                        <img className="w-full p-6 mx-auto block md:hidden" src={info?.icon} alt="" />
+                <div className="col-span-5 md:col-span-2 my-8">
+                    <div className={`mx-4`}>
+                        <img className="w-full p-6 mx-auto" src={info?.icon} alt="" />
                     </div>
                 </div>
             </div>

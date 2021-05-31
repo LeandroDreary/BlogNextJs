@@ -59,6 +59,7 @@ const Index = ({ posts, category, info, categories }) => {
         <div>
             <Head>
                 <title>{posts === undefined ? "Carregando..." : category?.name || "Não encontrado"}{info === undefined ? "" : " - " + (info?.websiteName || "")}</title>
+                <link rel="shortcut icon" href={info?.icon} type="image/x-icon" />
                 {ReactHtmlParser(info?.customLayoutStyles)}
             </Head>
             <Navbar categories={categories} info={info} />
