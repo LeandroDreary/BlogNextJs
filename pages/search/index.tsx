@@ -83,7 +83,7 @@ const Index = ({ info, categories }) => {
         <>
             <Head>
                 <title>Procurar</title>
-                <link rel="shortcut icon" href={info?.icon} type="image/x-icon" />
+                <link rel="icon" href="/favicon.ico" type="image/x-icon" />
                 {ReactHtmlParser(info?.customLayoutStyles)}
             </Head>
             <Navbar categories={categories} info={info} />

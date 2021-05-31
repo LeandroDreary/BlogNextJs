@@ -68,7 +68,6 @@ function Blog({ post, recommend, info, author, categories }) {
         <>
             <Head>
                 <title>{post === undefined ? "Carregando..." : `${post?.title || "Post não encontrado"} - ${info?.websiteName}`} </title>
-                <link href="/icon.png" rel="icon" />
                 <meta name="description" content={post?.description?.toString()} />
                 <meta name="author" content={author?.username?.toString()} />
                 <link rel="canonical" href={process.env.API_URL + "post/" + post?.link} />
@@ -91,7 +90,7 @@ function Blog({ post, recommend, info, author, categories }) {
                 <meta name="twitter:title" content={`${post?.title} - ${info?.websiteName}`} />
                 <meta name="twitter:site" content="@" />
                 <meta name="twitter:creator" content="@" />
-                <link rel="shortcut icon" href={info?.icon} type="image/x-icon" />
+                <link rel="icon" href="/favicon.ico" type="image/x-icon" />
                 {ReactHtmlParser(info?.customLayoutStyles)}
             </Head>
             <Navbar categories={categories} info={info} />

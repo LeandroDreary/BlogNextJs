@@ -69,6 +69,7 @@ const Index = ({ info, user, warnings, inputs }) => {
         <>
             <Head>
                 <title>Novo usuário</title>
+                <link rel="icon" href="/favicon.ico" type="image/x-icon" />
                 {ReactHtmlParser(info?.customLayoutStyles)}
             </Head>
             <Navbar info={info} user={user} />

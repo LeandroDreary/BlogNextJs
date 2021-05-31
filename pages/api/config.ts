@@ -4,6 +4,7 @@ import dbConnect from './../../utils/dbConnect'
 import sharp from 'sharp';
 import formidable from 'formidable';
 import imgbbUploader from 'imgbb-uploader';
+import fs from 'fs';
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
     const form = new formidable.IncomingForm()
@@ -17,6 +18,8 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
                 {
                     let { websiteName, description, keywords, icon, colors, customLayoutStyles, customLayout } =
                         { websiteName: fields?.websiteName || "", description: fields?.description || "", keywords: fields?.keywords || "", icon: fields?.icon || "", colors: fields?.colors ? JSON.parse(fields?.colors) : null, customLayoutStyles: fields?.customLayoutStyles || "", customLayout: fields?.customLayout ? JSON.parse(fields?.customLayout) : null };
+                    let iconICO
+
                     try {
                         if (files?.icon?.path) {
                             let base64string = (await sharp(files.icon?.path).webp().toBuffer()).toString('base64')
@@ -26,9 +29,20 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
                             icon = fields?.image
                         }
                     } catch (e) {
-
+                        console.log(e)
                     }
-                    content = { websiteName, description, keywords, icon, colors, customLayoutStyles, customLayout }
+
+                    try {
+                        if (files?.iconICO?.path) {
+                            iconICO = fs.readFileSync(files.iconICO?.path, { encoding: 'base64' })
+                        } else {
+                            iconICO = fields?.iconICO
+                        }
+                    } catch (e) {
+                        console.log(e)
+                    }
+
+                    content = { websiteName, description, keywords, icon, iconICO, colors, customLayoutStyles, customLayout }
                 }
                 break;
             case "homePageInfo":

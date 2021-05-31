@@ -17,6 +17,7 @@ interface info {
     description: string,
     keywords: string,
     icon: string,
+    iconICO: string,
     colors: {
         background: {
             shadow: string,
@@ -51,7 +52,6 @@ interface homePageInfo {
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
     await DbConnect()
-
     const cookies = new Cookies(req, res)
     let Info = null
     let HomePageInfo = null
@@ -97,8 +97,14 @@ const Index = ({ Info, user, HomePageInfo }) => {
         preview: homePageInfoInputs?.banner || undefined,
         file: undefined
     })
+
     const [iconFile, setIconFile] = useState<{ preview: any; file: File }>({
         preview: info?.icon || undefined,
+        file: undefined
+    })
+
+    const [iconICONFile, setIconICONFile] = useState<{ preview: any; file: File }>({
+        preview: info?.iconICO || undefined,
         file: undefined
     })
 
@@ -112,6 +118,7 @@ const Index = ({ Info, user, HomePageInfo }) => {
         let data = new FormData();
 
         data.append('icon', iconFile?.file || infoInputs?.icon || "");
+        data.append('iconICO', iconICONFile?.file || infoInputs?.iconICO || "");
         data.append('colors', JSON.stringify(infoInputs?.colors));
         data.append('description', infoInputs?.description);
         data.append('keywords', infoInputs?.keywords);
@@ -370,6 +377,7 @@ const Index = ({ Info, user, HomePageInfo }) => {
             <Head>
                 <title>Configurações</title>
                 <link rel="stylesheet" href="/css/admin/config.css" />
+                <link rel="icon" href="/favicon.ico" type="image/x-icon" />
                 {ReactHtmlParser(infoInputs?.customLayoutStyles)}
             </Head>
             <Navbar info={infoInputs} user={user} />
@@ -405,6 +413,26 @@ const Index = ({ Info, user, HomePageInfo }) => {
                                     <div style={{ maxWidth: "17em" }} className={`w-full mx-auto md:ml-0 h-36 p-4 bg-${infoInputs?.colors?.background?.color} shadow-lg border border-${infoInputs?.colors?.background?.shadow}`}>
                                         {iconFile.preview ?
                                             <img id="icon-img" alt="icon" src={iconFile?.preview} className={`mx-auto shadow-lg h-full`} />
+                                            :
+                                            <div>
+
+                                            </div>
+                                        }
+                                    </div>
+                                </label>
+                            </div>
+
+                            <span className="font-semibold text-gray-700 py-1">Ícone ICO: </span>
+                            <div className="py-3">
+                                <label aria-label="icon">
+                                    <input className="hidden" onChange={e => { setIconICONFile({ file: e.target.files[0], preview: e.target.files[0] ? URL.createObjectURL(e.target.files[0]) : undefined }); setInfoInputs({ ...infoInputs, iconICO: "" }) }} type="file" id="file" name="icon" accept="image/x-icon" />
+                                    <div className="pb-4">
+                                        <span className={`bg-${infoInputs?.colors?.background?.color} mt-4 hover:bg-${infoInputs?.colors?.background?.shadow} rounded px-4 py-2 text-${infoInputs?.colors?.text?.shadow} hover:text-${infoInputs?.colors?.text?.color} text-custom2-h font-semibold`}>Escolher Ícone</span>
+                                    </div>
+
+                                    <div style={{ maxWidth: "17em" }} className={`w-full mx-auto md:ml-0 h-36 p-4 bg-${infoInputs?.colors?.background?.color} shadow-lg border border-${infoInputs?.colors?.background?.shadow}`}>
+                                        {iconICONFile.preview ?
+                                            <img id="icon-img" alt="icon" src={"data:image/x-icon;base64,"+iconICONFile?.preview} className={`mx-auto shadow-lg h-full`} />
                                             :
                                             <div>
 

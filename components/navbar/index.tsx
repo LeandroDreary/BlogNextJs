@@ -52,7 +52,7 @@ class Login extends React.Component<MyProps, MyState> {
                             </a>
                         </Link>
                     </div>
-                    <div className="block lg:hidden">
+                    <div className="flex items-center lg:hidden">
                         <button onClick={() => this.setState({ ...this.state, menuClass: this.state.menuClass === "" ? "hidden" : "" })}
                             id="nav"
                             className={`flex items-center px-3 py-2 border-2 rounded text-${this.state?.info?.colors?.text?.color || "white"} hover:text-${this.state?.info?.colors?.text?.color || "white"} border-${this.state?.info?.colors?.text?.color || "gray-white"} hover:text-${this.state?.info?.colors?.text?.shadow || "gray-100"} hover:text-${this.state?.info?.colors?.text?.shadow || "gray-100"} hover:border-${this.state?.info?.colors?.text?.shadow || "gray-100"}`}>

@@ -49,6 +49,7 @@ function Blog({ info, link }) {
         <>
             <Head>
                 <title>Editar post - {post?.title}</title>
+                <link rel="icon" href="/favicon.ico" type="image/x-icon" />
                 {ReactHtmlParser(info?.customLayoutStyles)}
             </Head>
             <Navbar info={info} user={user} />

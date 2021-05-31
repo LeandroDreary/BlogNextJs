@@ -55,7 +55,8 @@ const Index = ({ posts, homePageInfo, info, categories, postsCategories }) => {
       <div>
         <Head>
           <title>{homePageInfo?.title} - {info?.websiteName}</title>
-          <link href="/icon.png" rel="icon" />
+          <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+          
           <link rel="canonical" href={process.env.API_URL} />
           <meta name="description" content={homePageInfo?.description} />
           <meta name="keywords" content={info?.keywords} />
@@ -91,8 +92,6 @@ const Index = ({ posts, homePageInfo, info, categories, postsCategories }) => {
             
             `}
           </style>
-          
-          <link rel="shortcut icon" href={info?.icon} type="image/x-icon" />
           {ReactHtmlParser(homePageInfo?.head)}
           {ReactHtmlParser(info?.customLayoutStyles)}
         </Head>

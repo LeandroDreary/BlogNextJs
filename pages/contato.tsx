@@ -68,7 +68,7 @@ const Index = ({ info, categories, warnings }) => {
         <>
             <Head>
                 <title>Contato - {info?.websiteName}</title>
-                <link rel="shortcut icon" href={info?.icon} type="image/x-icon" />
+                <link rel="icon" href="/favicon.ico" type="image/x-icon" />
                 {ReactHtmlParser(info?.customLayoutStyles)}
             </Head>
             <Navbar info={info} categories={categories} />
@@ -80,9 +80,9 @@ const Index = ({ info, categories, warnings }) => {
                         {
                             warnings.map(warning => {
                                 if (warning?.input === "" && !warning?.success)
-                                    return <p className="w-full text-center border border-red-400 py-3 bg-red-50 text-red-400 text-xs italic font-bold my-2">{warning.message}</p>
+                                    return <p key={warning.message + warning.success} className="w-full text-center border border-red-400 py-3 bg-red-50 text-red-400 text-xs italic font-bold my-2">{warning.message}</p>
                                 if (warning?.input === "" && warning?.success)
-                                    return <p className="w-full text-center border border-green-400 py-3 bg-green-50 text-green-400 text-xs italic font-bold my-2">{warning.message}</p>
+                                    return <p key={warning.message + warning.success} className="w-full text-center border border-green-400 py-3 bg-green-50 text-green-400 text-xs italic font-bold my-2">{warning.message}</p>
                             })
                         }
                     </div>

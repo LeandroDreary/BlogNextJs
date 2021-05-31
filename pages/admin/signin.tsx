@@ -71,7 +71,8 @@ const Index = ({ warnings, inputs }) => {
     return (
         <div>
             <Head>
-                Entrar
+                <title>Entrar</title>
+                <link rel="icon" href="/favicon.ico" type="image/x-icon" />
             </Head>
             <div className="container h-screen flex justify-center items-center mx-auto">
                 {/* <Login /> */}

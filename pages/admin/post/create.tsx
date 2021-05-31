@@ -45,6 +45,7 @@ const Index = ({ info, user }) => {
         <>
             <Head>
                 <title>Novo post</title>
+                <link rel="icon" href="/favicon.ico" type="image/x-icon" />
                 {ReactHtmlParser(info?.customLayoutStyles)}
             </Head>
 
