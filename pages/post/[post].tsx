@@ -8,6 +8,7 @@ import { Category, Config, Post, User } from "../../database/models"
 import DbConnect from './../../utils/dbConnect'
 import { ListCategories } from '../api/category/list'
 import ReactHtmlParser from 'react-html-parser'
+import PostCard from './../../components/cards/post2'
 
 export async function getStaticPaths() {
     return {
@@ -169,28 +170,7 @@ function Blog({ post, recommend, info, author, categories }) {
                 </div>
                 {recommend?.map((post, index) => {
                     return (
-                        <div key={index} className="col-span-4 sm:col-span-2 lg:col-span-1 p-4">
-                            <div className="relative h-full shadow-md border border-gray-100">
-                                <div className="cursor-pointer p-4 pb-6 h-full rounded-md">
-                                    <div className="relative flex justify-center items-center mx-1 py-1">
-                                        <Link href={"/post/" + post?.link}>
-                                            <a>
-                                                <img className="w-full h-36 object-cover" src={post?.image} alt={post?.title} />
-                                            </a>
-                                        </Link>
-                                    </div>
-                                    <div className="px-4 pt-1">
-                                        <Link href={"/post/" + post?.link}>
-                                            <a>
-                                                <button className={`w-full bg-${info?.colors?.background?.color || "gray-500"} hover:bg-${info?.colors?.background?.shadow || "gray-500"} hover:text-${info?.colors?.text?.shadow || "gray-500"} text-${info?.colors?.text?.color || "white"} font-extrabold px-4 my-3 py-2`}>Ler mais</button>
-                                                <h2 className="text-gray-900 font-semibold text-lg">{post?.title}</h2>
-                                            </a>
-                                        </Link>
-                                        <p className="text-gray-800 text-sm">{post?.description?.substr(0, 200) + (post?.description.length > 100 ? "..." : "")}</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        <PostCard key={index} info={info} description={post?.description} image={post?.image} link={post?.link} title={post?.title} />
                     )
                 })}
             </div>

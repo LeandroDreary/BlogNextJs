@@ -4,18 +4,18 @@ import Head from 'next/head'
 import Navbar from './../components/navbar'
 import Footer from './../components/footer'
 import Card from '../components/cards/post'
+import PostCard2 from '../components/cards/post2'
 import Sidebar from '../components/sidebar'
 import '../components/LoadClasses'
 import ReactHtmlParser from 'react-html-parser'
-import { Config, PostModel,Category } from "../database/models"
-let Post = PostModel() 
+import { Config, Post, Category } from "../database/models"
 import DbConnect from './../utils/dbConnect'
 
 export async function getStaticProps() {
   await DbConnect()
 
-  let { info, homePageInfo, posts, categories } =
-    { info: null, homePageInfo: null, posts: null, categories: null }
+  let { info, homePageInfo, posts, categories, postsCategories } =
+    { info: null, homePageInfo: null, posts: null, categories: null, postsCategories: [] }
 
   try {
     let perPage = 6
@@ -37,35 +37,33 @@ export async function getStaticProps() {
     categories = await Category.find({}).exec()
     categories = categories._doc.content
   } catch (e) { }
-  
-  // try {
-  //   postsCategories = await categories.map(async category => {
-  //     let Post1 = PostModel()
-  //     let posts = await (await Post1.find({ category, publishDate: { $lte: new Date() } }, ["image", "link", "title", "description", "-_id"], { skip: 0, limit: 4, sort: { publishDate: -1 } }).exec())
-      
-  //     console.log(posts)
-  //     return await {
-  //       category: { color: category?.color, link: category?.link || null, name: category?.name },
-  //       posts: posts.map((post: any) => { return { image: String(post?.image || ""), link: String(post?.link || ""), title: String(post?.title || ""), description: String(post?.description || "") } })
-  //     }
-  //   }) 
-  // } catch (e) { }
 
+  try {
+    let i = 0
+    while (i <= 2) {
+      if (categories[i]?._id) {
+        let post = (await Post.find({ category: categories[i]._id, publishDate: { $lte: new Date() } }, ["image", "link", "title", "description", "-_id"], { skip: 0, limit: 4, sort: { publishDate: -1 } }).exec())
+          .map((post: any) => { return { image: String(post?.image || ""), link: String(post?.link || ""), title: String(post?.title || ""), description: String(post?.description || "") } })
 
-  // console.log(postsCategories)
+        postsCategories.push({ category: { color: categories[i]?.color, link: categories[i]?.link || null, name: categories[i]?.name }, posts: post })
+      }
+      i++
+    }
+  } catch (e) { }
+
   return {
     props: {
       posts,
       homePageInfo,
       info,
       categories: categories?.map(c => { return { color: c?.color, link: c?.link || null, name: c?.name } }),
-      // postsCategories
+      postsCategories
     },
     revalidate: 1
   }
 }
 
-const Index = ({ posts, homePageInfo, info, categories }) => {
+const Index = ({ posts, homePageInfo, info, categories, postsCategories }) => {
   // console.log(postsCategories)
   return (
     <>
@@ -171,6 +169,27 @@ const Index = ({ posts, homePageInfo, info, categories }) => {
               <Sidebar categories={categories} />
             </div>
           </div>
+          {
+            postsCategories?.map(postsCategory => {
+              return (
+                <>
+                  <div className="px-4 mt-4">
+                    <p className="text-4xl px-2 text-semibold text-gray-700">{postsCategory.category.name}:</p>
+                    <hr className="my-2" />
+                    <div className="grid grid-cols-4">
+                      {postsCategory.posts ?
+                        postsCategory.posts.map(post => <PostCard2 info={info} description={post.description} image={post.image} link={post.link} title={post.title} key={post.link} />)
+                        :
+                        <div className="flex justify-center items-center h-64">
+                          not Found.
+                          </div>
+                      }
+                    </div>
+                  </div>
+                </>
+              )
+            })
+          }
         </div>
         <Footer info={info} />
       </div>
