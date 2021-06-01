@@ -4,13 +4,13 @@ import DbConnect from '../utils/dbConnect'
 
 export async function getServerSideProps({ res }) {
   await DbConnect()
-  let info = null
+  let iconIco = null
   try {
-    info = await Config.findOne({ name: "info" }).select(`-_id`).exec()
-    info = info._doc.content
+    iconIco = await Config.findOne({ name: "IconIco" }).select(`-_id`).exec()
+    iconIco = iconIco._doc.content
   } catch (e) { }
   
-  const imageResp = new Buffer(info?.iconICO, "base64");
+  const imageResp = new Buffer(iconIco?.iconICO, "base64");
 
   res.writeHead(200, {
     'Content-Type': 'image/png',

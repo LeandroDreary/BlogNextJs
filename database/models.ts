@@ -14,7 +14,7 @@ let ConfigSchema = new Schema({
   content: JSON
 });
 
-let ConfigModel = () => {
+export let ConfigModel = () => {
   try {
     return mongoose.model("config");
   } catch (error) {
@@ -40,7 +40,7 @@ let AuthSchema = new Schema({
   ip: { type: String },
 });
 
-let AuthModel = () => {
+export let AuthModel = () => {
   try {
     return mongoose.model("auth");
   } catch (error) {
@@ -72,7 +72,7 @@ let UserSchema = new Schema({
   link: { type: String, unique: true }
 });
 
-let UserModel = () => {
+export let UserModel = () => {
   try {
     return mongoose.model("users");
   } catch (error) {
@@ -97,7 +97,7 @@ let CategorySchema = new Schema({
   link: { type: String, unique: true }
 });
 
-let CategoryModel = () => {
+export let CategoryModel = () => {
   try {
     return mongoose.model("categories");
   } catch (error) {

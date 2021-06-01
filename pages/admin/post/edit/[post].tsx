@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import Head from 'next/head'
 import Router from 'next/router'
-import Post from '../../../../components/forms/post'
+import Post from '../../../../components/forms/frm_post'
 import Api from '../../../../services/api'
 import { GetStaticProps } from 'next'
 import '../../../../components/LoadClasses'

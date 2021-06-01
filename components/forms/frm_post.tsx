@@ -1,12 +1,12 @@
 import Head from 'next/head'
 import React, { useState, useEffect } from 'react'
-import Api from './../../services/api'
+import Api from '../../services/api'
 import Router from 'next/router'
 import dynamic from 'next/dynamic'
 import FormData from 'form-data'
 
 const Editor = dynamic(
-    () => import('./../editor'),
+    () => import('../editor'),
     { ssr: false }
 )
 interface PostI {

@@ -7,7 +7,8 @@ import Card from '../components/cards/post'
 import Sidebar from '../components/sidebar'
 import '../components/LoadClasses'
 import ReactHtmlParser from 'react-html-parser'
-import { Config, Post, Category } from "../database/models"
+import { Config, PostModel,Category } from "../database/models"
+let Post = PostModel() 
 import DbConnect from './../utils/dbConnect'
 
 export async function getStaticProps() {
@@ -36,27 +37,43 @@ export async function getStaticProps() {
     categories = await Category.find({}).exec()
     categories = categories._doc.content
   } catch (e) { }
+  
+  // try {
+  //   postsCategories = await categories.map(async category => {
+  //     let Post1 = PostModel()
+  //     let posts = await (await Post1.find({ category, publishDate: { $lte: new Date() } }, ["image", "link", "title", "description", "-_id"], { skip: 0, limit: 4, sort: { publishDate: -1 } }).exec())
+      
+  //     console.log(posts)
+  //     return await {
+  //       category: { color: category?.color, link: category?.link || null, name: category?.name },
+  //       posts: posts.map((post: any) => { return { image: String(post?.image || ""), link: String(post?.link || ""), title: String(post?.title || ""), description: String(post?.description || "") } })
+  //     }
+  //   }) 
+  // } catch (e) { }
 
+
+  // console.log(postsCategories)
   return {
     props: {
       posts,
       homePageInfo,
       info,
-      categories: categories?.map(c => { return { color: c?.color, link: c?.link || null, name: c?.name } })
+      categories: categories?.map(c => { return { color: c?.color, link: c?.link || null, name: c?.name } }),
+      // postsCategories
     },
     revalidate: 1
   }
 }
 
-const Index = ({ posts, homePageInfo, info, categories, postsCategories }) => {
-  console.log(postsCategories)
+const Index = ({ posts, homePageInfo, info, categories }) => {
+  // console.log(postsCategories)
   return (
     <>
       <div>
         <Head>
           <title>{homePageInfo?.title} - {info?.websiteName}</title>
           <link rel="icon" href="/favicon.ico" type="image/x-icon" />
-          
+
           <link rel="canonical" href={process.env.API_URL} />
           <meta name="description" content={homePageInfo?.description} />
           <meta name="keywords" content={info?.keywords} />

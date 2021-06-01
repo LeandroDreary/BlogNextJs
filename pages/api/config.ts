@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { Config } from "../../database/models"
+import { ConfigModel } from "../../database/models"
+let Config = ConfigModel()
 import dbConnect from './../../utils/dbConnect'
 import sharp from 'sharp';
 import formidable from 'formidable';
@@ -13,13 +14,15 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
         const name = fields?.name
         let content
         let config
+
+        await dbConnect()
+
         switch (name) {
             case "info":
                 {
                     let { websiteName, description, keywords, icon, colors, customLayoutStyles, customLayout } =
-                        { websiteName: fields?.websiteName || "", description: fields?.description || "", keywords: fields?.keywords || "", icon: fields?.icon || "", colors: fields?.colors ? JSON.parse(fields?.colors) : null, customLayoutStyles: fields?.customLayoutStyles || "", customLayout: fields?.customLayout ? JSON.parse(fields?.customLayout) : null };
+                        { websiteName: fields?.websiteName || "", description: fields?.description || "", keywords: fields?.keywords || "", icon: fields?.icon || "", colors: fields?.colors ? JSON.parse(fields?.colors) : null, customLayoutStyles: fields?.customLayoutStyles || "", customLayout: { colors: fields?.customLayout ? JSON.parse(fields?.customLayout)?.colors || {} : null } };
                     let iconICO
-
                     try {
                         if (files?.icon?.path) {
                             let base64string = (await sharp(files.icon?.path).webp().toBuffer()).toString('base64')
@@ -35,6 +38,12 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
                     try {
                         if (files?.iconICO?.path) {
                             iconICO = fs.readFileSync(files.iconICO?.path, { encoding: 'base64' })
+                            let Config = ConfigModel()
+                            config = await Config.findOne({ name: "IconIco" }).exec();
+                            if (config?._id)
+                                config = await Config.findOneAndUpdate({ name: "IconIco" }, { name: "IconIco", content: { iconICO } }).exec()
+                            else
+                                config = await (new Config({ name: "IconIco", content: { iconICO } })).save()
                         } else {
                             iconICO = fields?.iconICO
                         }
@@ -42,7 +51,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
                         console.log(e)
                     }
 
-                    content = { websiteName, description, keywords, icon, iconICO, colors, customLayoutStyles, customLayout }
+                    content = { websiteName, description, keywords, icon, colors, customLayoutStyles, customLayout }
                 }
                 break;
             case "homePageInfo":
@@ -65,7 +74,8 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
                 break;
         }
 
-        await dbConnect()
+        Config = ConfigModel()
+
 
         switch (req.method) {
             case "GET":
@@ -73,7 +83,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
                 break;
             case "POST":
                 config = await Config.findOne({ name }).exec();
-                if (config?.content)
+                if (config?._id)
                     config = await Config.findOneAndUpdate({ name }, { name, content }).exec()
                 else
                     config = await (new Config({ name, content })).save()
