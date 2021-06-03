@@ -122,7 +122,7 @@ const Index = ({ info, categories, warnings }) => {
                         </div>
                     </div>
                     <div className="col-span-5 md:col-span-3 md:pt-4 pb-8 md:px-6">
-                        <form method="POST" className="mx-auto md:max-w-md px-6 border shadow-lg">
+                        <form method="POST" className="mx-auto md:max-w-md bg-white px-6 border shadow-lg">
                             <div className="my-6">
                                 <label htmlFor="websiteName" className="font-semibold text-gray-700">Nome: </label><br />
                                 <input className="shadow appearance-none border w-full rounded py-1 px-3 text-gray-700" placeholder="Nome" type="text" name="name" />

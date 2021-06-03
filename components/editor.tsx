@@ -7,7 +7,7 @@ const MyComponent = ({ content, setContent }: { content: any, setContent: any })
 
     return (
         <SunEditor lang="pt_br"
-            setDefaultStyle={"font-size: 16px; font-family: arial; color: rgb(85, 85, 85);"}
+            setDefaultStyle={`font-size: 18px;font-family: arial;color: rgb(85, 90, 95);background-color:rgb(252, 252, 255)`}
             height="850"
             setContents={content}
             onChange={setContent}

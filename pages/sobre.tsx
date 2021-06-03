@@ -44,6 +44,7 @@ const Index = ({ info, categories }) => {
             <div className="mx-auto container grid grid-cols-5 pb-4 items-center">
                 <div className="col-span-5 md:col-span-3 px-3 md:px-6 my-8">
                     <h1 className="text-2xl font-semibold text-gray-700 mb-2">Este é o nosso Jornalzinho!</h1>
+                    <hr />
                     <p className="text-lg text-gray-600 my-6">
                         Pequeno Jornal é uma equipe de jornalistas e colunistas sérios e bem preparados na produção de notícias e artigos sobre vários assuntos, bem como: animes, séries, filmes, jogos, atualidades, tecnologia e afins.
                     </p>

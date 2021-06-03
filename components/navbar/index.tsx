@@ -46,7 +46,7 @@ class Login extends React.Component<MyProps, MyState> {
                             <a>
                                 <div className="text-2xl tracking-tight flex items-center">
                                     {this.state?.info?.icon ?
-                                        (<img className="h-20 mr-2" src={this.state?.info?.icon} />) :
+                                        (<img className="h-36 sm:h-24 mr-2" src={this.state?.info?.icon} />) :
                                         (<FaHome />)}
                                     <i className={`ml-2 not-italic pb-1 hidden md:block text-${this.state?.info?.colors?.text?.color || "gray-100"} hover:text-${this.state?.info?.colors?.text?.shadow || "gray-300"} `}>{this.state?.info?.websiteName || "Home"}</i></div>
                             </a>
@@ -55,8 +55,8 @@ class Login extends React.Component<MyProps, MyState> {
                     <div className="flex items-center lg:hidden">
                         <button onClick={() => this.setState({ ...this.state, menuClass: this.state.menuClass === "" ? "hidden" : "" })}
                             id="nav"
-                            className={`flex items-center px-3 py-2 border-2 rounded text-${this.state?.info?.colors?.text?.color || "white"} hover:text-${this.state?.info?.colors?.text?.color || "white"} border-${this.state?.info?.colors?.text?.color || "gray-white"} hover:text-${this.state?.info?.colors?.text?.shadow || "gray-100"} hover:text-${this.state?.info?.colors?.text?.shadow || "gray-100"} hover:border-${this.state?.info?.colors?.text?.shadow || "gray-100"}`}>
-                            <svg className="fill-current h-3 w-3" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><title>Menu</title>
+                            className={`flex items-center px-3 mr-4 py-2 border-2 rounded text-${this.state?.info?.colors?.text?.color || "white"} hover:text-${this.state?.info?.colors?.text?.color || "white"} border-${this.state?.info?.colors?.text?.color || "gray-white"} hover:text-${this.state?.info?.colors?.text?.shadow || "gray-100"} hover:text-${this.state?.info?.colors?.text?.shadow || "gray-100"} hover:border-${this.state?.info?.colors?.text?.shadow || "gray-100"}`}>
+                            <svg className="fill-current h-6 w-6" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><title>Menu</title>
                                 <path d="M0 3h20v2H0V3zm0 6h20v2H0V9zm0 6h20v2H0v-2z" />
                             </svg>
                         </button>
@@ -64,7 +64,7 @@ class Login extends React.Component<MyProps, MyState> {
                 </div>
 
                 <div className={`${this.state.menuClass} menu w-full flex-grow lg:flex lg:items-center lg:w-auto lg:px-3 px-8`}>
-                    <div className="text-md lg:flex-grow">
+                    <div className="text-lg lg:flex-grow">
                         {
                             this.props?.categories?.map(category => {
                                 return (

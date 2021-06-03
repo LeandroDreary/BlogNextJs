@@ -1,5 +1,9 @@
 .sun-editor-editable {
-    font-size: 16px;
+    font-size: 18px;
     font-family: arial;
-    color: rgb(85, 85, 85);
+    color: rgb(85, 90, 95);
+    background-color:rgb(252, 252, 255)
+}
+body{
+    background-color:rgb(252, 252, 255)
 }

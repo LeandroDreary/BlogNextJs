@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import Head from 'next/head'
 import Navbar from '../../components/navbar'
 import Link from 'next/link'
+import Footer from './../../components/footer'
 import api from '../../services/api'
 import { FaSearch } from 'react-icons/fa'
 import { useRouter } from 'next/router'
@@ -159,6 +160,7 @@ const Index = ({ info, categories }) => {
                 </div>
                 <Navigation callBack={page => LoadQuery(page)} info={info} page={query.page} pages={query.pages} />
             </div>
+            <Footer info={info} />
         </>
     )
 }

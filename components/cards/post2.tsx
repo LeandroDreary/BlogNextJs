@@ -26,7 +26,7 @@ class Post extends React.Component<MyProps, MyState> {
         return (
             <>
                 <div className="col-span-4 sm:col-span-2 lg:col-span-1 p-4">
-                    <div className="relative h-full shadow-md  pb-16 border border-gray-100">
+                    <div className="relative h-full shadow-sm pb-16 border border-gray-200">
                         <div className="cursor-pointer p-4 pb-6 h-full rounded-md">
                             <div className="relative flex justify-center items-center mx-1 py-1">
                                 <Link href={"/post/" + this.props.link || ""}>
@@ -38,10 +38,10 @@ class Post extends React.Component<MyProps, MyState> {
                             <div className="px-4 pt-1">
                                 <Link href={"/post/" + this.props.link}>
                                     <a>
-                                        <h2 className="text-gray-900 font-semibold text-lg">{this.props.title}</h2>
+                                        <h2 className="text-gray-700 hover:underline font-semibold text-lg">{this.props.title}</h2>
                                     </a>
                                 </Link>
-                                <p className="text-gray-800 text-sm">{this.props.description?.substr(0, 200) + (this.props.description.length > 100 ? "..." : "")}</p>
+                                <p className="text-gray-600 pt-3 text-sm">{this.props.description?.substr(0, 200) + (this.props.description.length > 100 ? "..." : "")}</p>
                             </div>
                         </div>
                         <div className="bottom-0 w-full px-4 text-right absolute">

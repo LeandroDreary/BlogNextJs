@@ -1,8 +1,9 @@
 import React from 'react'
 import Head from 'next/head'
+import { FaInstagram, FaTwitter, FaDiscord } from "react-icons/fa"
 import Navbar from '../../components/navbar'
 import Sidebar from '../../components/sidebar'
-import Link from 'next/link'
+import Footer from './../../components/footer'
 import '../../components/LoadClasses'
 import { Category, Config, Post, User } from "../../database/models"
 import DbConnect from './../../utils/dbConnect'
@@ -174,6 +175,7 @@ function Blog({ post, recommend, info, author, categories }) {
                     )
                 })}
             </div>
+            <Footer info={info} />
         </>)
 }
 
