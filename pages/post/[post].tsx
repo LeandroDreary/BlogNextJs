@@ -1,14 +1,10 @@
 import React from 'react'
-import Head from 'next/head'
-import { FaInstagram, FaTwitter, FaDiscord } from "react-icons/fa"
-import Navbar from '../../components/navbar'
+import Layout from './../../layout/layout'
 import Sidebar from '../../components/sidebar'
-import Footer from './../../components/footer'
 import '../../components/LoadClasses'
 import { Category, Config, Post, User } from "../../database/models"
 import DbConnect from './../../utils/dbConnect'
 import { ListCategories } from '../api/category/list'
-import ReactHtmlParser from 'react-html-parser'
 import PostCard from './../../components/cards/post2'
 
 export async function getStaticPaths() {
@@ -66,36 +62,35 @@ export async function getStaticProps(context) {
 
 function Blog({ post, recommend, info, author, categories }) {
 
+    const ReturnHead = <>
+            <title>{post === undefined ? "Carregando..." : `${post?.title || "Post não encontrado"} - ${info?.websiteName}`} </title>
+            <meta name="description" content={post?.description?.toString()} />
+            <meta name="author" content={author?.username?.toString()} />
+            <link rel="canonical" href={process.env.API_URL + "post/" + post?.link} />
+
+            <meta property="og:description" content={post?.description?.toString()} />
+            <meta property="og:url" content={process.env.API_URL + "post/" + post?.link} />
+            <meta property="og:site_name" content={info?.websiteName} />
+            <meta property="og:image" content={post?.image?.toString()} />
+            <meta property="og:image:secure_url" content={post?.image?.toString()} />
+            <meta property="og:title" content={`${post?.title} - ${info?.websiteName}`} />
+            <meta property="og:locale" content="pt_BR" />
+            <meta property="og:type" content="article" />
+
+            <meta property="article:published_time" content={(new Date(post?.publishDate))?.toString()} />
+            <meta property="article:modified_time" content={(new Date(post?.publishDate))?.toString()} />
+
+            <meta name="twitter:card" content="summary" />
+            <meta name="twitter:description" content={post?.description?.toString()} />
+            <meta name="twitter:image" content={post?.image?.toString()} />
+            <meta name="twitter:title" content={`${post?.title} - ${info?.websiteName}`} />
+            <meta name="twitter:site" content="@" />
+            <meta name="twitter:creator" content="@" />
+        </>
+
     return (
         <>
-            <Head>
-                <title>{post === undefined ? "Carregando..." : `${post?.title || "Post não encontrado"} - ${info?.websiteName}`} </title>
-                <meta name="description" content={post?.description?.toString()} />
-                <meta name="author" content={author?.username?.toString()} />
-                <link rel="canonical" href={process.env.API_URL + "post/" + post?.link} />
-
-                <meta property="og:description" content={post?.description?.toString()} />
-                <meta property="og:url" content={process.env.API_URL + "post/" + post?.link} />
-                <meta property="og:site_name" content={info?.websiteName} />
-                <meta property="og:image" content={post?.image?.toString()} />
-                <meta property="og:image:secure_url" content={post?.image?.toString()} />
-                <meta property="og:title" content={`${post?.title} - ${info?.websiteName}`} />
-                <meta property="og:locale" content="pt_BR" />
-                <meta property="og:type" content="article" />
-
-                <meta property="article:published_time" content={(new Date(post?.publishDate))?.toString()} />
-                <meta property="article:modified_time" content={(new Date(post?.publishDate))?.toString()} />
-
-                <meta name="twitter:card" content="summary" />
-                <meta name="twitter:description" content={post?.description?.toString()} />
-                <meta name="twitter:image" content={post?.image?.toString()} />
-                <meta name="twitter:title" content={`${post?.title} - ${info?.websiteName}`} />
-                <meta name="twitter:site" content="@" />
-                <meta name="twitter:creator" content="@" />
-                <link rel="icon" href="/favicon.ico" type="image/x-icon" />
-                {ReactHtmlParser(info?.customLayoutStyles)}
-            </Head>
-            <Navbar categories={categories} info={info} />
+            <Layout Head={ReturnHead} info={info} categories={categories}>
             <div className="col-span-3 w-full mx-auto relative" style={{ height: "24em" }}>
                 <div className="absolute left-0 bottom-0 w-full h-full z-10"
                     style={{ backgroundImage: "linear-gradient(180deg,transparent,rgba(0,0,0,.7))" }}></div>
@@ -175,7 +170,7 @@ function Blog({ post, recommend, info, author, categories }) {
                     )
                 })}
             </div>
-            <Footer info={info} />
+            </Layout>
         </>)
 }
 

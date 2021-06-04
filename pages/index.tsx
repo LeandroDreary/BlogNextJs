@@ -1,8 +1,6 @@
 import React from 'react'
 import Link from 'next/link'
-import Head from 'next/head'
-import Navbar from './../components/navbar'
-import Footer from './../components/footer'
+import Layout from './../layout/layout'
 import Card from '../components/cards/post'
 import PostCard2 from '../components/cards/post2'
 import Sidebar from '../components/sidebar'
@@ -10,8 +8,10 @@ import '../components/LoadClasses'
 import ReactHtmlParser from 'react-html-parser'
 import { Config, Post, Category } from "../database/models"
 import DbConnect from './../utils/dbConnect'
+import { GetStaticProps } from 'next'
+import { listPosts } from './api/post/list'
 
-export async function getStaticProps() {
+export let getStaticProps: GetStaticProps = async ({ }) => {
   await DbConnect()
 
   let { info, homePageInfo, posts, categories, postsCategories } =
@@ -19,8 +19,7 @@ export async function getStaticProps() {
 
   try {
     let perPage = 6
-    posts = (await Post.find({ publishDate: { $lte: new Date() } }, ["image", "link", "title", "description", "-_id"], { skip: 0, limit: perPage, sort: { publishDate: -1 } }).exec())
-      .map((post: any) => { return { image: String(post?.image || ""), link: String(post?.link || ""), title: String(post?.title || ""), description: String(post?.description || "") } })
+    posts = (await listPosts({ select: "image link title description -_id", perPage, beforeDate: new Date() })).result
   } catch (e) { }
 
   try {
@@ -42,10 +41,9 @@ export async function getStaticProps() {
     let i = 0
     while (i <= 2) {
       if (categories[i]?._id) {
-        let post = (await Post.find({ category: categories[i]._id, publishDate: { $lte: new Date() } }, ["image", "link", "title", "description", "-_id"], { skip: 0, limit: 4, sort: { publishDate: -1 } }).exec())
-          .map((post: any) => { return { image: String(post?.image || ""), link: String(post?.link || ""), title: String(post?.title || ""), description: String(post?.description || "") } })
+        let postsCategory = (await listPosts({ category: categories[i]._id, select: "image link title description -_id", perPage: 4, beforeDate: new Date() })).result
 
-        postsCategories.push({ category: { color: categories[i]?.color, link: categories[i]?.link || null, name: categories[i]?.name }, posts: post })
+        postsCategories.push({ category: { color: categories[i]?.color, link: categories[i]?.link || null, name: categories[i]?.name }, posts: postsCategory })
       }
       i++
     }
@@ -64,35 +62,31 @@ export async function getStaticProps() {
 }
 
 const Index = ({ posts, homePageInfo, info, categories, postsCategories }) => {
-  // console.log(postsCategories)
-  return (
-    <>
-      <div>
-        <Head>
-          <title>{homePageInfo?.title} - {info?.websiteName}</title>
-          <link rel="icon" href="/favicon.ico" type="image/x-icon" />
 
-          <link rel="canonical" href={process.env.API_URL} />
-          <meta name="description" content={homePageInfo?.description} />
-          <meta name="keywords" content={info?.keywords} />
+  let ReturnHead = <>
+    <title>{homePageInfo?.title} - {info?.websiteName}</title>
 
-          <meta property="og:description" content={homePageInfo?.description} />
-          <meta property="og:url" content={process.env.API_URL} />
-          <meta property="og:type" content={"website"} />
-          <meta property="og:site_name" content={info?.websiteName} />
-          <meta property="og:image" content={homePageInfo?.banner} />
-          <meta property="og:image:secure_url" content={homePageInfo?.banner} />
-          <meta property="og:title" content={`${homePageInfo?.title} - ${info?.websiteName}`} />
-          <meta property="og:locale" content={info?.locale} />
+    <link rel="canonical" href={process.env.API_URL} />
+    <meta name="description" content={homePageInfo?.description} />
+    <meta name="keywords" content={info?.keywords} />
 
-          <meta name="twitter:card" content="summary" />
-          <meta name="twitter:description" content={homePageInfo?.description.toString()} />
-          <meta name="twitter:image" content={homePageInfo?.banner?.toString()} />
-          <meta name="twitter:title" content={`${homePageInfo?.title} - ${info?.websiteName}`} />
-          <meta name="twitter:site" content="@" />
-          <meta name="twitter:creator" content="@" />
-          <style>
-            {`
+    <meta property="og:description" content={homePageInfo?.description} />
+    <meta property="og:url" content={process.env.API_URL} />
+    <meta property="og:type" content={"website"} />
+    <meta property="og:site_name" content={info?.websiteName} />
+    <meta property="og:image" content={homePageInfo?.banner} />
+    <meta property="og:image:secure_url" content={homePageInfo?.banner} />
+    <meta property="og:title" content={`${homePageInfo?.title} - ${info?.websiteName}`} />
+    <meta property="og:locale" content={info?.locale} />
+
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:description" content={homePageInfo?.description.toString()} />
+    <meta name="twitter:image" content={homePageInfo?.banner?.toString()} />
+    <meta name="twitter:title" content={`${homePageInfo?.title} - ${info?.websiteName}`} />
+    <meta name="twitter:site" content="@" />
+    <meta name="twitter:creator" content="@" />
+    <style>
+      {`
             @keyframes slideInFromLeft {
               0% {
                 transform: translateX(-100%);
@@ -106,12 +100,13 @@ const Index = ({ posts, homePageInfo, info, categories, postsCategories }) => {
             }
             
             `}
-          </style>
-          {ReactHtmlParser(homePageInfo?.head)}
-          {ReactHtmlParser(info?.customLayoutStyles)}
-        </Head>
+    </style>
+    {ReactHtmlParser(homePageInfo?.head)}
+  </>
 
-        <Navbar categories={categories} info={info} />
+  return (
+    <>
+      <Layout Head={ReturnHead} info={info} categories={categories}>
         <div className="col-span-3 mb-4 md:mb-0 w-full mx-auto bg-cover bg-center relative"
           style={{ backgroundImage: `url(${homePageInfo?.banner})` }}>
           <div className={`left-0 bottom-0 w-full h-full absolute z-10 flex items-center opacity-80 bg-gradient-to-t from-black`}
@@ -150,6 +145,8 @@ const Index = ({ posts, homePageInfo, info, categories, postsCategories }) => {
 
           </div>
         </div>
+
+
         <div className="container mx-auto">
           <div className="grid grid-cols-3">
             <div className="col-span-3 md:col-span-2">
@@ -181,8 +178,8 @@ const Index = ({ posts, homePageInfo, info, categories, postsCategories }) => {
                         postsCategory.posts.map(post => <PostCard2 info={info} description={post.description} image={post.image} link={post.link} title={post.title} key={post.link} />)
                         :
                         <div className="flex justify-center items-center h-64">
-                          not Found.
-                          </div>
+                          Não encontrado.
+                        </div>
                       }
                     </div>
                   </div>
@@ -191,8 +188,7 @@ const Index = ({ posts, homePageInfo, info, categories, postsCategories }) => {
             })
           }
         </div>
-        <Footer info={info} />
-      </div>
+      </Layout>
     </>
   )
 }

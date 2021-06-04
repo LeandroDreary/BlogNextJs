@@ -48,7 +48,7 @@ const Index = ({ info, user }) => {
     const [categoryForm, setCategoryForm] = useState<{ name: string, color: string }>({ name: "", color: "" })
     const [filters, setFilters] = useState<{ perPage: number, page: number, pages: number, search: string, category: string }>({ search: "", page: 1, pages: 0, category: undefined, perPage: 12 })
     const [loading, setLoading] = useState<boolean>(false);
-    let deer = false
+    let yumee = false
     const LoadCategories = (page?: number, perPage?: number, search?: string) => {
         setLoading(true)
         Api.get(`/api/category/list?${`page=${page || filters.page || 1}&`

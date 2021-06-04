@@ -11,7 +11,7 @@ interface ListCategoriesParams {
 }
 
 export const ListCategories = async (params: ListCategoriesParams) => {
-    let { perPage, page, search, UA } = params
+    let { perPage, page, search } = params
 
     const rgx = (pattern) => (new RegExp(`.*${pattern}.*`));
 
@@ -28,15 +28,14 @@ export const ListCategories = async (params: ListCategoriesParams) => {
         category = category.find({})
         count = count.find({})
     }
-    category = category.select(`${UA ? "" : "-_id"}`)
-    count = count.select(`${UA ? "" : "-_id"}`)
 
     count = await count.countDocuments({}).exec()
     category = await category.skip(perPage * (((page >= 1) ? page : 1) - 1))
         .limit(perPage)
         .exec()
+
     return {
-        result: category?.map(c => { return { color: c?.color, link: c?.link || null, name: c?.name, _id: String(c?._id) } }),
+        result: category?.map(c => { return { color: c?.color, link: c?.link || null, name: c?.name } }),
         count,
         perPage,
         page,

@@ -1,6 +1,5 @@
 import React from 'react'
-import Head from 'next/head'
-import Navbar from '../../components/navbar'
+import Layout from './../../layout/layout'
 import Card from '../../components/cards/post'
 import Sidebar from '../../components/sidebar'
 import '../../components/LoadClasses'
@@ -8,8 +7,6 @@ import { Category, Config } from "../../database/models"
 import DbConnect from './../../utils/dbConnect'
 import { listPosts } from "./../api/post/list"
 import { ListCategories } from '../api/category/list'
-import ReactHtmlParser from 'react-html-parser'
-import Footer from './../../components/footer'
 
 export async function getStaticPaths() {
     return {
@@ -57,39 +54,35 @@ export async function getStaticProps(context) {
 
 const Index = ({ posts, category, info, categories }) => {
     return (
-        <div>
-            <Head>
-                <title>{posts === undefined ? "Carregando..." : category?.name || "Não encontrado"}{info === undefined ? "" : " - " + (info?.websiteName || "")}</title>
-                <link rel="icon" href="/favicon.ico" type="image/x-icon" />
-                {ReactHtmlParser(info?.customLayoutStyles)}
-            </Head>
-            <Navbar categories={categories} info={info} />
-            <div className="container mx-auto">
-                <div className="grid grid-cols-3">
-                    <div className="col-span-3 md:col-span-2">
-                        <div className="px-4 mt-4">
-                            <h1 className="text-4xl px-2 text-semibold text-gray-700">{posts === undefined ? "Carregando" : category?.name || "Categoria não encontrada"}</h1>
-                            <hr className="my-2" />
-                        </div>
-                        {posts === undefined ?
-                            <div className="flex justify-center items-center h-64">
-                                Carregando...
-                    </div> :
-                            posts?.result?.length > 0 ?
-                                posts?.result?.map(post => <Card info={info} description={post.description} image={post.image} link={post.link} title={post.title} key={post.link} />) :
-                                <div className="text-gray-500 flex justify-center items-center h-64">
-                                    Sem resultados encontrados.
+        <>
+            <Layout Head={<title>{posts === undefined ? "Carregando..." : category?.name || "Não encontrado"}{info === undefined ? "" : " - " + (info?.websiteName || "")}</title>} info={info} categories={categories}>
+                <div className="container mx-auto">
+                    <div className="grid grid-cols-3">
+                        <div className="col-span-3 md:col-span-2">
+                            <div className="px-4 mt-4">
+                                <h1 className="text-4xl px-2 text-semibold text-gray-700">{posts === undefined ? "Carregando" : category?.name || "Categoria não encontrada"}</h1>
+                                <hr className="my-2" />
+                            </div>
+                            {posts === undefined ?
+                                <div className="flex justify-center items-center h-64">
+                                    Carregando...
+                                </div> :
+                                posts?.result?.length > 0 ?
+                                    posts?.result?.map(post => <Card info={info} description={post.description} image={post.image} link={post.link} title={post.title} key={post.link} />) :
+                                    <div className="text-gray-500 flex justify-center items-center h-64">
+                                        Sem resultados encontrados.
                                 </div>
-                        }
-                    </div>
-                    <div className="col-span-3 mx-4 md:col-span-1 md:mx-0">
-                        <Sidebar categories={categories} />
+                            }
+                        </div>
+                        <div className="col-span-3 mx-4 md:col-span-1 md:mx-0">
+                            <Sidebar categories={categories} />
+                        </div>
                     </div>
                 </div>
-            </div>
-            <Footer info={info} />
-        </div>
+            </Layout>
+        </>
     )
 }
+
 
 export default Index
