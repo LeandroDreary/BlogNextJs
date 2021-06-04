@@ -1,11 +1,12 @@
 {
   "name": "blog-next",
-  "version": "6.8.4",
+  "version": "6.8.6",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "export": "next export"
   },
   "dependencies": {
     "@types/jquery": "^3.5.5",
