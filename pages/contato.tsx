@@ -64,7 +64,6 @@ const Index = ({ info, categories, warnings }) => {
     return (
         <>
             <Layout Head={<title>Contato - {info?.websiteName}</title>} info={info} categories={categories}>
-
                 <div className="container mx-auto">
                     <div className="grid grid-cols-5 my-6 text-center md:text-left">
                         <div className={"col-span-5 px-4"}>
