@@ -11,7 +11,7 @@ import { ListCategories } from '../api/category/list'
 export async function getStaticPaths() {
     return {
         paths: [],
-        fallback: true,
+        fallback: false,
     }
 }
 

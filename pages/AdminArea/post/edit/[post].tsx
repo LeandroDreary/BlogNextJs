@@ -13,7 +13,7 @@ import ReactHtmlParser from 'react-html-parser'
 export async function getStaticPaths() {
     return {
         paths: [],
-        fallback: true,
+        fallback: false,
     }
 }
 
