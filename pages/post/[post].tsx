@@ -10,7 +10,7 @@ import PostCard from './../../components/cards/post2'
 export async function getStaticPaths() {
     return {
         paths: [],
-        fallback: false,
+        fallback: true,
     }
 }
 
