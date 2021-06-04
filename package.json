@@ -1,6 +1,6 @@
 {
   "name": "blog-next",
-  "version": "6.8.9",
+  "version": "7.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -31,6 +31,7 @@
     "react-dom": "^17.0.2",
     "react-html-parser": "^2.0.2",
     "react-icons": "^3.11.0",
+    "saslprep": "^1.0.3",
     "sharp": "^0.28.3",
     "suneditor": "^2.39.0",
     "suneditor-react": "^3.1.1",
