@@ -1,15 +1,13 @@
 {
   "name": "blog-next",
-  "version": "6.8.6",
+  "version": "6.8.9",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
-    "export": "next export"
+    "start": "next start"
   },
   "dependencies": {
-    "@netlify/plugin-nextjs": "^3.4.1",
     "@types/jquery": "^3.5.5",
     "@types/tough-cookie": "^4.0.0",
     "autoprefixer": "^10.2.6",

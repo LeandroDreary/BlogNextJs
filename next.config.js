@@ -1,5 +1,5 @@
 module.exports = {
-    future: {
-      webpack5: false,
-    }
+  future: {
+    webpack5: false,
   }
+}
