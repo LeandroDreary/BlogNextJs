@@ -1,6 +1,6 @@
 {
   "name": "blog-next",
-  "version": "7.0.1",
+  "version": "7.0.2",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -15,6 +15,7 @@
     "axios-cookiejar-support": "^1.0.1",
     "bcryptjs": "^2.4.3",
     "cloudinary-react": "^1.7.0",
+    "mongodb-client-encryption": "^1.2.4",
     "cookie": "^0.4.1",
     "cookies": "^0.8.0",
     "form-data": "^4.0.0",
