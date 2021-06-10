@@ -1,13 +1,10 @@
 import React from 'react'
-import Head from 'next/head'
 import Cookies from 'cookies'
-import Navbar from './../../components/navbar_admin'
-import '../../components/LoadClasses'
+import LayoutAdmin from './../../layout/layoutAdmin'
 import { GetServerSideProps } from 'next'
 import HandleAuth from '../../services/auth'
 import { Config } from '../../database/models'
 import DbConnect from './../../utils/dbConnect'
-import ReactHtmlParser from 'react-html-parser'
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
     await DbConnect()
@@ -42,15 +39,9 @@ const Index = ({ info, user }: { info: any, user: any }) => {
 
     return (
         <>
-            <Head>
-                <title>Página Inicial</title>
-                <link rel="icon" href="/favicon.ico" type="image/x-icon" />
-                {ReactHtmlParser(info?.customLayoutStyles)}
-            </Head>
-            <Navbar info={info} user={user} />
-            <div className="container">
+            <LayoutAdmin head={<title>Página Inicial</title>} info={info} user={user}>
 
-            </div>
+            </LayoutAdmin>
         </>
     )
 

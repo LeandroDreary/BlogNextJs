@@ -42,7 +42,7 @@ class Sidebar extends React.Component<MyProps, MyState> {
                     </div>
                     <hr />
                     <div className="py-4 px-2">
-                        <iframe src="https://open.spotify.com/embed/show/4nBsQLdWBRIExO4lINjdxi" width="100%" height="232" frameBorder="0" allowTransparency={true} allow="encrypted-media"></iframe>
+                        <iframe src="https://open.spotify.com/embed/show/4nBsQLdWBRIExO4lINjdxi" width="100%" height="232" frameBorder="0" allow="encrypted-media"></iframe>
                     </div>
                 </div>
             </div>

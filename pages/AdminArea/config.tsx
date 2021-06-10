@@ -1,13 +1,10 @@
 import React, { useState } from 'react'
-import Head from 'next/head'
+import LayoutAdminArea from './../../layout/layoutAdminArea'
 import Cookies from 'cookies'
-import Navbar from '../../components/navbar_admin_area'
-import '../../components/LoadClasses'
 import bcrypt from 'bcryptjs'
 import { GetServerSideProps } from 'next'
 import { Config } from '../../database/models'
 import DbConnect from './../../utils/dbConnect'
-import ReactHtmlParser from 'react-html-parser'
 import Frm_Info from './../../components/forms/config/frm_info'
 import Frm_HomePageInfo from './../../components/forms/config/frm_homePageInfo'
 
@@ -77,24 +74,20 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
 
 const Index = ({ Info, user, HomePageInfo }) => {
 
-    const [infoInputs, setInfoInputs] = useState<info>(Info)    
+    const [infoInputs, setInfoInputs] = useState<info>(Info)
 
     return (
         <>
-            <Head>
-                <title>Configurações - {infoInputs?.websiteName}</title>
-                <link rel="stylesheet" href="/css/admin/config.css" />
-                <link rel="icon" href="/favicon.ico" type="image/x-icon" />
-                {ReactHtmlParser(infoInputs?.customLayoutStyles)}
-            </Head>
-            <Navbar info={infoInputs} user={user} />
-            <div className="container py-4 mx-auto">
-                
-                <Frm_Info Info={Info} infoInputs={infoInputs} setInfoInputs={setInfoInputs} />
+            <LayoutAdminArea head={<><title>Configurações - {infoInputs?.websiteName}</title>
+                <link rel="stylesheet" href="/css/admin/config.css" /></>} info={infoInputs} user={user}>
+                <div className="container py-4 mx-auto">
 
-                <Frm_HomePageInfo info={infoInputs} homePageInfo={HomePageInfo} />
+                    <Frm_Info Info={Info} infoInputs={infoInputs} setInfoInputs={setInfoInputs} />
 
-            </div>
+                    <Frm_HomePageInfo info={infoInputs} homePageInfo={HomePageInfo} />
+
+                </div>
+            </LayoutAdminArea>
         </>
     )
 

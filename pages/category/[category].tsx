@@ -1,8 +1,6 @@
 import React from 'react'
 import Layout from './../../layout/layout'
-import Card from '../../components/cards/post'
-import Sidebar from '../../components/sidebar'
-import '../../components/LoadClasses'
+import {PostCard, Sidebar} from './../../components'
 import { Category, Config } from "../../database/models"
 import DbConnect from './../../utils/dbConnect'
 import { listPosts } from "./../api/post/list"
@@ -68,7 +66,7 @@ const Index = ({ posts, category, info, categories }) => {
                                     Carregando...
                                 </div> :
                                 posts?.result?.length > 0 ?
-                                    posts?.result?.map(post => <Card info={info} description={post.description} image={post.image} link={post.link} title={post.title} key={post.link} />) :
+                                    posts?.result?.map(post => <PostCard info={info} description={post.description} image={post.image} link={post.link} title={post.title} key={post.link} />) :
                                     <div className="text-gray-500 flex justify-center items-center h-64">
                                         Sem resultados encontrados.
                                 </div>

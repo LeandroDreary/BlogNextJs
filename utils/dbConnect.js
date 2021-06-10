@@ -13,13 +13,10 @@ let cached = global.mongoose
 if (!cached) {
   cached = global.mongoose = { conn: null, promise: null }
 }
-
 async function dbConnect() {
-  console.log("connection")
   if (cached.conn) {
     return cached.conn
   }
-
   if (!cached.promise) {
     cached.promise = mongoose.connect(MONGODB_URI, {
       useNewUrlParser: true,

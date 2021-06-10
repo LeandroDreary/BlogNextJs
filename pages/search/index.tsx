@@ -1,11 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react'
 import Layout from './../../layout/layout'
-import PostCard2 from './../../components/cards/post2'
+import { PostCard2, Navigation } from './../../components'
 import api from '../../services/api'
 import { FaSearch } from 'react-icons/fa'
 import { useRouter } from 'next/router'
-import '../../components/LoadClasses'
-import Navigation from '../../components/navigation'
 import { Config } from "../../database/models"
 import DbConnect from './../../utils/dbConnect'
 import { ListCategories } from '../api/category/list'

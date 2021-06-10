@@ -10,7 +10,7 @@ export async function getServerSideProps({ res }) {
     iconIco = iconIco._doc.content
   } catch (e) { }
   
-  const imageResp = new Buffer(iconIco?.iconICO, "base64");
+  const imageResp = Buffer.from(iconIco?.iconICO, "base64");
 
   res.writeHead(200, {
     'Content-Type': 'image/png',

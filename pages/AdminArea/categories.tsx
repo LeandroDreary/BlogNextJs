@@ -1,17 +1,14 @@
 import React, { useEffect, useState } from 'react'
-import Head from 'next/head'
+import LayoutAdminArea from './../../layout/layoutAdminArea'
 import $ from 'jquery'
 import Cookies from 'cookies'
 import { FaSearch, FaWindowClose } from 'react-icons/fa'
 import Api from '../../services/api'
-import Navbar from '../../components/navbar_admin_area'
-import '../../components/LoadClasses'
-import Navigation from '../../components/navigation'
+import { Navigation } from './../../components'
 import { GetServerSideProps } from 'next'
 import bcrypt from 'bcryptjs'
 import { Config } from '../../database/models'
 import DbConnect from './../../utils/dbConnect'
-import ReactHtmlParser from 'react-html-parser'
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
     await DbConnect()
@@ -177,87 +174,84 @@ const Index = ({ info, user }) => {
                     </div>
                     : ""
             }
-            <Head>
-                <title>Categorias</title>
-                <link rel="icon" href="/favicon.ico" type="image/x-icon" />
-                {ReactHtmlParser(info?.customLayoutStyles)}
-            </Head>
-            <Navbar info={info} user={user} />
-            <div className="container mx-auto">
-                <div className="grid grid-cols-12">
-                    <div className="col-span-12">
-                        <button onClick={() => { $("body").css({ "overflow-y": "hidden" }); setCreatePopup({ show: true, able: false }) }} className={`mr-5 my-4 bg-${info?.colors.background?.color} hover:bg-${info?.colors.background?.shadow} text-${info?.colors.text?.shadow} hover:text-${info?.colors.text?.color} font-bold py-2 px-6 rounded-lg`}>
-                            Nova categoria
+
+            <LayoutAdminArea head={<title>Categorias</title>} info={info} user={user}>
+                <div className="container mx-auto">
+                    <div className="grid grid-cols-12">
+                        <div className="col-span-12">
+                            <button onClick={() => { $("body").css({ "overflow-y": "hidden" }); setCreatePopup({ show: true, able: false }) }} className={`mr-5 my-4 bg-${info?.colors.background?.color} hover:bg-${info?.colors.background?.shadow} text-${info?.colors.text?.shadow} hover:text-${info?.colors.text?.color} font-bold py-2 px-6 rounded-lg`}>
+                                Nova categoria
                         </button>
-                        <button onClick={() => LoadCategories()} className="mr-5 my-4 bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-2 px-6 rounded-lg">
-                            Recarregar
+                            <button onClick={() => LoadCategories()} className="mr-5 my-4 bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-2 px-6 rounded-lg">
+                                Recarregar
                         </button>
-                        <hr />
-                    </div>
-                </div>
-                <div className="box pt-6">
-                    <form onSubmit={(e) => { e.preventDefault(); LoadCategories(); }}>
-                        <div className={`bg-${info?.colors.background?.color} py-4 px-6 mx-4 rounded-lg shadow-md box-wrapper`}>
-                            <div className={`rounded flex items-center w-full p-3 shadow-sm border border-${info?.colors?.text?.color} text-${info?.colors?.text?.color}`}>
-                                <input onChange={e => setFilters({ ...filters, search: e.target.value })} type="search" placeholder="search" x-model="q" className={`placeholder-${info?.colors?.text?.shadow} font-semibold w-full text-sm outline-none focus:outline-none bg-transparent`} />
-                                <button type="submit" className="outline-none focus:outline-none px-4">
-                                    <FaSearch />
-                                </button>
-                            </div>
+                            <hr />
                         </div>
-                    </form>
-                </div>
-                <div className="grid grid-cols-6">
-                    <div className="col-span-6">
-                        <Navigation callBack={page => LoadCategories(page)} info={info} page={filters.page} pages={filters.pages} />
-                        <hr />
                     </div>
-                    <div className="col-span-1">
+                    <div className="box pt-6">
+                        <form onSubmit={(e) => { e.preventDefault(); LoadCategories(); }}>
+                            <div className={`bg-${info?.colors.background?.color} py-4 px-6 mx-4 rounded-lg shadow-md box-wrapper`}>
+                                <div className={`rounded flex items-center w-full p-3 shadow-sm border border-${info?.colors?.text?.color} text-${info?.colors?.text?.color}`}>
+                                    <input onChange={e => setFilters({ ...filters, search: e.target.value })} type="search" placeholder="search" x-model="q" className={`placeholder-${info?.colors?.text?.shadow} font-semibold w-full text-sm outline-none focus:outline-none bg-transparent`} />
+                                    <button type="submit" className="outline-none focus:outline-none px-4">
+                                        <FaSearch />
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
                     </div>
-                    <div className="col-span-6 sm:col-span-4 mx-4">
-                        {!loading ?
-                            categoriesEdit?.map(category => {
-                                return (
-                                    <form onSubmit={e => HandleSubmit(category?._id, e)} className="grid grid-cols-3 shadow border my-4 rounded" key={category._id}>
-                                        <div className="col-span-3 sm:col-span-2 grid grid-cols-2 mx-auto">
-                                            <div className="col-span-1 ml-4 flex items-center">
-                                                <input className="shadow appearance-none font-semibold text-gray-700 border rounded w-64 py-2 px-3 my-4 text-grey-400 mx-auto" onChange={e => setCategoriesEdit(categoriesEdit.map(c => { if (c._id === category._id) { return { ...c, name: e.target.value } } else return c }))} value={category?.name} type="text" />
-                                            </div>
-                                            <div className="col-span-1 flex items-center justify-end sm:justify-center">
-                                                <input className="mr-4 sm:mr-0" onChange={e => setCategoriesEdit(categoriesEdit.map(c => { if (c._id === category._id) { return { ...c, color: e.target.value } } else return c }))} value={category?.color} name={"color_selector_" + category._id} type="color" />
-                                            </div>
-                                        </div>
-                                        <div className="col-span-3 sm:col-span-1 flex items-center">
-                                            <div className="mx-auto flex items-center">
-                                                {
-                                                    (categories?.filter(c => c._id === category._id)[0].name !== category.name ||
-                                                        categories?.filter(c => c._id === category._id)[0].color !== category.color) ?
-                                                        <button className="my-4 text-white font-semibold px-4 mx-2 py-2" style={{ backgroundColor: category.color }} type="submit">
-                                                            Salvar
-                                                    </button> :
-                                                        <div className="my-4 text-gray-800 font-semibold px-4 py-2 mx-2 bg-gray-200  cursor-pointer">
-                                                            Salvar
-                                                    </div>
-                                                }
-                                                <div onClick={() => { $("body").css({ "overflow-y": "hidden" }); setDeletePopup({ _id: category._id, name: categories?.filter(c => c._id === category._id)[0].name, show: true, able: false }) }} className="my-4 text-white font-semibold px-4 py-2 bg-red-700 hover:bg-red-800 mx-2 cursor-pointer">
-                                                    Apagar
+                    <div className="grid grid-cols-6">
+                        <div className="col-span-6">
+                            <Navigation callBack={page => LoadCategories(page)} info={info} page={filters.page} pages={filters.pages} />
+                            <hr />
+                        </div>
+                        <div className="col-span-1">
+                        </div>
+                        <div className="col-span-6 sm:col-span-4 mx-4">
+                            {!loading ?
+                                categoriesEdit?.map(category => {
+                                    return (
+                                        <form onSubmit={e => HandleSubmit(category?._id, e)} className="grid grid-cols-3 shadow border my-4 rounded" key={category._id}>
+                                            <div className="col-span-3 sm:col-span-2 grid grid-cols-2 mx-auto">
+                                                <div className="col-span-1 ml-4 flex items-center">
+                                                    <input className="shadow appearance-none font-semibold text-gray-700 border rounded w-64 py-2 px-3 my-4 text-grey-400 mx-auto" onChange={e => setCategoriesEdit(categoriesEdit.map(c => { if (c._id === category._id) { return { ...c, name: e.target.value } } else return c }))} value={category?.name} type="text" />
+                                                </div>
+                                                <div className="col-span-1 flex items-center justify-end sm:justify-center">
+                                                    <input className="mr-4 sm:mr-0" onChange={e => setCategoriesEdit(categoriesEdit.map(c => { if (c._id === category._id) { return { ...c, color: e.target.value } } else return c }))} value={category?.color} name={"color_selector_" + category._id} type="color" />
                                                 </div>
                                             </div>
-                                        </div>
-                                    </form>
-                                )
-                            }) :
-                            <div className="flex justify-center items-center h-64">
-                                <img src="https://www.wallies.com/filebin/images/loading_apple.gif" alt="loading" className="w-12" />
-                            </div>
-                        }
-                    </div>
-                    <div className="col-span-6">
-                        <hr />
-                        <Navigation callBack={page => LoadCategories(page)} info={info} page={filters.page} pages={filters.pages} />
+                                            <div className="col-span-3 sm:col-span-1 flex items-center">
+                                                <div className="mx-auto flex items-center">
+                                                    {
+                                                        (categories?.filter(c => c._id === category._id)[0].name !== category.name ||
+                                                            categories?.filter(c => c._id === category._id)[0].color !== category.color) ?
+                                                            <button className="my-4 text-white font-semibold px-4 mx-2 py-2" style={{ backgroundColor: category.color }} type="submit">
+                                                                Salvar
+                                                    </button> :
+                                                            <div className="my-4 text-gray-800 font-semibold px-4 py-2 mx-2 bg-gray-200  cursor-pointer">
+                                                                Salvar
+                                                    </div>
+                                                    }
+                                                    <div onClick={() => { $("body").css({ "overflow-y": "hidden" }); setDeletePopup({ _id: category._id, name: categories?.filter(c => c._id === category._id)[0].name, show: true, able: false }) }} className="my-4 text-white font-semibold px-4 py-2 bg-red-700 hover:bg-red-800 mx-2 cursor-pointer">
+                                                        Apagar
+                                                </div>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    )
+                                }) :
+                                <div className="flex justify-center items-center h-64">
+                                    <img src="https://www.wallies.com/filebin/images/loading_apple.gif" alt="loading" className="w-12" />
+                                </div>
+                            }
+                        </div>
+                        <div className="col-span-6">
+                            <hr />
+                            <Navigation callBack={page => LoadCategories(page)} info={info} page={filters.page} pages={filters.pages} />
+                        </div>
                     </div>
                 </div>
-            </div>
+            </LayoutAdminArea>
         </>
     )
 }

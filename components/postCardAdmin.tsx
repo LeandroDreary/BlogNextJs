@@ -1,7 +1,7 @@
 import React from 'react'
 import $ from 'jquery'
 import { FaWindowClose } from 'react-icons/fa'
-import Api from '../../services/api'
+import Api from '../services/api'
 import Router from 'next/router'
 
 interface MyProps {

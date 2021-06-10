@@ -1,15 +1,12 @@
 import React, { useState } from 'react'
-import Head from 'next/head'
 import Cookies from 'cookies'
+import LayoutAdminArea from './../../../layout/layoutAdminArea'
 import getRawBody from 'raw-body'
-import Navbar from './../../../components/navbar_admin_area'
-import '../../../components/LoadClasses'
 import { GetServerSideProps } from 'next'
 import bcrypt from 'bcryptjs'
 import { Config, User } from '../../../database/models'
 import DbConnect from './../../../utils/dbConnect'
 import Link from 'next/link'
-import ReactHtmlParser from 'react-html-parser'
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
     await DbConnect()
@@ -67,80 +64,76 @@ const Index = ({ info, user, warnings, inputs }) => {
 
     return (
         <>
-            <Head>
-                <title>Novo usuário</title>
-                <link rel="icon" href="/favicon.ico" type="image/x-icon" />
-                {ReactHtmlParser(info?.customLayoutStyles)}
-            </Head>
-            <Navbar info={info} user={user} />
-            <div className="container mx-auto">
-                <Link href="/AdminArea/users">
-                    <a>
-                        <button className={`mr-5 my-4 bg-${info?.colors.background?.color} hover:bg-${info?.colors.background?.shadow} text-${info?.colors.text?.shadow} hover:text-${info?.colors.text?.color} font-bold py-2 px-6 rounded-lg`}>
-                            Turn back
+            <LayoutAdminArea head={<title>Novo usuário</title>} info={info} user={user}>
+                <div className="container mx-auto">
+                    <Link href="/AdminArea/users">
+                        <a>
+                            <button className={`mr-5 my-4 bg-${info?.colors.background?.color} hover:bg-${info?.colors.background?.shadow} text-${info?.colors.text?.shadow} hover:text-${info?.colors.text?.color} font-bold py-2 px-6 rounded-lg`}>
+                                Voltar
                         </button>
-                    </a>
-                </Link>
-                <hr />
-                <form method="post">
-                    <div className="w-full grid grid-cols-6 gap-4">
-                        <div className="col-span-1">
-                        </div>
-                        <div className="col-span-4">
-                            <div className="my-4">
-                                <div className={`bg-${info?.colors?.background?.color} p-2 px-4`}>
-                                    <span className={`font-semibold text-${info?.colors?.text?.color}`}>Username</span>
-                                </div>
-                                <div className="p-4 border shadow-md">
-                                    <input defaultValue={inputs?.username} className="shadow w-full appearance-none border border-red rounded py-2 px-3 text-grey-400 mb-3" name="username" id="username" type="text" placeholder="Username" />
-                                    {
-                                        warnings.map(warning => {
-                                            if (warning.input === "username")
-                                                return <p className="text-red-400 text-xs italic font-bold my-1">{warning.message}</p>
-                                        })
-                                    }
+                        </a>
+                    </Link>
+                    <hr />
+                    <form method="post">
+                        <div className="w-full grid grid-cols-6 gap-4">
+                            <div className="col-span-1">
+                            </div>
+                            <div className="col-span-4">
+                                <div className="my-4">
+                                    <div className={`bg-${info?.colors?.background?.color} p-2 px-4`}>
+                                        <span className={`font-semibold text-${info?.colors?.text?.color}`}>Usuário</span>
+                                    </div>
+                                    <div className="p-4 border shadow-md">
+                                        <input defaultValue={inputs?.username} className="shadow w-full appearance-none border border-red rounded py-2 px-3 text-grey-400 mb-3" name="username" id="username" type="text" placeholder="Username" />
+                                        {
+                                            warnings.map(warning => {
+                                                if (warning.input === "username")
+                                                    return <p className="text-red-400 text-xs italic font-bold my-1">{warning.message}</p>
+                                            })
+                                        }
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div className="w-full grid grid-cols-6 gap-4">
-                        <div className="col-span-1">
-                        </div>
-                        <div className="col-span-4">
-                            <div className="my-4">
-                                <div className={`bg-${info?.colors?.background?.color} p-2 px-4`}>
-                                    <span className={`font-semibold text-${info?.colors?.text?.color}`}>Discord</span>
-                                </div>
-                                <div className="p-4 border shadow-md">
-                                    <input defaultValue={inputs?.discordUser} className="shadow w-full appearance-none border border-red rounded py-2 px-3 text-grey-400 mb-3" name="discordUser" id="discordUser" type="text" placeholder="Discord" />
+                        <div className="w-full grid grid-cols-6 gap-4">
+                            <div className="col-span-1">
+                            </div>
+                            <div className="col-span-4">
+                                <div className="my-4">
+                                    <div className={`bg-${info?.colors?.background?.color} p-2 px-4`}>
+                                        <span className={`font-semibold text-${info?.colors?.text?.color}`}>Discord</span>
+                                    </div>
+                                    <div className="p-4 border shadow-md">
+                                        <input defaultValue={inputs?.discordUser} className="shadow w-full appearance-none border border-red rounded py-2 px-3 text-grey-400 mb-3" name="discordUser" id="discordUser" type="text" placeholder="Discord" />
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div className="w-full grid grid-cols-6 gap-4">
-                        <div className="col-span-1">
-                        </div>
-                        <div className="col-span-4">
-                            <div className="my-4">
-                                <div className={`bg-${info?.colors?.background?.color} p-2 px-4`}>
-                                    <span className={`font-semibold text-${info?.colors?.text?.color}`}>Password</span>
-                                </div>
-                                <div className="p-4 border shadow-md">
-                                    <button type="button" onClick={() => setPassword(Math.random().toString(36).slice(-8))} className={`mr-5 mb-4 bg-${info?.colors.background?.color} hover:bg-${info?.colors.background?.shadow} text-${info?.colors.text?.shadow} hover:text-${info?.colors.text?.color} font-bold py-2 px-6 rounded-lg`}>
-                                        Generate Password
+                        <div className="w-full grid grid-cols-6 gap-4">
+                            <div className="col-span-1">
+                            </div>
+                            <div className="col-span-4">
+                                <div className="my-4">
+                                    <div className={`bg-${info?.colors?.background?.color} p-2 px-4`}>
+                                        <span className={`font-semibold text-${info?.colors?.text?.color}`}>Senha</span>
+                                    </div>
+                                    <div className="p-4 border shadow-md">
+                                        <button type="button" onClick={() => setPassword(Math.random().toString(36).slice(-8))} className={`mr-5 mb-4 bg-${info?.colors.background?.color} hover:bg-${info?.colors.background?.shadow} text-${info?.colors.text?.shadow} hover:text-${info?.colors.text?.color} font-bold py-2 px-6 rounded-lg`}>
+                                            Gerar nova senha
                                     </button>
-                                    <input value={password} onChange={e => setPassword(e.target.value)} className="shadow w-full appearance-none border border-red rounded py-2 px-3 text-grey-400 mb-3" name="password" id="password" type="text" placeholder="Password" />
+                                        <input value={password} onChange={e => setPassword(e.target.value)} className="shadow w-full appearance-none border border-red rounded py-2 px-3 text-grey-400 mb-3" name="password" id="password" type="text" placeholder="Password" />
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div className="text-center">
-                        <button type="submit" className={`mr-5 my-4 bg-${info?.colors.background?.color} hover:bg-${info?.colors.background?.shadow} text-${info?.colors.text?.shadow} hover:text-${info?.colors.text?.color} font-bold py-2 px-6 rounded-lg`}>
-                            Create
+                        <div className="text-center">
+                            <button type="submit" className={`mr-5 my-4 bg-${info?.colors.background?.color} hover:bg-${info?.colors.background?.shadow} text-${info?.colors.text?.shadow} hover:text-${info?.colors.text?.color} font-bold py-2 px-6 rounded-lg`}>
+                                Create
                         </button>
-                    </div>
-                </form>
-            </div>
+                        </div>
+                    </form>
+                </div>
+            </LayoutAdminArea>
         </>
     )
 

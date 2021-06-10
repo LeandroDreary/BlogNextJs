@@ -6,7 +6,7 @@ import dynamic from 'next/dynamic'
 import FormData from 'form-data'
 
 const Editor = dynamic(
-    () => import('../editor'),
+    () => import('./../editor'),
     { ssr: false }
 )
 interface PostI {

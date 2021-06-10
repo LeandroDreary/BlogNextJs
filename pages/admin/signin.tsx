@@ -4,7 +4,6 @@ import Cookies from 'cookies'
 import getRawBody from 'raw-body'
 import mongoose from "mongoose"
 import bcrypt from 'bcryptjs'
-import '../../components/LoadClasses'
 import { GetServerSideProps, } from 'next'
 import { Auth, AuthI, User, UserI } from '../../database/models'
 import DbConnect from './../../utils/dbConnect'

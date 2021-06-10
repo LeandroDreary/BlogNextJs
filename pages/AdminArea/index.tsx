@@ -1,13 +1,10 @@
 import React from 'react'
-import Head from 'next/head'
 import Cookies from 'cookies'
-import Navbar from './../../components/navbar_admin_area'
-import '../../components/LoadClasses'
+import LayoutAdminArea from './../../layout/layoutAdminArea'
 import { GetServerSideProps } from 'next'
 import bcrypt from 'bcryptjs'
 import { Config } from '../../database/models'
 import DbConnect from './../../utils/dbConnect'
-import ReactHtmlParser from 'react-html-parser'
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
     await DbConnect()
@@ -39,15 +36,9 @@ const Index = ({ info, user }) => {
 
     return (
         <>
-            <Head>
-                <title>Página Inicial</title>
-                <link rel="icon" href="/favicon.ico" type="image/x-icon" />
-                {ReactHtmlParser(info?.customLayoutStyles)}
-            </Head>
-            <Navbar info={info} user={user} />
-            <div className="container">
+            <LayoutAdminArea head={<title>Página Inicial</title>} info={info} user={user}>
 
-            </div>
+            </LayoutAdminArea>
         </>
     )
 

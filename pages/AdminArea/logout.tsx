@@ -1,6 +1,5 @@
 import React from 'react'
 import Cookies from 'cookies'
-import '../../components/LoadClasses'
 import { GetServerSideProps } from 'next'
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {

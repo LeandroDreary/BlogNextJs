@@ -1,11 +1,9 @@
 import React from 'react'
 import Layout from './../../layout/layout'
-import Sidebar from '../../components/sidebar'
-import '../../components/LoadClasses'
+import {Sidebar, PostCard2} from './../../components'
 import { Category, Config, Post, User } from "../../database/models"
 import DbConnect from './../../utils/dbConnect'
 import { ListCategories } from '../api/category/list'
-import PostCard from './../../components/cards/post2'
 
 export async function getStaticPaths() {
     return {
@@ -166,7 +164,7 @@ function Blog({ post, recommend, info, author, categories }) {
                 </div>
                 {recommend?.map((post, index) => {
                     return (
-                        <PostCard key={index} info={info} description={post?.description} image={post?.image} link={post?.link} title={post?.title} />
+                        <PostCard2 key={index} info={info} description={post?.description} image={post?.image} link={post?.link} title={post?.title} />
                     )
                 })}
             </div>

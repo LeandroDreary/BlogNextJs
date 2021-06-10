@@ -1,6 +1,5 @@
 import React from 'react'
 import Layout from './../layout/layout'
-import './../components/LoadClasses'
 import { GetServerSideProps } from 'next'
 import { Category, Config } from '../database/models'
 import DbConnect from '../utils/dbConnect'

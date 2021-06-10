@@ -3,7 +3,6 @@ import Head from 'next/head'
 import Cookies from 'cookies'
 import getRawBody from 'raw-body'
 import bcrypt from 'bcryptjs'
-import '../../components/LoadClasses'
 import { GetServerSideProps } from 'next'
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {

@@ -1,12 +1,9 @@
 import React from 'react'
 import Link from 'next/link'
 import Layout from './../layout/layout'
-import Card from '../components/cards/post'
-import PostCard2 from '../components/cards/post2'
-import Sidebar from '../components/sidebar'
-import '../components/LoadClasses'
+import {PostCard, PostCard2, Sidebar} from '../components'
 import ReactHtmlParser from 'react-html-parser'
-import { Config, Post, Category } from "../database/models"
+import { Config, Category } from "../database/models"
 import DbConnect from './../utils/dbConnect'
 import { GetStaticProps } from 'next'
 import { listPosts } from './api/post/list'
@@ -14,29 +11,31 @@ import { listPosts } from './api/post/list'
 export let getStaticProps: GetStaticProps = async ({ }) => {
   await DbConnect()
 
-  let { info, homePageInfo, posts, categories, postsCategories } =
-    { info: null, homePageInfo: null, posts: null, categories: null, postsCategories: [] }
-
+  let posts = null
   try {
     let perPage = 6
     posts = (await listPosts({ select: "image link title description -_id", perPage, beforeDate: new Date() })).result
   } catch (e) { }
 
+  let info = null
   try {
     info = await Config.findOne({ name: "info" }).select(`-_id`).exec()
     info = info._doc.content
   } catch (e) { }
 
+  let homePageInfo = null
   try {
     homePageInfo = await Config.findOne({ name: "homePageInfo" }).select(`-_id`).exec()
     homePageInfo = homePageInfo._doc.content
   } catch (e) { }
 
+  let categories = null
   try {
     categories = await Category.find({}).exec()
     categories = categories._doc.content
   } catch (e) { }
 
+  let postsCategories = null
   try {
     let i = 0
     while (i <= 2) {
@@ -155,7 +154,7 @@ const Index = ({ posts, homePageInfo, info, categories, postsCategories }) => {
                 <hr className="my-2" />
               </div>
               {posts ?
-                posts?.filter((v, i) => i !== 0)?.map(post => <Card info={info} description={post.description} image={post.image} link={post.link} title={post.title} key={post.link} />)
+                posts?.filter((v, i) => i !== 0)?.map(post => <PostCard info={info} description={post.description} image={post.image} link={post.link} title={post.title} key={post.link} />)
                 :
                 <div className="flex justify-center items-center h-64">
                   not Found.

@@ -12,7 +12,7 @@ User-agent: *
 Allow: /
 Disallow: /admin
   
-Sitemap: ${process.env.API_URL}sitemap.xml`);
+Sitemap: ${process.env.API_URL}/sitemap.xml`);
   res.end();
 
   return { props: {} };
