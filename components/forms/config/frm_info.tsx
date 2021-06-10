@@ -72,10 +72,10 @@ const Index = ({ Info, infoInputs, setInfoInputs }) => {
     useEffect(() => {
         let customLayoutStyles = `<style>
     .border-custom{
-        border-color:${infoInputs?.customLayout?.colors?.background?.color};
+        border-color:${infoInputs?.customLayout?.colors?.text?.color};
     }
     .border-custom2{
-        border-color:${infoInputs?.customLayout?.colors?.background?.shadow};
+        border-color:${infoInputs?.customLayout?.colors?.text?.shadow};
     }
     .bg-custom{
         background-color:${infoInputs?.customLayout?.colors?.background?.color};
@@ -337,42 +337,40 @@ const Index = ({ Info, infoInputs, setInfoInputs }) => {
                         <span className="font-semibold text-gray-700 py-1">Ícone: </span>
                         <div className="py-3">
                             <label aria-label="icon">
-                                <input className="hidden" onChange={e => { setIconFile({ file: e.target.files[0], preview: e.target.files[0] ? URL.createObjectURL(e.target.files[0]) : undefined }); setChanged(true);setInfoInputs({ ...infoInputs, icon: "" }) }} type="file" id="file" name="icon" accept="image/x-png,image/jpeg,image/webp" />
+                                <input className="hidden" onChange={e => { setIconFile({ file: e.target.files[0], preview: e.target.files[0] ? URL.createObjectURL(e.target.files[0]) : undefined }); setChanged(true); setInfoInputs({ ...infoInputs, icon: "" }) }} type="file" id="file" name="icon" accept="image/x-png,image/jpeg,image/webp" />
                                 <div className="pb-4">
                                     <span className={`bg-${infoInputs?.colors?.background?.color} mt-4 hover:bg-${infoInputs?.colors?.background?.shadow} rounded px-4 py-2 text-${infoInputs?.colors?.text?.shadow} hover:text-${infoInputs?.colors?.text?.color} text-custom2-h font-semibold`}>Escolher Ícone</span>
                                 </div>
-
-                                <div style={{ maxWidth: "17em" }} className={`w-full mx-auto md:ml-0 h-36 p-4 bg-${infoInputs?.colors?.background?.color} shadow-lg border border-${infoInputs?.colors?.background?.shadow}`}>
-                                    {iconFile.preview ?
-                                        <img id="icon-img" alt="icon" src={iconFile?.preview} className={`mx-auto shadow-lg h-full`} />
-                                        :
-                                        <div>
-
-                                        </div>
-                                    }
-                                </div>
                             </label>
+                            <div style={{ maxWidth: "17em" }} className={`w-full mx-auto md:ml-0 h-36 p-4 bg-${infoInputs?.colors?.background?.color} shadow-lg border border-${infoInputs?.colors?.background?.shadow}`}>
+                                {iconFile.preview ?
+                                    <img id="icon-img" alt="icon" src={iconFile?.preview} className={`mx-auto shadow-lg h-full`} />
+                                    :
+                                    <div>
+
+                                    </div>
+                                }
+                            </div>
                         </div>
 
                         <span className="font-semibold text-gray-700 py-1">Ícone ICO: </span>
                         <div className="py-3">
                             <label aria-label="icon">
-                                <input className="hidden" onChange={e => { setIconICONFile({ file: e.target.files[0], preview: e.target.files[0] ? URL.createObjectURL(e.target.files[0]) : undefined });setChanged(true) }} type="file" id="file" name="icon" accept="image/x-icon" />
+                                <input className="hidden" onChange={e => { setIconICONFile({ file: e.target.files[0], preview: e.target.files[0] ? URL.createObjectURL(e.target.files[0]) : undefined }); setChanged(true) }} type="file" id="file" name="icon" accept="image/x-icon" />
                                 <div className="pb-4">
                                     <span className={`bg-${infoInputs?.colors?.background?.color} mt-4 hover:bg-${infoInputs?.colors?.background?.shadow} rounded px-4 py-2 text-${infoInputs?.colors?.text?.shadow} hover:text-${infoInputs?.colors?.text?.color} text-custom2-h font-semibold`}>Escolher Ícone</span>
                                 </div>
-
-                                <div style={{ maxWidth: "17em" }} className={`w-full mx-auto md:ml-0 h-36 p-4 bg-${infoInputs?.colors?.background?.color} shadow-lg border border-${infoInputs?.colors?.background?.shadow}`}>
-                                    {/* {iconICONFile.preview ?
+                            </label>
+                            <div style={{ maxWidth: "17em" }} className={`w-full mx-auto md:ml-0 h-36 p-4 bg-${infoInputs?.colors?.background?.color} shadow-lg border border-${infoInputs?.colors?.background?.shadow}`}>
+                                {/* {iconICONFile.preview ?
                                         :
                                         <div>
 
                                         </div>
                                     } */}
-                                    <img id="icon-img" alt="icon" src={iconICONFile?.preview || "/favicon.ico"} className={`mx-auto shadow-lg h-full`} />
+                                <img id="icon-img" alt="icon" src={iconICONFile?.preview || "/favicon.ico"} className={`mx-auto shadow-lg h-full`} />
 
-                                </div>
-                            </label>
+                            </div>
                         </div>
                     </div>
                     <div className="col-span-3 md:col-span-1 pt-4 pb-4 px-4">
