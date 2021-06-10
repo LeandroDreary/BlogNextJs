@@ -3,6 +3,7 @@ module.exports = {
     content: ["./**/*.{ts,tsx}"],
     options: {
       safelist: [
+        /^bg-/,
         "bg-red-50",
         "bg-red-100",
         "bg-red-200",
