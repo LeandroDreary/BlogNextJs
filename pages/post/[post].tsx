@@ -90,7 +90,7 @@ function Blog({ post, recommend, info, author, categories }) {
 
     return (
         <>
-            <Layout Head={ReturnHead} info={info} categories={categories}>
+            <Layout head={ReturnHead} info={info} categories={categories}>
             <div className="col-span-3 w-full mx-auto relative" style={{ height: "24em" }}>
                 <div className="absolute left-0 bottom-0 w-full h-full z-10"
                     style={{ backgroundImage: "linear-gradient(180deg,transparent,rgba(0,0,0,.7))" }}></div>

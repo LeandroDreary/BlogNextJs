@@ -8,16 +8,13 @@
     "start": "next start"
   },
   "dependencies": {
+    "@badrap/bar-of-progress": "^0.1.2",
     "@types/jquery": "^3.5.5",
     "@types/tough-cookie": "^4.0.0",
     "autoprefixer": "^10.2.6",
     "axios": "^0.21.1",
     "axios-cookiejar-support": "^1.0.1",
     "bcryptjs": "^2.4.3",
-    "cloudinary-react": "^1.7.0",
-    "mongodb-client-encryption": "^1.2.4",
-    "aws4": "^1.11.0",
-    "cookie": "^0.4.1",
     "cookies": "^0.8.0",
     "form-data": "^4.0.0",
     "formidable": "^1.2.2",
@@ -28,21 +25,19 @@
     "next": "^10.2.3",
     "nodemailer": "^6.6.1",
     "path": "^0.12.7",
-    "postcss": "^8.3.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-html-parser": "^2.0.2",
     "react-icons": "^3.11.0",
-    "saslprep": "^1.0.3",
     "sharp": "^0.28.3",
     "suneditor": "^2.39.0",
-    "suneditor-react": "^3.1.1",
+    "suneditor-react": "^3.1.2",
     "tailwindcss": "^2.1.4",
     "tough-cookie": "^4.0.0",
     "validator": "^13.6.0"
   },
   "devDependencies": {
-    "@types/node": "^14.17.2",
+    "@types/node": "^14.17.3",
     "@types/react": "^16.14.8",
     "typescript": "^4.3.2"
   }

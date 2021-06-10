@@ -7,3 +7,7 @@
 body{
     background-color:rgb(252, 252, 255)
 }
+
+.bar-of-progress {
+    z-index: 50;
+}

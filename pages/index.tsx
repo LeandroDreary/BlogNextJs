@@ -106,7 +106,7 @@ const Index = ({ posts, homePageInfo, info, categories, postsCategories }) => {
 
   return (
     <>
-      <Layout Head={ReturnHead} info={info} categories={categories}>
+      <Layout head={ReturnHead} info={info} categories={categories}>
         <div className="col-span-3 mb-4 md:mb-0 w-full mx-auto bg-cover bg-center relative"
           style={{ backgroundImage: `url(${homePageInfo?.banner})` }}>
           <div className={`left-0 bottom-0 w-full h-full absolute z-10 flex items-center opacity-80 bg-gradient-to-t from-black`}

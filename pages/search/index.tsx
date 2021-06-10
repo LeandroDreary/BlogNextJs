@@ -81,7 +81,7 @@ const Index = ({ info, categories }) => {
 
 
         <>
-            <Layout Head={<title>Procurar</title>} info={info} categories={categories}>
+            <Layout head={<title>Procurar</title>} info={info} categories={categories}>
                 <div className="container mx-auto">
                     <div className="box pt-6">
                         <form onSubmit={e => {

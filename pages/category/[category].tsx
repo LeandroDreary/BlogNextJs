@@ -55,7 +55,7 @@ export async function getStaticProps(context) {
 const Index = ({ posts, category, info, categories }) => {
     return (
         <>
-            <Layout Head={<title>{posts === undefined ? "Carregando..." : category?.name || "Não encontrado"}{info === undefined ? "" : " - " + (info?.websiteName || "")}</title>} info={info} categories={categories}>
+            <Layout head={<title>{posts === undefined ? "Carregando..." : category?.name || "Não encontrado"}{info === undefined ? "" : " - " + (info?.websiteName || "")}</title>} info={info} categories={categories}>
                 <div className="container mx-auto">
                     <div className="grid grid-cols-3">
                         <div className="col-span-3 md:col-span-2">
