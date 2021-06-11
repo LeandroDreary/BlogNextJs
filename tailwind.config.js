@@ -3,6 +3,8 @@ module.exports = {
     content: ["./**/*.{ts,tsx}"],
     options: {
       whitelist: [
+        "bg-black",
+        "bg-white",
         /^bg-/
       ]
     }
