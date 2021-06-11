@@ -3,13 +3,13 @@ module.exports = {
     content: ["./**/*.{ts,tsx}"],
     options: {
       safelist: [
-        /^bg-^/,
-        /^text-^/,
-        /^text-^/,
-        /^border-^/,
-        /^from-^/,
-        /^to-^/,
-        /^placeholder-^/,
+        /$bg-$/,
+        /$text-$/,
+        /$text-$/,
+        /$border-$/,
+        /$from-$/,
+        /$to-$/,
+        /$placeholder-$/,
         "bg-black",
         "bg-white",
       ]
