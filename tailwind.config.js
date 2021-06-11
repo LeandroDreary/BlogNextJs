@@ -4,6 +4,12 @@ module.exports = {
     options: {
       safelist: [
         /^bg-/,
+        /^text-/,
+        /^text-/,
+        /^border-/,
+        /^from-/,
+        /^to-/,
+        /^placeholder-/,
         "bg-black",
         "bg-white",
       ]
