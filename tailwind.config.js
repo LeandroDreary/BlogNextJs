@@ -3,7 +3,12 @@ module.exports = {
     content: ["./**/*.{ts,tsx}"],
     options: {
       whitelist: [
-        /^text-/
+        /^bg-/,
+        /^text-/,
+        /^border-/,
+        /^from-/,
+        /^to-/,
+        /^placeholder-/
       ]
     }
   },
