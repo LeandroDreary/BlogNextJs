@@ -4,12 +4,12 @@ module.exports = {
     options: {
       whitelist: {
         greedy: [
-        /$bg-$/,
-        /$text-$/,
-        /$border-$/,
-        /$from-$/,
-        /$to-$/,
-        /$placeholder-$/
+        /^bg-/,
+        /^text-/,
+        /^border-/,
+        /^from-/,
+        /^to-/,
+        /^placeholder-/
         ]
       }
     }
