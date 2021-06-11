@@ -3,7 +3,7 @@ module.exports = {
     content: ["./**/*.{ts,tsx}"],
     options: {
       whitelist: {
-        greedy: [
+        deep: [
         /^bg-/,
         /^text-/,
         /^border-/,
