@@ -2,10 +2,10 @@ module.exports = {
   purge: {
     content: ["./**/*.{ts,tsx}"],
     options: {
-      whitelist: [
+      safelist: [
+        /^bg-/,
         "bg-black",
         "bg-white",
-        /^bg-/
       ]
     }
   }
