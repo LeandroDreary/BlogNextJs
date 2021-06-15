@@ -2,16 +2,20 @@ module.exports = {
   purge: {
     content: ["./**/*.{ts,tsx}"],
     options: {
-      safelist: {
-        greedy: [
-          /$bg-$/,
-          /$text-$/,
-          /$border-$/,
-          /$from-$/,
-          /$to-$/,
-          /$placeholder-$/,
-        ]
-      }
+      safelist: [
+        /^bg-/,
+        /^hover:bg-/,
+        /^text-/,
+        /^hover:text-/,
+        /^border-/,
+        /^hover:border-/,
+        /^from-/,
+        /^hover:from-/,
+        /^to-/,
+        /^hover:to-/,
+        /^placeholder-/,
+        /^hover:placeholder-/
+      ]
     }
   }
   ,

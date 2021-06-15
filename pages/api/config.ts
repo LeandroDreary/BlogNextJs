@@ -10,7 +10,7 @@ import fs from 'fs';
 async function handler(req: NextApiRequest, res: NextApiResponse) {
     const form = new formidable.IncomingForm()
 
-    form.parse(req, async (err, fields, files) => {
+    await form.parse(req, async (err, fields, files) => {
         const name = fields?.name
         let content
         let config

@@ -1,10 +1,7 @@
 import mongoose, { Schema } from "mongoose"
 
-const uri = process.env.DATABASE_STRING
-
-
 export interface ConfigI {
-  _id?: string;
+  _id?: Schema.Types.ObjectId;
   name?: string;
   content?: JSON
 }
@@ -22,14 +19,14 @@ export let ConfigModel = () => {
   }
 };
 
-export const Config = ConfigModel();
+export const Config: mongoose.Model<ConfigI, {}, {}> = ConfigModel();
 
 
 
 
 export interface AuthI {
-  _id?: string;
-  user?: string;
+  _id?: Schema.Types.ObjectId;
+  user?: Schema.Types.ObjectId;
   user_agent?: string;
   ip?: string;
 }
@@ -48,13 +45,13 @@ export let AuthModel = () => {
   }
 };
 
-export const Auth = AuthModel();
+export const Auth: mongoose.Model<AuthI, {}, {}> = AuthModel();
 
 
 
 
 export interface UserI {
-  _id?: string;
+  _id?: Schema.Types.ObjectId;
   username?: string;
   image?: string;
   discordUser?: string;
@@ -80,12 +77,12 @@ export let UserModel = () => {
   }
 };
 
-export const User = UserModel();
+export const User: mongoose.Model<UserI, {}, {}> = UserModel();
 
 
 
 export interface CategoryI {
-  _id?: string;
+  _id?: Schema.Types.ObjectId;
   name?: string;
   color?: string;
   link?: string;
@@ -105,16 +102,16 @@ export let CategoryModel = () => {
   }
 };
 
-export const Category = CategoryModel();
+export const Category: mongoose.Model<CategoryI, {}, {}> = CategoryModel();
 
 
 
 export interface PostI {
-  _id?: string;
+  _id?: Schema.Types.ObjectId;
   content?: string;
   title?: string;
   link?: string;
-  author: Schema.Types.ObjectId;
+  author?: Schema.Types.ObjectId;
   category?: Schema.Types.ObjectId;
   description?: string;
   publishDate?: Date;

@@ -1,8 +1,9 @@
 import Cookies from 'cookies'
-import HandleAuth from '../../../services/auth';
+import HandleAuth from '../../../services/auth'
 import bcrypt from 'bcryptjs'
 import { Post, Category, User } from "../../../database/models"
 import DbConnect from './../../../utils/dbConnect'
+import { WarningI } from '../../../services/types'
 
 interface postListParams {
     perPage?: any,
@@ -24,11 +25,15 @@ export const listPosts = async (params: postListParams) => {
 
     let objFind = {}
 
+    let publishDate
     if (beforeDate)
-        objFind = { ...objFind, publishDate: { $lte: beforeDate } }
+        publishDate = { ...publishDate, $lte: beforeDate }
 
-    if (afterDate < beforeDate && afterDate)
-        objFind = { ...objFind, publishDate: { $gte: afterDate } }
+    if (afterDate > beforeDate && afterDate)
+        publishDate = { ...publishDate, $gte: afterDate }
+
+    if (publishDate)
+        objFind = { ...objFind, publishDate }
 
     if (ne)
         objFind = { ...objFind, link: { $ne: ne } }
@@ -41,10 +46,10 @@ export const listPosts = async (params: postListParams) => {
         }
 
     if (category)
-        objFind = { ...objFind, category: category }
+        objFind = { ...objFind, category }
 
     if (author)
-        objFind = author ? { ...objFind, author: author } : objFind
+        objFind = { ...objFind, author }
 
     let posts: any = await Post.find(
         objFind,
@@ -70,14 +75,54 @@ export const listPosts = async (params: postListParams) => {
 async function handler(req, res) {
     await DbConnect()
     const cookies = new Cookies(req, res)
-    
-    let { perPage, page, search, select, category, ne, author, beforeDate, afterDate } = req.query
 
-    category = (await Category.findOne({ name: category }).exec())?._id
+    let warnings: WarningI[] = [];
 
-    let result = await listPosts({ perPage, page, search, select, category, ne, author, beforeDate, afterDate })
+    let { perPage, page, search, select, category, ne, author, beforeDate, afterDate, requestAs } = req.query
 
-    res.status(200).json({ ...result })
+    try {
+        beforeDate = new Date(beforeDate)
+        beforeDate = beforeDate.getTime() === beforeDate.getTime() ? beforeDate : new Date()
+    } catch (e) { beforeDate = new Date() }
+
+    try {
+        afterDate = new Date(afterDate)
+        afterDate = afterDate.getTime() === afterDate.getTime() ? afterDate : new Date()
+    } catch (e) { afterDate = new Date() }
+
+    try {
+        category = (await Category.findOne({ name: category }).exec())?._id || null
+        switch (requestAs) {
+            case "adminArea":
+                if (bcrypt.compareSync(`${process.env.ADMINPASSWORD}_${process.env.ADMINUSERNAME}`, cookies.get('AdminAreaAuth') || "")) {
+                    author = (await User.findOne({ username: author }).exec())?._id || null
+                } else {
+                    warnings.push({ message: "Você não está logado.", type: 'error', input: "" })
+                }
+                break;
+            case "admin":
+                let user = await HandleAuth(cookies.get('auth') || "")
+                if (user) {
+                    author = user?._id || null
+                } else {
+                    warnings.push({ message: "Você não está logado.", type: 'error', input: "" })
+                }
+                break;
+            default:
+                author = (await User.findOne({ username: author }).exec())?._id || null
+                if (!(beforeDate < new Date()))
+                    beforeDate = new Date()
+                if (!(afterDate < new Date()))
+                    afterDate = new Date()
+                break;
+        }
+    } catch (e) { warnings.push({ message: "Ocorreu algo inesperado.", type: 'error', input: "" }) }
+
+    let result = {}
+    if (warnings.length <= 0)
+        result = await listPosts({ perPage, page, search, select, category, ne, author, beforeDate, afterDate })
+
+    res.status(200).json({ ...result, warnings })
 }
 
 

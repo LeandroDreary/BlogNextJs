@@ -22,8 +22,10 @@
   "include": [
     "next-env.d.ts",
     "**/*.ts",
-    "**/*.tsx"
-, "next.config.js", "utils/dbConnect.js"  ],
+    "**/*.tsx",
+    "next.config.js",
+    "utils/dbConnect.js"
+  ],
   "exclude": [
     "node_modules"
   ]

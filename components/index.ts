@@ -8,6 +8,7 @@ import PostCard from "./postCard"
 import PostCard2 from "./postCard2"
 import PostCardAdmin from "./postCardAdmin"
 import Sidebar from "./sidebar"
+import SearchBar from "./searchBar"
 
-export { Navbar, NavbarAdmin, NavbarAdminArea, Footer, Navigation, Outclick, PostCard, PostCard2, PostCardAdmin, Sidebar }
+export { Navbar, NavbarAdmin, NavbarAdminArea, Footer, Navigation, Outclick, PostCard, PostCard2, PostCardAdmin, Sidebar, SearchBar }
 

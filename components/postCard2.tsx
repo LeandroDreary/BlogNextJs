@@ -26,7 +26,7 @@ class Post extends React.Component<MyProps, MyState> {
         return (
             <>
                 <div className="col-span-4 sm:col-span-2 lg:col-span-1 p-4">
-                    <div className="relative h-full shadow-sm pb-16 border border-gray-200">
+                    <div className="relative h-full pb-16">
                         <div className="cursor-pointer p-4 pb-6 h-full rounded-md">
                             <div className="relative flex justify-center items-center mx-1 py-1">
                                 <Link href={"/post/" + this.props.link || ""}>

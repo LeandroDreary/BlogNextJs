@@ -1,12 +1,24 @@
 import React from 'react'
 import Link from 'next/link'
 import Layout from './../layout/layout'
-import {PostCard, PostCard2, Sidebar} from '../components'
+import { PostCard, PostCard2, Sidebar } from '../components'
 import ReactHtmlParser from 'react-html-parser'
-import { Config, Category } from "../database/models"
+import { Config, Category, PostI, CategoryI } from "../database/models"
 import DbConnect from './../utils/dbConnect'
 import { GetStaticProps } from 'next'
 import { listPosts } from './api/post/list'
+import { HomePageInfoI, PostCardI, PagesInfoI } from './../services/types'
+
+interface PageProps {
+  posts: PostCardI[],
+  homePageInfo: HomePageInfoI,
+  info: PagesInfoI,
+  categories: CategoryI[],
+  postsCategories: {
+    category: CategoryI,
+    posts: PostCardI[]
+  }
+}
 
 export let getStaticProps: GetStaticProps = async ({ }) => {
   await DbConnect()
@@ -35,7 +47,7 @@ export let getStaticProps: GetStaticProps = async ({ }) => {
     categories = categories._doc.content
   } catch (e) { }
 
-  let postsCategories = null
+  let postsCategories = []
   try {
     let i = 0
     while (i <= 2) {
@@ -46,7 +58,7 @@ export let getStaticProps: GetStaticProps = async ({ }) => {
       }
       i++
     }
-  } catch (e) { }
+  } catch (e) { console.error(e) }
 
   return {
     props: {
@@ -151,14 +163,14 @@ const Index = ({ posts, homePageInfo, info, categories, postsCategories }) => {
             <div className="col-span-3 md:col-span-2">
               <div className="px-4 mt-4">
                 <p className="text-4xl px-2 text-semibold text-gray-700">Recentes:</p>
-                <hr className="my-2" />
+                {/* <hr className="my-2" /> */}
               </div>
               {posts ?
                 posts?.filter((v, i) => i !== 0)?.map(post => <PostCard info={info} description={post.description} image={post.image} link={post.link} title={post.title} key={post.link} />)
                 :
                 <div className="flex justify-center items-center h-64">
                   not Found.
-              </div>
+                </div>
               }
             </div>
             <div className="col-span-3 mx-4 md:col-span-1 md:mx-0">
@@ -169,9 +181,9 @@ const Index = ({ posts, homePageInfo, info, categories, postsCategories }) => {
             postsCategories?.map(postsCategory => {
               return (
                 <>
-                  <div className="px-4 mt-4">
+                  <div className="px-4 py-6 bg-white mt-4 shadow-sm border border-gray-100">
                     <p className="text-4xl px-2 text-semibold text-gray-700">{postsCategory.category.name}:</p>
-                    <hr className="my-2" />
+                    {/* <hr className="my-2" /> */}
                     <div className="grid grid-cols-4">
                       {postsCategory.posts ?
                         postsCategory.posts.map(post => <PostCard2 info={info} description={post.description} image={post.image} link={post.link} title={post.title} key={post.link} />)

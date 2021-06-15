@@ -51,7 +51,7 @@ class Post extends React.Component<MyProps, MyState> {
                             </div>
                         </div>
                     </div>
-                    <hr />
+                    <hr className="px-4" />
                 </div>
             </>
         )

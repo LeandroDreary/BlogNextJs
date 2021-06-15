@@ -5,39 +5,9 @@ import bcrypt from 'bcryptjs'
 import { GetServerSideProps } from 'next'
 import { Config } from '../../database/models'
 import DbConnect from './../../utils/dbConnect'
-import Frm_Info from './../../components/forms/config/frm_info'
-import Frm_HomePageInfo from './../../components/forms/config/frm_homePageInfo'
-
-interface info {
-    websiteName: string,
-    description: string,
-    keywords: string,
-    icon: string,
-    iconICO: string,
-    colors: {
-        background: {
-            shadow: string,
-            color: string
-        },
-        text: {
-            shadow: string,
-            color: string
-        }
-    },
-    customLayoutStyles: string,
-    customLayout: {
-        colors: {
-            background: {
-                shadow: string,
-                color: string
-            },
-            text: {
-                shadow: string,
-                color: string
-            }
-        }
-    }
-}
+import WebsiteConfig from '../../components/forms/websiteConfig'
+import HomePage from '../../components/forms/homePage'
+import { PagesInfoI } from '../../services/types'
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
     await DbConnect()
@@ -74,17 +44,34 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
 
 const Index = ({ Info, user, HomePageInfo }) => {
 
-    const [infoInputs, setInfoInputs] = useState<info>(Info)
+    const [infoInputs, setInfoInputs] = useState<PagesInfoI>(Info)
 
     return (
         <>
             <LayoutAdminArea head={<><title>Configurações - {infoInputs?.websiteName}</title>
-                <link rel="stylesheet" href="/css/admin/config.css" /></>} info={infoInputs} user={user}>
+                <link rel="stylesheet" href="/css/admin/config.css" /> <style>
+                    {`
+            @keyframes slideInFromLeft {
+              0% {
+                transform: translateY(-20%);
+                opacity: 0.7;
+              }
+              100% {
+                transform: translateY(0);
+                opacity: 1;
+              }
+            }
+            .slide-up { 
+              animation: 0.25s ease-out 0s 1 slideInFromLeft;
+            }
+            
+            `}
+                </style></>} info={infoInputs} user={user}>
                 <div className="container py-4 mx-auto">
 
-                    <Frm_Info Info={Info} infoInputs={infoInputs} setInfoInputs={setInfoInputs} />
+                    <WebsiteConfig Info={Info} infoInputs={infoInputs} setInfoInputs={setInfoInputs} />
 
-                    <Frm_HomePageInfo info={infoInputs} homePageInfo={HomePageInfo} />
+                    <HomePage info={infoInputs} homePageInfo={HomePageInfo} />
 
                 </div>
             </LayoutAdminArea>

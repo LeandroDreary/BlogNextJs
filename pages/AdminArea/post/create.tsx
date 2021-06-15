@@ -1,60 +1,61 @@
 import React from 'react'
-import Head from 'next/head'
-import Cookies from 'cookies'
 import Router from 'next/router'
+import Link from 'next/link'
 import LayoutAdminArea from './../../../layout/layoutAdminArea'
-import { NavbarAdminArea } from '../../../components'
-import Post from '../../../components/forms/frm_post'
+import Post from '../../../components/forms/post'
 import { GetServerSideProps } from 'next'
-import HandleAuth from '../../../services/auth'
-import { Config } from '../../../database/models'
+import { Category, CategoryI, Config, ConfigI, User, UserI } from '../../../database/models'
 import DbConnect from './../../../utils/dbConnect'
-import ReactHtmlParser from 'react-html-parser'
+import { Document } from 'mongoose'
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
     await DbConnect()
-    const cookies = new Cookies(req, res)
-    let { info, user } = { info: null, user: null }
+
+    let info: ConfigI & Document<any, any> = null
+
     try {
         info = await Config.findOne({ name: "info" }).select(`-_id`).exec()
-        info = info._doc.content
     } catch (e) { }
 
-    user = await HandleAuth(cookies.get("auth") || "na")
+    let categories: (CategoryI & Document<any, any>)[] = null
+    try {
+        categories = await Category.find({}).select(`name -_id`).exec()
+    } catch (e) { }
 
-    if (user?.username) {
-        return {
-            props: {
-                info,
-                user: { username: user.username }
-            }
-        }
-    } else {
-        cookies.get("set")
-        return {
-            redirect: {
-                destination: '/admin/signin',
-                permanent: false,
-            }
+
+    let authors: (UserI & Document<any, any>)[] = null
+    try {
+        authors = await User.find({}).select(`username -_id`).exec()
+    } catch (e) { }
+
+
+    return {
+        props: {
+            info: info.toJSON().content,
+            user: { username: process.env.ADMINUSERNAME },
+            authors: authors?.map(author => author.toJSON()),
+            categories: categories?.map(category => category.toJSON())
         }
     }
 }
 
-const Index = ({ info, user }) => {
+const Index = ({ info, user, authors, categories }) => {
     return (
         <>
             <LayoutAdminArea head={<title>Novo post</title>} info={info} user={user}>
                 <div className="container mx-auto">
                     <div>
-                        <button onClick={() => Router.push('/admin/post')} className={`mr-5 bg-${info?.colors?.background?.color} hover:bg-${info?.colors?.background?.shadow} text-${info?.colors?.text?.shadow} hover:text-${info?.colors?.text?.color} m-4 font-bold py-2 px-6 rounded-lg`}>
-                            Voltar
-                    </button>
+                        <Link href={'/AdminArea/post'}>
+                            <a>
+                                <button className={`mr-5 bg-${info?.colors?.background?.color} hover:bg-${info?.colors?.background?.shadow} text-${info?.colors?.text?.shadow} hover:text-${info?.colors?.text?.color} m-4 font-bold py-2 px-6 rounded-lg`}>
+                                    Voltar
+                                </button>
+                            </a>
+                        </Link>
                     </div>
                     <hr />
                     <div>
-                        {process.browser ?
-                            <Post info={info} /> : ""
-                        }
+                        <Post requestAs={"AdminArea"} onSubmit={() => { Router.push('/AdminArea/post') }} info={info} authors={authors} categories={categories} />
                     </div>
                 </div>
             </LayoutAdminArea>

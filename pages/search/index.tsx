@@ -1,120 +1,122 @@
 import React, { useEffect, useRef, useState } from 'react'
+import { GetServerSideProps } from 'next'
+import { Document } from 'mongoose'
 import Layout from './../../layout/layout'
-import { PostCard2, Navigation } from './../../components'
+import { PostCard2, Navigation, SearchBar } from './../../components'
 import api from '../../services/api'
-import { FaSearch } from 'react-icons/fa'
 import { useRouter } from 'next/router'
-import { Config } from "../../database/models"
+import { Category, CategoryI, Config, ConfigI, User, UserI } from "../../database/models"
 import DbConnect from './../../utils/dbConnect'
-import { ListCategories } from '../api/category/list'
 
-export async function getStaticProps() {
+export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
     await DbConnect()
-    let { info, categories } = { info: null, categories: null }
 
+    let info: ConfigI & Document<any, any> = null
     try {
         info = await Config.findOne({ name: "info" }).select(`-_id`).exec()
-        info = info._doc.content
     } catch (e) { }
 
+    let categories: (CategoryI & Document<any, any>)[] = null
     try {
-        categories = (await ListCategories({})).result
+        categories = await Category.find({}).select(`name -_id`).exec()
+    } catch (e) { }
+
+
+    let authors: (UserI & Document<any, any>)[] = null
+    try {
+        authors = await User.find({}).select(`username -_id`).exec()
     } catch (e) { }
 
     return {
         props: {
-            info,
-            categories
-        },
-        revalidate: 1
+            info: info.toJSON().content,
+            authors: authors?.map(author => author.toJSON()),
+            categories: categories?.map(category => category.toJSON())
+        }
     }
 }
 
-const Index = ({ info, categories }) => {
+const Index = ({ info, categories, authors }) => {
 
     const Router = useRouter()
 
-    const search = useRef<HTMLInputElement>()
-
     const [posts, setPosts] = useState<{ link: string, image: string, title: string, description: string }[]>()
 
-    const [query, setQuery] = useState<{ perPage: number, page: number, pages: number, q: string, category: string }>({ q: "", page: 1, pages: 0, category: undefined, perPage: 12 })
+    const [filters, setFilters] = useState<{ perPage: number, page: number, pages: number, search: string, category: string, author: string }>({ search: "", page: 1, pages: 0, category: "", author: "", perPage: 12 })
 
     const [loading, setLoading] = useState<boolean>(true)
 
-
-
-
-    const LoadQuery = (page?: number, perPage?: number, q?: string, category?: string) => {
+    const LoadPost = async ({ page, perPage, author, category, search }: { page?: number, perPage?: number, author?: string, category?: string, search?: string }) => {
         setLoading(true)
         const params = {
             select: "title description image link",
-            perPage: `${perPage || Router.query?.perPage || 12}`,
-            page: `${page || Router.query?.page || 1}`,
-            category: `${category || Router.query?.category || ""}`,
-            search: `${q || search.current?.value || ""}`,
+            author: author || "",
+            category: category || "",
+            perPage: `${perPage || 12}`,
+            page: `${page || 1}`,
+            search: `${search || ""}`
         };
-        api.get(`/api/post/list`, { params }).then(res => {
-            setPosts(res.data?.result)
-            setQuery({ ...query, ...res.data })
-            setLoading(false)
-        }).catch(() => { setLoading(false) })
+        await api.get(`/api/post/list`, { params, withCredentials: true }).then(res => {
+            setPosts(res.data?.result);
+            setLoading(false);
+            setFilters({ ...filters, page, perPage, author, category, search, pages: res.data?.pages || 0 })
+        }).catch(() => setLoading(false))
+    }
+
+    let removeEmpty: any = (obj) => {
+        return Object.fromEntries(Object.entries(obj).filter(([_, v]) => v != null));
     }
 
     useEffect(() => {
         if (Router.isReady) {
-            search.current.value = String(Router.query?.q || "")
-            setQuery({
-                page: Number(Router.query?.page),
-                perPage: Number(Router.query?.perPage),
-                pages: 0,
-                q: String(search.current?.value || ""),
-                category: String(Router.query?.category || "")
-            })
-            LoadQuery()
+            let params = {
+                author: Router.query?.author?.toString() || "",
+                page: Number(Router.query?.page) || 1,
+                perPage: Number(Router.query?.perPage) || 12,
+                search: Router.query?.q?.toString() || "",
+                category: Router.query?.category?.toString() || ""
+            }
+            setFilters({ ...filters, ...params })
+            LoadPost(params)
         }
     }, [Router])
 
+
+
     return (
-
-
         <>
             <Layout head={<title>Procurar</title>} info={info} categories={categories}>
                 <div className="container mx-auto">
-                    <div className="box pt-6">
-                        <form onSubmit={e => {
-                            e.preventDefault(); Router.push({
-                                pathname: '/search',
-                                search: new URLSearchParams({
-                                    perPage: (query?.perPage || "").toString(),
-                                    page: (query?.page || "").toString(),
-                                    category: (query?.category || "").toString(),
-                                    q: (search.current?.value || "").toString()
-                                }).toString()
-                            })
-                        }}>
-                            <div className={`bg-${info?.colors?.background?.color} py-4 px-6 mx-4 rounded-lg shadow-md box-wrapper`}>
-                                <div className={`rounded flex items-center w-full p-3 shadow-sm border border-${info?.colors?.text?.color} text-${info?.colors?.text?.color}`}>
-                                    <input ref={search} type="search" placeholder="search" x-model="q" className={`placeholder-${info?.colors?.text?.shadow} font-semibold w-full text-sm outline-none focus:outline-none bg-transparent`} />
-                                    <button className="outline-none focus:outline-none px-4">
-                                        <FaSearch />
-                                    </button>
-                                    <div className="select">
-                                        <select x-model="image_type" onChange={e => setQuery({ ...query, category: e.target.value })} className={`text-sm outline-none focus:outline-none p-1 rounded-lg bg-${info?.colors?.background?.color}`}>
-                                            <option className={`bg-white text-gray-700`} value="">All</option>
-                                            {
-                                                categories?.map(category => {
-                                                    return <option key={`${category?.name + category?.color}`} className={`bg-white text-gray-700`} value={category?.name || ""}>{category?.name}</option>
-                                                })
-                                            }
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-
-                    <Navigation callBack={page => LoadQuery(page)} info={info} page={query.page} pages={query.pages} />
+                    <SearchBar datas={{
+                        categories: categories?.map(category => { return { name: category.name, link: category.name } }),
+                        authors: authors?.map(author => { return { name: author.username, link: author.username } }),
+                        perPage: filters?.perPage,
+                        search: filters?.search,
+                        author: filters?.author || "",
+                        category: filters?.category || ""
+                    }} info={info} onSubmit={(e, datas) => {
+                        e.preventDefault();
+                        Router.push({
+                            pathname: '/search',
+                            search: new URLSearchParams(removeEmpty({
+                                q: datas?.search === "" ? null : datas.search,
+                                perPage: datas?.perPage === 12 ? null : String(datas.perPage),
+                                page: filters?.page === 1 ? null : String(filters.page),
+                                category: datas?.category === "" ? null : datas.category,
+                                author: datas?.author === "" ? null : datas.author
+                            })).toString()
+                        })
+                    }} />
+                    <Navigation callBack={page => Router.push({
+                        pathname: '/search',
+                        search: new URLSearchParams(removeEmpty({
+                            q: filters?.search === "" ? null : filters.search,
+                            perPage: filters?.perPage === 12 ? null : String(filters.perPage),
+                            page: page,
+                            category: filters?.category === "" ? null : filters.category,
+                            author: filters?.author === "" ? null : filters.author
+                        })).toString()
+                    })} info={info} page={filters.page} pages={filters.pages} />
                     <div>
                         <hr />
                     </div>
@@ -126,13 +128,22 @@ const Index = ({ info, categories }) => {
                             <h2 className="text-center font-semibold text-2xl text-gray-700">Nenhum resultado encontrado.</h2>
                         </div> :
                         <div className="my-32">
-                            <img src="https://i.stack.imgur.com/kOnzy.gif" className="w-10 mx-auto" alt="loading" />
+                            <img src="/img/load.gif" className="w-12 mx-auto" alt="loading" />
                         </div>
                     }
                     <div>
                         <hr />
                     </div>
-                    <Navigation callBack={page => LoadQuery(page)} info={info} page={query.page} pages={query.pages} />
+                    <Navigation callBack={page => Router.push({
+                        pathname: '/search',
+                        search: new URLSearchParams(removeEmpty({
+                            q: filters?.search === "" ? null : filters.search,
+                            perPage: filters?.perPage === 12 ? null : String(filters.perPage),
+                            page: page,
+                            category: filters?.category === "" ? null : filters.category,
+                            author: filters?.author === "" ? null : filters.author
+                        })).toString()
+                    })} info={info} page={filters.page} pages={filters.pages} />
                 </div>
             </Layout>
         </>

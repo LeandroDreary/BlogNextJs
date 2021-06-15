@@ -1,12 +1,11 @@
-import Head from 'next/head'
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import Api from '../../services/api'
-import Router from 'next/router'
 import dynamic from 'next/dynamic'
 import FormData from 'form-data'
+import linkfy from '../../utils/linkfy'
 
 const Editor = dynamic(
-    () => import('./../editor'),
+    () => import('../editor'),
     { ssr: false }
 )
 interface PostI {
@@ -18,73 +17,83 @@ interface PostI {
     publishDate?: Date,
     category?: string,
     image?: string,
-    info?: any
+    author?: string
 }
 
-export default function index({ _id, content, title, link, description, publishDate, category, image, info }: PostI) {
-    const [post, setPost] = _id ? useState<PostI>({ _id, content, title, link, description, publishDate, category, image }) : useState<PostI>({ category: "", content: "", image: null, link: "", title: "", description: "", publishDate: new Date() });
+interface datas {
+    info?: any,
+    categories: { name: string, link: string }[],
+    authors: { username: string, link: string }[],
+    Post?: PostI,
+    onSubmit: () => any,
+    requestAs: "AdminArea" | "Admin"
+}
+
+export default function index({ Post, categories, authors, info, requestAs, onSubmit }: datas) {
+    const [post, setPost] = useState<PostI>({
+        ...Post,
+        publishDate: Post?.publishDate ? new Date(Post?.publishDate) : new Date(),
+        author: Post?.author || authors[0]?.username || "",
+        category: Post?.category || categories[0]?.name || ""
+    })
     const [editorTab, setEditorTab] = useState<number>(0)
+
     const [Content, setContent] = useState()
+
+    const [loading, setLoading] = useState<boolean>(false)
+
     const [imageFile, setImageFile] = useState<{ preview: any; file: File }>({
         preview: post?.image || undefined,
         file: undefined
     })
 
-    const [categories, setCategories] = useState<{ name: string, color: string }[]>([{ color: "", name: "" }])
-
     const handleChangeLink = (value) => {
-        value = String(value || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-        let accepted = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890-"
-        value = value.toLowerCase().split("")?.map(letter => accepted.includes(letter) ? letter : "-").join("");
-        while (value.includes('--')) {
-            value = value.split('--').join('-');
-        }
-        value = value.split("")?.map((letter, i) => ((letter === "-" && i === 0) || (letter === "-" && i === value.length - 1)) ? "" : letter).join("");
-        return value
+        return linkfy(String(value))
     }
 
-    const LoadCategories = () => {
-        Api.get('/api/category/list', { withCredentials: true }).then(response => {
-            setCategories(response.data?.result?.map(c => { return { name: c.name, color: c.color } }))
-        })
+    let HandleAuthorChange: React.ChangeEventHandler<HTMLSelectElement> = (e) => {
+        setPost({ ...post, author: e.target.value })
     }
-
-    useEffect(() => {
-        LoadCategories()
-    }, []);
 
     const HandleSubmitPost = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        setLoading(true)
         let data = new FormData();
 
-        data.append('image', imageFile?.file || image || "");
-        data.append('category', post?.category);
-        data.append('content', Content);
-        data.append('description', post?.description);
-        data.append('link', post?.link);
+        data.append('image', imageFile?.file || Post.image || "");
+        data.append('category', post?.category || "");
+        data.append('content', Content || "");
+        data.append('description', post?.description || "");
+        data.append('link', post?.link || "");
         data.append('publishDate', String(post?.publishDate));
-        data.append('title', post?.title);
-        data.append('_id', post?._id);
+        data.append('title', post?.title || "");
+        data.append('author', post?.author || "");
+        data.append('requestAs', requestAs || "");
+        if (post?._id)
+            data.append('_id', post?._id);
 
-        if (_id) {
+        console.log(post)
+
+        if (post?._id) {
             Api.put("/api/post", data, { withCredentials: true, headers: { 'content-type': 'multipart/form-data' } }).then(response => {
-                Router.push('/admin/post')
-            })
+                setLoading(false)
+                onSubmit()
+            }).catch((e) => setLoading(false))
         } else {
             Api.post("/api/post", data, { withCredentials: true, headers: { 'content-type': 'multipart/form-data' } }).then(response => {
-                Router.push('/admin/post')
-            })
+                setLoading(false)
+                onSubmit()
+            }).catch((e) => setLoading(false))
         }
     }
 
     return (
         <>
-            <Head>
-            </Head>
             <div>
                 <form onSubmit={HandleSubmitPost}>
                     <div className="grid grid-cols-3 gap-4">
                         <div className="col-span-3 lg:col-span-2 py-6">
+
 
 
                             <div className="my-4">
@@ -93,13 +102,6 @@ export default function index({ _id, content, title, link, description, publishD
                                 </div>
                                 <div className="p-4 border shadow-md">
                                     <input value={post?.title} onChange={(e) => setPost({ ...post, title: String(e.target.value), link: handleChangeLink(String(e.target.value)) })} className="shadow w-full appearance-none border border-red rounded py-2 px-3 text-grey-400 mb-3" name="title" id="title" type="text" placeholder="Título" />
-                                    <div>
-                                        {/* {post?.title?.length < 10 || post?.title?.length > 60 ?
-                                            <>
-                                                <span className="text-sm text-yellow-500">We recommend a title with more than 10 chacteres and less than 60.</span><br />
-                                            </>
-                                            : ""} */}
-                                    </div>
                                 </div>
                             </div>
 
@@ -121,12 +123,12 @@ export default function index({ _id, content, title, link, description, publishD
                                     <div className="col-span-1 text-center">
                                         <button type="button" onClick={() => setEditorTab(0)} className={(editorTab === 0 ? `bg-${info?.colors?.background?.shadow} ` : "") + `py-4 text-${info?.colors?.text?.color} font-semibold w-full`}>
                                             Editor
-                                    </button>
+                                        </button>
                                     </div>
                                     <div className=" col-span-1 text-center post">
                                         <button type="button" onClick={() => setEditorTab(1)} className={(editorTab === 1 ? `bg-${info?.colors?.background?.shadow} ` : "") + `py-4 text-${info?.colors?.text?.color} font-semibold w-full`}>
                                             Pré-visualização
-                                </button>
+                                        </button>
                                     </div>
                                 </div>
                                 <div>
@@ -136,7 +138,7 @@ export default function index({ _id, content, title, link, description, publishD
                                         </div>
                                     </div>
                                     <div className={(editorTab === 1 ? "hidden" : "")}>
-                                        <Editor content={content} setContent={c => setContent(c)} />
+                                        <Editor content={post?.content} setContent={c => setContent(c)} />
                                     </div>
                                 </div>
                             </div>
@@ -149,14 +151,7 @@ export default function index({ _id, content, title, link, description, publishD
                                     <span className={`font-semibold text-${info?.colors?.text?.color}`}>Descrição:</span>
                                 </div>
                                 <div className="p-4  border shadow-md">
-                                    <textarea style={{ width: "100%" }} defaultValue={description} onChange={e => setPost({ ...post, description: e.target.value })} className="shadow w-full appearance-none border border-red rounded py-2 px-3 text-grey-400 mb-3" name="description" id="autoresizing" placeholder="Description"></textarea>
-                                    <div>
-                                        {/* {post?.description?.length < 100 || post?.description?.length > 320 ?
-                                            <>
-                                                <span className="text-sm text-yellow-500">We recommend a description with more than 100 chacteres and less than 320.</span><br />
-                                            </>
-                                            : ""} */}
-                                    </div>
+                                    <textarea style={{ width: "100%" }} rows={5} defaultValue={post?.description} onChange={e => setPost({ ...post, description: e.target.value })} className="shadow w-full appearance-none border border-red rounded py-2 px-3 text-grey-400 mb-3" name="description" id="autoresizing" placeholder="Description"></textarea>
                                 </div>
                             </div>
                             <div className="my-4">
@@ -164,9 +159,25 @@ export default function index({ _id, content, title, link, description, publishD
                                     <span className={`font-semibold text-${info?.colors?.text?.color}`}>Data de publicação:</span>
                                 </div>
                                 <div className="p-4  border shadow-md">
-                                    <input onChange={e => setPost({ ...post, publishDate: new Date(e.target.value) })} value={(new Date(post?.publishDate)).toISOString().substr(0, 10)} className="shadow w-full appearance-none border border-red rounded py-2 px-3 text-grey-400 mb-3" name="publishDate" type="date" id="publishDate" placeholder="Publish Date" />
+                                    <input onChange={e => setPost({ ...post, publishDate: e.target.valueAsDate })} value={(post?.publishDate ? new Date(post?.publishDate) : new Date()).toISOString().substr(0, 10)} className="shadow w-full appearance-none border border-red rounded py-2 px-3 text-grey-400 mb-3" name="publishDate" type="date" id="publishDate" placeholder="Publish Date" />
                                 </div>
                             </div>
+                            {requestAs === "AdminArea" ?
+                                <div className="my-4">
+                                    <div className={`bg-${info?.colors?.background?.color} p-2 px-4`}>
+                                        <span className={`font-semibold text-${info?.colors?.text?.color}`}>Autor:</span>
+                                    </div>
+                                    <div className="p-4  border shadow-md">
+                                        <select name="author" onChange={HandleAuthorChange} defaultValue={post?.author} className={`text-sm w-32 text-gray-600 border border-gray-300 outline-none focus:outline-none p-1`}>
+                                            {
+                                                authors?.map(author => {
+                                                    return <option key={author.username} className={`bg-white text-gray-700`} value={author.username || ""}>{author.username || ""}</option>
+                                                })
+                                            }
+                                        </select>
+                                    </div>
+                                </div> : ""
+                            }
                             <div className="my-4">
                                 <div className={`bg-${info?.colors?.background?.color} p-2 px-4`}>
                                     <span className={`font-semibold text-${info?.colors?.text?.color}`}>Categoria:</span>
@@ -176,7 +187,7 @@ export default function index({ _id, content, title, link, description, publishD
                                         {categories?.map((c, i) => {
                                             return (
                                                 <label key={i} className="inline-flex mx-3 items-center mt-3">
-                                                    <input type="radio" id="category" name="category" onChange={e => setPost({ ...post, category: e.target.value })} value={c.name} className="form-checkbox h-5 w-5 text-gray-600" checked={c?.name === post?.category} /><span style={{ color: c.color }} className="ml-1 text-gray-700">{c.name}</span>
+                                                    <input type="radio" id="category" name="category" onChange={e => setPost({ ...post, category: c.name })} value={c.name} className="form-checkbox h-5 w-5 text-gray-600" checked={c?.name === post?.category} /><span className="ml-1 text-gray-700">{c.name}</span>
                                                 </label>
                                             )
                                         })
@@ -212,7 +223,11 @@ export default function index({ _id, content, title, link, description, publishD
                         </div>
                         <div className="col-span-3 text-center">
                             <hr />
-                            <input type="submit" className={`my-6 bg-${info?.colors?.background?.color} hover:bg-${info?.colors?.background?.color} text-${info?.colors?.text?.color} hover:text-${info?.colors?.text?.shadow} px-6 py-2 font-semibold`} value={_id ? "Atualizar post" : "Criar post"} />
+                            {
+                                loading ?
+                                    <img src="/img/load.gif" alt="loading" className="w-12 mx-auto py-4" /> :
+                                    <input type="submit" className={`my-6 bg-${info?.colors?.background?.color} hover:bg-${info?.colors?.background?.color} text-${info?.colors?.text?.color} hover:text-${info?.colors?.text?.shadow} px-6 py-2 font-semibold`} value={post?._id ? "Atualizar post" : "Criar post"} />
+                            }
                         </div>
                     </div>
                 </form>

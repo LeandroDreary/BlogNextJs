@@ -1,5 +1,5 @@
 import React from 'react'
-import api from '../../../services/api';
+import api from '../../services/api';
 import FormData from 'form-data'
 
 interface HomePageInfo {
@@ -21,18 +21,20 @@ interface MyState {
         preview: any,
         file: File
     }
+    loading: boolean;
 }
 
 class Login extends React.Component<MyProps, MyState> {
 
     constructor(props: any) {
         super(props);
-        this.state = { homePageInfo: this.props.homePageInfo, homePageInfoInputs: this.props.homePageInfo, bannerInput: { preview: null, file: null } }
+        this.state = { loading: false, homePageInfo: this.props.homePageInfo, homePageInfoInputs: this.props.homePageInfo, bannerInput: { preview: null, file: null } }
     }
 
     render() {
 
         const HandleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+            this.setState({ loading: true })
             e.preventDefault();
             let data = new FormData();
 
@@ -44,7 +46,8 @@ class Login extends React.Component<MyProps, MyState> {
 
             api.post('/api/config', data, { withCredentials: true, headers: { 'content-type': 'multipart/form-data' } }).then(res => {
                 this.setState({ ...this.state, homePageInfo: res.data?.content, homePageInfoInputs: res.data?.content })
-            })
+                this.setState({ loading: false })
+            }).catch(() => this.setState({ loading: false }))
 
         }
 
@@ -57,15 +60,15 @@ class Login extends React.Component<MyProps, MyState> {
                     <div className="col-span-3 md:col-span-1 pt-4 pb-4 px-4">
                         <div className="py-1">
                             <label htmlFor="websiteName" className="font-semibold text-gray-700">Título: </label><br />
-                            <input value={this.state.homePageInfoInputs?.title} onChange={e => this.setState({ ...this.state, homePageInfoInputs: { ...this.state.homePageInfoInputs, title: e.target.value } })} className="shadow w-64 appearance-none border max-w-full rounded py-1 px-3 text-gray-700" type="text" name="websiteName" />
+                            <input value={this.state.homePageInfoInputs?.title} onChange={e => this.setState({ homePageInfoInputs: { ...this.state.homePageInfoInputs, title: e.target.value } })} className="shadow w-64 appearance-none border max-w-full rounded py-1 px-3 text-gray-700" type="text" name="websiteName" />
                         </div>
                         <div className="py-1">
                             <label htmlFor="description" className="font-semibold text-gray-700">Descrição: </label><br />
-                            <textarea value={this.state.homePageInfoInputs?.description} onChange={e => this.setState({ ...this.state, homePageInfoInputs: { ...this.state.homePageInfoInputs, description: e.target.value } })} className="shadow w-64 appearance-none border max-w-full rounded py-1 px-3 text-gray-700" name="description"></textarea>
+                            <textarea value={this.state.homePageInfoInputs?.description} onChange={e => this.setState({ homePageInfoInputs: { ...this.state.homePageInfoInputs, description: e.target.value } })} className="shadow w-64 appearance-none border max-w-full rounded py-1 px-3 text-gray-700" name="description"></textarea>
                         </div>
                         <div className="py-1">
                             <label htmlFor="description" className="font-semibold text-gray-700">Html HEAD: </label><br />
-                            <textarea value={this.state.homePageInfoInputs?.head} onChange={e => this.setState({ ...this.state, homePageInfoInputs: { ...this.state.homePageInfoInputs, head: e.target.value } })} className="shadow w-64 appearance-none border max-w-full rounded py-1 px-3 text-gray-700" name="description"></textarea>
+                            <textarea value={this.state.homePageInfoInputs?.head} onChange={e => this.setState({ homePageInfoInputs: { ...this.state.homePageInfoInputs, head: e.target.value } })} className="shadow w-64 appearance-none border max-w-full rounded py-1 px-3 text-gray-700" name="description"></textarea>
                         </div>
                     </div>
                     <div className="col-span-3 md:col-span-1 pt-4 pb-4 px-4">
@@ -73,8 +76,8 @@ class Login extends React.Component<MyProps, MyState> {
                         <div className="py-3">
                             <label aria-label="Banner">
                                 <input className="hidden" onChange={e =>
-                                    this.setState({ ...this.state, bannerInput: { file: e.target.files[0], preview: e.target.files[0] ? URL.createObjectURL(e.target.files[0]) : undefined } })
-                                } type="file" id="file" name="icon" accept="image/x-png,image/jpeg" />
+                                    this.setState({ bannerInput: { file: e.target.files[0], preview: e.target.files[0] ? URL.createObjectURL(e.target.files[0]) : undefined } })
+                                } type="file" id="file" name="icon" accept="image/x-png,image/jpeg,image/webp" />
                                 <div className="pb-4">
                                     <span className={`bg-${this.props.info?.colors?.background?.color} mt-4 hover:bg-${this.props.info?.colors?.background?.shadow} rounded px-4 py-2 text-${this.props.info?.colors?.text?.shadow} hover:text-${this.props.info?.colors?.text?.color} text-custom2-h font-semibold`}>Escolher Banner</span>
                                 </div>
@@ -94,10 +97,12 @@ class Login extends React.Component<MyProps, MyState> {
                     <div className="col-span-3 mb-4 mt-2 text-center">
                         <hr className="mx-4" />
                         {
-                            this.state.homePageInfo === this.state.homePageInfoInputs ?
-                                <button className="bg-gray-100 mt-4 hover:bg-gray-200 rounded px-4 py-2 text-gray-900 font-semibold" type="button">Salvar</button>
-                                :
-                                <button className={`bg-${this.props.info?.colors?.background?.color} mt-4 hover:bg-${this.props.info?.colors?.background?.shadow} rounded px-4 py-2 text-${this.props.info?.colors?.text?.shadow} hover:text-${this.props.info?.colors?.text?.color} font-semibold`} type="submit">Salvar</button>
+                            this.state.loading ?
+                                <img src="/img/load.gif" className="h-12 mx-auto my-3" alt="carregando" /> :
+                                this.state.homePageInfo === this.state.homePageInfoInputs ?
+                                    <button className="bg-gray-100 mt-4 hover:bg-gray-200 rounded px-4 py-2 text-gray-900 font-semibold" type="button">Salvar</button>
+                                    :
+                                    <button className={`bg-${this.props.info?.colors?.background?.color} mt-4 hover:bg-${this.props.info?.colors?.background?.shadow} rounded px-4 py-2 text-${this.props.info?.colors?.text?.shadow} hover:text-${this.props.info?.colors?.text?.color} font-semibold`} type="submit">Salvar</button>
                         }
                     </div>
                 </div>
