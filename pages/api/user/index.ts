@@ -28,13 +28,13 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
 
         if (req.method === "PUT") {
             if (UAADM) {
-                if ((await User.find({ username, _id: { $ne: _id ? mongoose.Types.ObjectId(_id) : mongoose.Types.ObjectId(UA?._id) } }).collation({ locale: "en", strength: 2 }).exec()).length > 0)
+                if ((await User.find({ username, _id: { $ne: _id ? mongoose.Types.ObjectId(_id) : UA?._id } }).collation({ locale: "en", strength: 2 }).exec()).length > 0)
                     warnings.push({ message: "Nome de usuário já em uso.", input: "username" })
                 else
                     _id = _id ? _id : UA?._id
 
             } else {
-                if ((await User.find({ username, _id: { $ne: mongoose.Types.ObjectId(UA?._id) } }).collation({ locale: "en", strength: 2 }).exec()).length > 0)
+                if ((await User.find({ username, _id: { $ne: UA?._id } }).collation({ locale: "en", strength: 2 }).exec()).length > 0)
                     warnings.push({ message: "Nome de usuário já em uso.", input: "username" })
                 else
                     _id = UA?._id
@@ -71,7 +71,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
         if (warnings.length <= 0) {
             switch (req.method) {
                 case "GET":
-                    user = await User.findOne({ username: req.query?.username }).exec()
+                    user = await User.findOne({ username: req.query?.username.toString() }).exec()
                     break;
                 case "POST":
                     user = await (new User({ username, discordUser, activated: true, image: "", password: bcrypt.hashSync(password, bcrypt.genSaltSync(10)) })).save();
