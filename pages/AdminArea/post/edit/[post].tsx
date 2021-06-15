@@ -1,15 +1,19 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import Link from 'next/link'
 import LayoutAdminArea from './../../../../layout/layoutAdminArea'
 import Router from 'next/router'
-import Post from '../../../../components/forms/post'
-import Api from '../../../../services/api'
+import FrmPost from '../../../../components/forms/post'
 import { GetServerSideProps } from 'next'
-import { Category, CategoryI, Config, ConfigI, User, UserI } from "../../../../database/models"
+import { Category, CategoryI, Config, ConfigI, User, UserI, Post, PostI } from "../../../../database/models"
 import DbConnect from './../../../../utils/dbConnect'
 import { Document } from 'mongoose'
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
+const removeUndefinedForNextJsSerializing = <T,>(props: T): T =>
+    Object.fromEntries(
+        Object.entries(props).filter(([, value]) => value !== undefined),
+    ) as T;
+
+export const getServerSideProps: GetServerSideProps = async ({ params }) => {
     await DbConnect()
 
     let info: ConfigI & Document<any, any> = null
@@ -17,6 +21,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     try {
         info = await Config.findOne({ name: "info" }).select(`-_id`).exec()
     } catch (e) { }
+
 
     let categories: (CategoryI & Document<any, any>)[] = null
     try {
@@ -28,30 +33,36 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     try {
         authors = await User.find({}).select(`username -_id`).exec()
     } catch (e) { }
+    
 
+    let post = null
+    try {
+        post = await Post.findOne({ link: String(params.post) }).exec()
+        post = {
+            ...post?.toJSON(),
+            _id: String(post?._id),
+            publishDate: String(post?.publishDate),
+            category: (await Category.findOne(post?.category).select(`name link -_id`).exec()).toJSON()?.name,
+            author: (await User.findOne(post?.author).select(`username link -_id`).exec()).toJSON()?.username,
+        }
+        console.log(post)
+    } catch (e) { }
+    
     return {
-        props: {
-            info: info.toJSON().content,
-            link: context.params.post,
+        props: removeUndefinedForNextJsSerializing({
+            info: info?.toJSON().content,
+            post,
             user: { username: process.env.ADMINUSERNAME },
             authors: authors?.map(author => author.toJSON()),
             categories: categories?.map(category => category.toJSON())
-        }
+        })
     }
 }
 
-function Blog({ info, link, user, authors, categories }) {
-
-    const [post, setPost] = useState<any>()
-
-    useEffect(() => {
-        if (link)
-            Api.get(`/api/post?link=${link}`, { withCredentials: true }).then(response => setPost(response.data?.result))
-    }, [link])
-
+function Blog({ info, user, authors, categories, post }) {
     return (
         <>
-            <LayoutAdminArea head={<title>Editar post - {post?.title}</title>} info={info} user={user}>
+            <LayoutAdminArea head={<title>Editar post - {post?.title || "Postagem não encontrada."}</title>} info={info} user={user}>
                 <div className="container mx-auto">
                     <div>
                         <Link href={'/AdminArea/post'}>
@@ -66,9 +77,9 @@ function Blog({ info, link, user, authors, categories }) {
                     <div>
                         {
                             post?._id ?
-                                <Post requestAs={"AdminArea"} onSubmit={() => { Router.push('/AdminArea/post') }} info={info} Post={post} authors={authors} categories={categories} />
+                                <FrmPost requestAs={"AdminArea"} onSubmit={() => { Router.push('/AdminArea/post') }} info={info} Post={post} authors={authors} categories={categories} />
                                 : <div className="flex justify-center items-center h-64">
-                                    <img src="/img/load.gif" alt="loading" className="w-12" />
+                                    <h2 className="text-2xl">Postagem não encontrada.</h2>
                                 </div>
                         }
                     </div>

@@ -139,4 +139,4 @@ export const PostModel = () => {
   }
 };
 
-export const Post = PostModel();
+export const Post: mongoose.Model<PostI, {}, {}> = PostModel();
