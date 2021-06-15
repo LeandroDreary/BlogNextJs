@@ -106,7 +106,7 @@ const Index = ({ info, user, authors, categories }) => {
                                 authors: authors?.map(author => { return { name: author.username, link: author.username } }),
                                 perPage: filters.perPage,
                                 search: filters.search
-                            }} info={info} onSubmit={(e, datas) => { e.preventDefault(); LoadPost({ perPage: datas.perPage, search: datas.search, author: datas.selectedAuthor, category: datas.selectedCategory }); }} />
+                            }} info={info} onSubmit={(e, datas) => { e.preventDefault(); LoadPost({ perPage: datas.perPage, search: datas.search, author: datas.author, category: datas.category }); }} />
                             <Navigation callBack={page => LoadPost({ ...filters, page })} info={info} page={filters.page} pages={filters.pages} />
                             <hr />
                         </div>
