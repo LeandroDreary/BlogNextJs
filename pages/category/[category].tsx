@@ -5,10 +5,6 @@ import { Category, CategoryI, Config, ConfigI, Post, PostI } from "../../databas
 import DbConnect from './../../utils/dbConnect'
 import { Document } from 'mongoose'
 import { GetServerSideProps } from 'next'
-import { useEffect } from 'react'
-import useSWR from 'swr'
-import api from '../../services/api'
-import { useRouter } from 'next/router'
 
 const removeUndefinedForNextJsSerializing = <T,>(props: T): T =>
     Object.fromEntries(
