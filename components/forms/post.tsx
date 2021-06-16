@@ -72,8 +72,6 @@ export default function index({ Post, categories, authors, info, requestAs, onSu
         if (post?._id)
             data.append('_id', post?._id);
 
-        console.log(post)
-
         if (post?._id) {
             Api.put("/api/post", data, { withCredentials: true, headers: { 'content-type': 'multipart/form-data' } }).then(response => {
                 setLoading(false)

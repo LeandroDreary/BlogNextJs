@@ -2,6 +2,7 @@ import React from 'react'
 import $ from 'jquery'
 import { FaWindowClose } from 'react-icons/fa'
 import Api from '../services/api'
+import Link from "next/link"
 
 interface MyProps {
     post: {
@@ -50,14 +51,14 @@ class Post extends React.Component<MyProps, MyState> {
                                 <div className="bg-white rounded z-20">
                                     <div className="w-full grid grid-cols-6 bg-red-600">
                                         <div className="col-span-5 text-lg text-white font-semibold p-2">
-                                            Apagar post
+                                            Apagar postagem
                                         </div>
                                         <div className="col-span-1 p-2 text-right">
                                             <button className="text-lg p-1 text-white" onClick={HandleDeletePopup}><FaWindowClose /></button>
                                         </div>
                                     </div>
                                     <div className="p-5">
-                                        <p className="pb-2 text-gray-800">Você quer realmente apagar o post?</p>
+                                        <p className="pb-2 text-gray-800">Você realmente quer apagar a postagem?</p>
                                         <hr className="my-2" />
                                         <button onClick={HandleDeletePost} className="mr-5 mt-2 bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-6 rounded-lg">
                                             Apagar
@@ -70,25 +71,31 @@ class Post extends React.Component<MyProps, MyState> {
                         : ""
                 }
 
-                <div className="p-4">
-                    <div className="p-4 border shadow-sm border-gray-200 rounded">
-                        <div className="grid grid-cols-3">
-                            <div className="col-span-3 md:col-span-1 flex justify-center items-center p-3">
-                                <img className="w-full max-h-64 object-cover" src={this.props?.post?.image} alt={this.props?.post?.title} />
+                <div className="col-span-4 sm:col-span-2 lg:col-span-1 p-4">
+                    <div className="relative h-full pb-16">
+                        <div className="cursor-pointer p-4 pb-8 sm:pb-4 h-full rounded-md">
+                            <div className="relative flex justify-center items-center mx-1 py-1">
+                                <a target="_blank" href={"/post/" + this.props.post.link}>
+                                    <img className="w-full h-36 object-cover" src={this.props.post.image || ""} alt={this.props.post.title || ""} />
+                                </a>
                             </div>
-                            <div className="col-span-3 md:col-span-2 p-4">
-                                <h2 className="text-gray-700 font-semibold text-lg">{this.props.post?.title}</h2>
-                                <p className="text-gray-600">{this.props.post?.description?.substr(0, 200) + (this.props?.post?.description?.length > 100 ? "..." : "")}</p>
+                            <div className="px-4 pt-1">
+                                <a target="_blank" href={"/post/" + this.props.post.link}>
+                                    <h2 className="text-gray-700 hover:underline font-semibold text-lg">{this.props.post.title}</h2>
+                                </a>
+                                <p className="text-gray-600 pt-3 text-sm">{this.props.post.description?.substr(0, 200) + (this.props.post.description.length > 100 ? "..." : "")}</p>
                             </div>
                         </div>
-                        <hr className="mt-3" />
-                        <div className="p-4">
-                            <a href={this.props.editLink}>
-                                <button className={`mr-5 bg-${this.props?.info?.colors?.background?.color} hover:bg-${this.props?.info?.colors?.background?.shadow} text-${this.props?.info?.colors?.text?.shadow} hover:text-${this.props?.info?.colors?.text?.color} font-bold py-2 px-6 rounded-lg`}>
-                                    Editar
-                                </button>
-                            </a>
-                            <button onClick={HandleDeletePopup} className="mr-5 bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-6 rounded-lg">
+                        <div className="bottom-0 w-full px-4 text-right absolute">
+                            <hr className="pt-2" />
+                            <Link href={this.props.editLink}>
+                                <a>
+                                    <button className={`mr-5 bg-${this.props?.info?.colors?.background?.color} hover:bg-${this.props?.info?.colors?.background?.shadow} text-${this.props?.info?.colors?.text?.shadow} hover:text-${this.props?.info?.colors?.text?.color} font-bold py-2 px-6`}>
+                                        Editar
+                                    </button>
+                                </a>
+                            </Link>
+                            <button onClick={HandleDeletePopup} className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-6">
                                 Apagar
                             </button>
                         </div>

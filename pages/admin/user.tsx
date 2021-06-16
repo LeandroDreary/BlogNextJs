@@ -45,7 +45,6 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
 }
 
 const Index = ({ info, User }) => {
-    console.log(User)
     const [user, setUser] = useState(User)
     const { username, discordUser, password } = { username: useRef<HTMLInputElement>(), discordUser: useRef<HTMLInputElement>(), password: useRef<HTMLInputElement>() }
     const [warnings, setWarnings] = useState<{ message: string; input: string, success?: boolean }[]>([])

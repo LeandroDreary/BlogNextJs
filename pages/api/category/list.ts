@@ -7,35 +7,37 @@ interface ListCategoriesParams {
     perPage?: any,
     page?: any,
     search?: any,
-    UA?: any
+    UA?: any,
+    select: string
 }
 
 export const ListCategories = async (params: ListCategoriesParams) => {
-    let { perPage, page, search } = params
+    let { perPage, page, search, select } = params
 
     const rgx = (pattern) => (new RegExp(`.*${pattern}.*`));
 
     perPage = Number(perPage)
     page = Number(page)
 
-    let category: any = Category
-    let count: any = Category
+    let categories
+    let count
 
     if (search) {
-        category = category.find({ name: { $regex: rgx(search), $options: "i" } }).collation({ locale: "en", strength: 2 })
-        count = count.find({ name: { $regex: rgx(search), $options: "i" } }).collation({ locale: "en", strength: 2 })
+        categories = Category.find({ name: { $regex: rgx(search), $options: "i" } }).collation({ locale: "en", strength: 2 })
+        count = Category.find({ name: { $regex: rgx(search), $options: "i" } }).collation({ locale: "en", strength: 2 })
     } else {
-        category = category.find({})
-        count = count.find({})
+        categories = Category.find({})
+        count = Category.find({})
     }
 
     count = await count.countDocuments({}).exec()
-    category = await category.skip(perPage * (((page >= 1) ? page : 1) - 1))
+    categories = await categories.skip(perPage * (((page >= 1) ? page : 1) - 1))
         .limit(perPage)
+        .select(select)
         .exec()
 
     return {
-        result: category?.map(c => { return { color: c?.color, link: c?.link || null, name: c?.name } }),
+        result: categories.map(category => category.toJSON()),
         count,
         perPage,
         page,
@@ -46,13 +48,15 @@ export const ListCategories = async (params: ListCategoriesParams) => {
 async function handler(req, res) {
     await DbConnect()
 
-    let { perPage, page, search } = req.query
+    let { perPage, page, search, select } = req.query
 
     const cookies = new Cookies(req, res)
 
     let UA = bcrypt.compareSync(`${process.env.ADMINPASSWORD}_${process.env.ADMINUSERNAME}`, (cookies.get('AdminAreaAuth') || ""))
 
-    res.status(200).json(await ListCategories({ perPage, page, search, UA }))
+    if(!UA) select += " -_id"
+
+    res.status(200).json(await ListCategories({ perPage, page, search, UA, select }))
 }
 
 export default handler

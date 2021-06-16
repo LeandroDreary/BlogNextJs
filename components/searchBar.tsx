@@ -38,9 +38,6 @@ class SearchBar extends React.Component<MyProps, MyState> {
     componentDidUpdate() {
         if (this.props.datas !== this.state.defaultDatas){
             this.setState({ datas: this.props.datas, defaultDatas: this.props.datas })
-            console.log(this.state.datas)
-            console.log(this.props.datas)
-            console.log("////")
         }
     }
 
@@ -68,19 +65,19 @@ class SearchBar extends React.Component<MyProps, MyState> {
         }
 
         return (
-            <div className="box pt-6">
+            <div className="box pt-4">
                 <form onSubmit={(e) => this.props.onSubmit(e, this.state.datas)}>
                     <div className="mx-4">
                         <div className={`bg-${this.props.info?.colors?.background?.color} p-4 shadow-md box-wrapper`}>
-                            <div className={`rounded flex items-center w-full px-3 py-2 shadow-sm border border-${this.props.info?.colors?.text?.color} text-${this.props.info?.colors?.text?.color}`}>
+                            <div className={`flex items-center w-full px-3 py-2 shadow-sm border border-${this.props.info?.colors?.text?.color} text-${this.props.info?.colors?.text?.color}`}>
                                 <input onChange={HandleSearchChange} value={this.state.datas?.search || ""} type="text" placeholder="Procurar" x-model="q" className={`placeholder-${this.props.info?.colors?.text?.shadow} font-semibold w-full text-sm outline-none focus:outline-none bg-transparent`} />
                                 <button className="outline-none focus:outline-none px-4">
                                     <FaSearch />
                                 </button>
                             </div>
                         </div>
-                        <div className="py-4 bg-white border flex px-4">
-                            <div className="px-3">
+                        <div className="py-4 bg-white border px-4">
+                            <div className="inline-block px-3">
                                 <label className="text-gray-600" htmlFor="category">Categoria</label><br />
                                 <select name="category" value={this.state.datas.category} onChange={HandleCategoryChange} className={`text-sm w-32 text-gray-600 border border-gray-300 outline-none focus:outline-none p-1`}>
                                     <option value="">Todos</option>
@@ -91,7 +88,7 @@ class SearchBar extends React.Component<MyProps, MyState> {
                                     }
                                 </select>
                             </div>
-                            <div className="px-3">
+                            <div className="inline-block px-3">
                                 <label className="text-gray-600" htmlFor="author">Autor</label><br />
                                 <select name="author" value={this.state.datas.author} onChange={HandleAuthorChange} className={`text-sm w-32 text-gray-600 border border-gray-300 outline-none focus:outline-none p-1`}>
                                     <option value="">Todos</option>
@@ -102,7 +99,7 @@ class SearchBar extends React.Component<MyProps, MyState> {
                                     }
                                 </select>
                             </div>
-                            <div className="px-3">
+                            <div className="inline-block px-3">
                                 <label className="text-gray-600" htmlFor="perPage">Por página</label><br />
                                 <input onChange={HandlePerPageChange} value={this.state.datas.perPage || 12} className="text-gray-600 w-16 border border-gray-300 px-2 py-1" name="perPage" type="number" />
                             </div>

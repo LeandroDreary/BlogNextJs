@@ -61,6 +61,7 @@ const Index = ({ info, user, categories, authors }) => {
 
     const LoadPost = ({ page, perPage, author, category, search }: { page?: number, perPage?: number, author?: string, category?: string, search?: string }) => {
         setLoading(true)
+        setFilters({ ...filters, page, perPage, author, category, search })
         const params = {
             select: "title description image link",
             author: author || "",
@@ -74,7 +75,7 @@ const Index = ({ info, user, categories, authors }) => {
         ).then(response => {
             setPosts(response.data?.result);
             setLoading(false);
-            setFilters({ ...filters, ...response.data })
+            setFilters({ ...filters, ...response.data, page, perPage, author, category, search })
         }).catch(() => setLoading(false))
     }
 
@@ -85,49 +86,38 @@ const Index = ({ info, user, categories, authors }) => {
 
     return (
         <>
-            <LayoutAdminArea head={<title>Posts</title>} info={info} user={user}>
+            <LayoutAdminArea head={<title>{filters?.search || "Postagens"} - {info?.websiteName || ""}</title>} info={info} user={user}>
                 <div className="container mx-auto">
-                    <div className="grid grid-cols-12">
-                        <div className="col-span-12">
-                            <Link href="/AdminArea/post/create">
-                                <a>
-                                    <button className={`mr-5 my-4 bg-${info?.colors.background?.color} hover:bg-${info?.colors.background?.shadow} text-${info?.colors.text?.shadow} hover:text-${info?.colors.text?.color} font-bold py-2 px-6 rounded-lg`}>
-                                        Nova postagem
-                                    </button>
-                                </a>
-                            </Link>
-                            <button onClick={() => LoadPost({})} className="mr-5 my-4 bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-2 px-6 rounded-lg">
-                                Recarregar
+                    <Link href="/AdminArea/post/create">
+                        <a>
+                            <button className={`mr-5 my-4 bg-${info?.colors.background?.color} hover:bg-${info?.colors.background?.shadow} text-${info?.colors.text?.shadow} hover:text-${info?.colors.text?.color} font-bold py-2 px-6 rounded-lg`}>
+                                Nova postagem
                             </button>
-                            <hr />
-                        </div>
-                        <div className="col-span-12">
-                            <SearchBar datas={{
-                                categories: categories?.map(category => { return { name: category.name, link: category.name } }),
-                                authors: authors?.map(author => { return { name: author.username, link: author.username } }),
-                                perPage: filters.perPage,
-                                search: filters.search
-                            }} info={info} onSubmit={(e, datas) => { e.preventDefault(); LoadPost({ perPage: datas.perPage, search: datas.search, author: datas.author, category: datas.category }); }} />
-                            <Navigation callBack={page => LoadPost({ ...filters, page })} info={info} page={filters.page} pages={filters.pages} />
-                            <hr />
-                        </div>
-                        <div className="col-span-1"></div>
-                        <div className="col-span-12 sm:col-span-10 mx-auto">
-
-                            {!loading ? posts?.map((post, index) => {
-                                return <PostCardAdmin post={post} info={info} editLink={'/AdminArea/post/edit/' + encodeURI(post.link)} reload={() => LoadPost({})} key={index} />
-                            }) :
-                                <div className="flex justify-center items-center h-64">
-                                    <img src="/img/load.gif" alt="loading" className="w-12" />
-                                </div>
-                            }
-                        </div>
-                        <div className="col-span-1"></div>
-                        <div className="col-span-12">
-                            <hr />
-                            <Navigation callBack={page => LoadPost({ ...filters, page })} info={info} page={filters.page} pages={filters.pages} />
-                        </div>
+                        </a>
+                    </Link>
+                    <button onClick={() => LoadPost({})} className="mr-5 my-4 bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-2 px-6 rounded-lg">
+                        Recarregar
+                    </button>
+                    <hr />
+                    <SearchBar datas={{
+                        categories: categories?.map(category => { return { name: category.name, link: category.name } }),
+                        authors: authors?.map(author => { return { name: author.username, link: author.username } }),
+                        perPage: filters.perPage,
+                        search: filters.search
+                    }} info={info} onSubmit={(e, datas) => { e.preventDefault(); LoadPost({ perPage: datas.perPage, search: datas.search, author: datas.author, category: datas.category }); }} />
+                    <Navigation callBack={page => LoadPost({ ...filters, page })} info={info} page={filters.page} pages={filters.pages} />
+                    <hr />
+                    <div className="grid grid-cols-4 py-2">
+                        {!loading ? posts?.map((post, index) => {
+                            return <PostCardAdmin post={post} info={info} editLink={'/AdminArea/post/edit/' + encodeURI(post.link)} reload={() => LoadPost({})} key={index} />
+                        }) :
+                            <div className="flex justify-center items-center h-64">
+                                <img src="/img/load.gif" alt="loading" className="w-12" />
+                            </div>
+                        }
                     </div>
+                    <hr />
+                    <Navigation callBack={page => LoadPost({ ...filters, page })} info={info} page={filters.page} pages={filters.pages} />
                 </div>
             </LayoutAdminArea>
         </>

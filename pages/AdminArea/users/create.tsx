@@ -64,7 +64,7 @@ const Index = ({ info, user, warnings, inputs }) => {
 
     return (
         <>
-            <LayoutAdminArea head={<title>Novo usuário</title>} info={info} user={user}>
+            <LayoutAdminArea head={<title>Novo usuário - {info?.websiteName || ""}</title>} info={info} user={user}>
                 <div className="container mx-auto">
                     <Link href="/AdminArea/users">
                         <a>

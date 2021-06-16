@@ -45,7 +45,6 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
             category: (await Category.findOne(post?.category).select(`name link -_id`).exec()).toJSON()?.name,
             author: (await User.findOne(post?.author).select(`username link -_id`).exec()).toJSON()?.username,
         }
-        console.log(post)
     } catch (e) { }
     
     return {
