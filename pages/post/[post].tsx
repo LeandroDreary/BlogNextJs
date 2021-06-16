@@ -1,9 +1,10 @@
 import React from 'react'
 import Layout from './../../layout/layout'
 import {Sidebar, PostCard2} from './../../components'
-import { Category, Config, Post, User } from "../../database/models"
+import { Category, CategoryI, Config, Post, User } from "../../database/models"
 import DbConnect from './../../utils/dbConnect'
 import { ListCategories } from '../api/category/list'
+import { Document } from 'mongoose'
 
 export async function getStaticPaths() {
     return {
@@ -15,7 +16,7 @@ export async function getStaticPaths() {
 export async function getStaticProps(context) {
     await DbConnect()
 
-    let { info, post, author, recommend, categories } = { info: null, post: null, author: null, recommend: null, categories: null }
+    let { info, post, author, recommend } = { info: null, post: null, author: null, recommend: null }
 
     try {
         info = await Config.findOne({ name: "info" }).select(`-_id`).exec()
@@ -42,8 +43,9 @@ export async function getStaticProps(context) {
     } catch (e) { }
 
 
+    let categories: (CategoryI & Document<any, any>)[] = null
     try {
-        categories = (await ListCategories({})).result
+        categories = await Category.find({}).select(`name -_id`).exec()
     } catch (e) { }
 
     return {

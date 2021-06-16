@@ -8,7 +8,7 @@ interface ListCategoriesParams {
     page?: any,
     search?: any,
     UA?: any,
-    select: string
+    select?: string
 }
 
 export const ListCategories = async (params: ListCategoriesParams) => {
