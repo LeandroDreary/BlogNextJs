@@ -45,7 +45,7 @@ export async function getStaticProps(context) {
 
     let categories: (CategoryI & Document<any, any>)[] = null
     try {
-        categories = await Category.find({}).select(`name -_id`).exec()
+        categories = await Category.find({}).select(`color name -_id`).exec()
     } catch (e) { }
 
     return {
