@@ -28,7 +28,7 @@ class Login extends React.Component<MyProps, MyState> {
 
     constructor(props: any) {
         super(props);
-        this.state = { loading: false, homePageInfo: this.props.homePageInfo, homePageInfoInputs: this.props.homePageInfo, bannerInput: { preview: null, file: null } }
+        this.state = { loading: false, homePageInfo: this.props.homePageInfo, homePageInfoInputs: this.props.homePageInfo, bannerInput: { preview: this.props.homePageInfo.banner, file: null } }
     }
 
     render() {
@@ -39,9 +39,9 @@ class Login extends React.Component<MyProps, MyState> {
             let data = new FormData();
 
             data.append('banner', this.state.bannerInput?.file || this.state.homePageInfoInputs?.banner || "");
-            data.append('description', this.state.homePageInfoInputs?.description);
-            data.append('head', this.state.homePageInfoInputs?.head);
-            data.append('title', this.state.homePageInfoInputs?.title);
+            data.append('description', this.state.homePageInfoInputs?.description || "");
+            data.append('head', this.state.homePageInfoInputs?.head || "");
+            data.append('title', this.state.homePageInfoInputs?.title || "");
             data.append('name', "homePageInfo");
 
             api.post('/api/config', data, { withCredentials: true, headers: { 'content-type': 'multipart/form-data' } }).then(res => {

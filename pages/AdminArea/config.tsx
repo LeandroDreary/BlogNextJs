@@ -16,20 +16,20 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
     let HomePageInfo = null
     try {
         Info = await Config.findOne({ name: "info" }).select(`-_id`).exec()
-        Info = Info._doc.content
     } catch (e) { }
 
     try {
         HomePageInfo = await Config.findOne({ name: "homePageInfo" }).select(`-_id`).exec()
-        HomePageInfo = HomePageInfo._doc.content
     } catch (e) { }
+
+    console.log(HomePageInfo.toJSON().content)
 
     if (bcrypt.compareSync(`${process.env.ADMINPASSWORD}_${process.env.ADMINUSERNAME}`, cookies.get('AdminAreaAuth'))) {
         return {
             props: {
-                Info,
+                Info: Info.toJSON().content,
                 user: { username: process.env.ADMINUSERNAME },
-                HomePageInfo
+                HomePageInfo: HomePageInfo.toJSON().content
             }
         }
     } else {
