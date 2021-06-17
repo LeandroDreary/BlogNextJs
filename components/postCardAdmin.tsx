@@ -3,6 +3,7 @@ import $ from 'jquery'
 import { FaWindowClose } from 'react-icons/fa'
 import Api from '../services/api'
 import Link from "next/link"
+import { Outclick } from '.'
 
 interface MyProps {
     post: {
@@ -44,11 +45,9 @@ class Post extends React.Component<MyProps, MyState> {
             <>
                 {
                     this.state.delete ?
-                        <div className="h-full w-full top-0 left-0 fixed">
-                            <div onClick={HandleDeletePopup} className="bg-black opacity-50 h-full w-full z-10 absolute">
-                            </div>
-                            <div className="h-full w-full flex justify-center items-center z-20">
-                                <div className="bg-white rounded z-20">
+                        <div className="h-full w-full top-0 left-0 bg-black opacity-50 z-20 flex justify-center items-center fixed">
+                            <Outclick callback={HandleDeletePopup}>
+                                <div className="bg-white">
                                     <div className="w-full grid grid-cols-6 bg-red-600">
                                         <div className="col-span-5 text-lg text-white font-semibold p-2">
                                             Apagar postagem
@@ -64,9 +63,8 @@ class Post extends React.Component<MyProps, MyState> {
                                             Apagar
                                         </button>
                                     </div>
-
                                 </div>
-                            </div>
+                            </Outclick>
                         </div>
                         : ""
                 }
