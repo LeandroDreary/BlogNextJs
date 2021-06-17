@@ -111,7 +111,7 @@ const Index = ({ info, user, categories, authors }) => {
                         {!loading ? posts?.map((post, index) => {
                             return <PostCardAdmin post={post} info={info} editLink={'/AdminArea/post/edit/' + encodeURI(post.link)} reload={() => LoadPost({})} key={index} />
                         }) :
-                            <div className="flex justify-center items-center h-64">
+                            <div className="col-span-4 flex justify-center items-center h-64">
                                 <img src="/img/load.gif" alt="loading" className="w-12" />
                             </div>
                         }
