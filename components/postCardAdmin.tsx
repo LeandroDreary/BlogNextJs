@@ -45,7 +45,7 @@ class Post extends React.Component<MyProps, MyState> {
             <>
                 {
                     this.state.delete ?
-                        <div className="h-full w-full top-0 left-0 bg-black opacity-50 z-20 flex justify-center items-center fixed">
+                        <div className="h-full w-full top-0 left-0 bg-black bg-opacity-50 z-20 flex justify-center items-center fixed">
                             <Outclick callback={HandleDeletePopup}>
                                 <div className="bg-white">
                                     <div className="w-full grid grid-cols-6 bg-red-600">
