@@ -3,6 +3,7 @@
 Open [pequenojornal.tk](https://pequenojornal.tk/) in your browser to see the result.
 
 Deploy your own BlogNextJs project with Vercel.
+
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/import/project?template=https://github.com/LeandroDreary/BlogNextJs)
 
 ## Functionalities
@@ -18,14 +19,14 @@ Deploy your own BlogNextJs project with Vercel.
 
 ## Environment variables
 
-ADMINPASSWORD = Admin user password
-ADMINUSERNAME = Admin username
-API_URL = Api url
-EMAILPASS = Contact email password
-EMAILSERVICE = Contact email service
-EMAILUSER = Contact email
-IMGBB_APIKEY = ImgBB api key
-MONGODB_URI = MongoDB connection string
+- ADMINPASSWORD = Admin user password
+- ADMINUSERNAME = Admin username
+- API_URL = Api url
+- EMAILPASS = Contact email password
+- EMAILSERVICE = Contact email service
+- EMAILUSER = Contact email
+- IMGBB_APIKEY = ImgBB api key
+- MONGODB_URI = MongoDB connection string
 
 ### Integrations  
 
