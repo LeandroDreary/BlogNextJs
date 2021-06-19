@@ -26,7 +26,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
                     try {
                         if (files?.icon?.path) {
                             let base64string = (await sharp(files.icon?.path).webp().toBuffer()).toString('base64')
-                            const options = { apiKey: "d11615f1d7ecafdc0230d615378e4eee", base64string };
+                            const options = { apiKey: process.env.IMGBB_APIKEY, base64string };
                             icon = await imgbbUploader(options).then((res) => res?.url)
                         } else {
                             icon = fields?.image
@@ -61,7 +61,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
                     try {
                         if (files?.banner?.path) {
                             let base64string = (await sharp(files.banner?.path).webp().toBuffer()).toString('base64')
-                            const options = { apiKey: "d11615f1d7ecafdc0230d615378e4eee", base64string };
+                            const options = { apiKey: process.env.IMGBB_APIKEY, base64string };
                             banner = await imgbbUploader(options).then((res) => res?.url)
                         } else {
                             banner = fields?.banner

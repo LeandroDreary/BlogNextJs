@@ -50,7 +50,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
             if ((req.method === "POST" || req.method === "PUT") && warnings?.length <= 0) {
                 if (files?.image?.path) {
                     let base64string = (await sharp(files.image?.path).webp().toBuffer()).toString('base64')
-                    const options = { apiKey: "d11615f1d7ecafdc0230d615378e4eee", base64string };
+                    const options = { apiKey: process.env.IMGBB_APIKEY, base64string };
                     image = await imgbbUploader(options).then((response) => response?.url).catch((error) => console.error(error));
                 } else {
                     image = fields?.image
