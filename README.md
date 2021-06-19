@@ -2,6 +2,10 @@
 
 Open [pequenojornal.tk](https://pequenojornal.tk/) in your browser to see the result.
 
+BlogNextJs was created for people who want to start showing activity on the internet at a low cost but still with quality and speed.
+With this Repository you can host an entire blog without having advanced technical knowledge in programming or things like that.
+All you need is an account at [MongoDB](https://mongodb.com/) and [ImgBB](https://imgbb.com/). Domain it is up to you to pay for one or not.
+
 Deploy your own BlogNextJs project with Vercel.
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/import/project?template=https://github.com/LeandroDreary/BlogNextJs)

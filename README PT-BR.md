@@ -2,6 +2,10 @@
 
 Abra o site [pequenojornal.tk](https://pequenojornal.tk/) no seu navegador.
 
+BlogNextJs foi criado para pessoas que querem começar a mostrar uma atividade na internet a baixo custo mas mesmo assim com qualidade e velocidade.
+Com esse Repositório você hospedar um blog inteiro sem ter conhecimento técnico avançado em programação ou coisas do tipo.
+Tudo o que você precisa é de uma conta na [MongoDB](https://mongodb.com/) e na [ImgBB](https://imgbb.com/). Domínio fica a seu critério pagar por um ou não. 
+
 Hospede seu próprio BlogNextJs na Vercel.
 
 [![Hospedar na Vercel](https://vercel.com/button)](https://vercel.com/import/project?template=https://github.com/LeandroDreary/BlogNextJs)
