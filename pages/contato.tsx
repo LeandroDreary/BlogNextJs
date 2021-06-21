@@ -86,28 +86,28 @@ const Index = ({ info, categories, warnings }) => {
                             </p>
                             <hr className="my-2" />
                             <div className="col-span-5 py-4 md:px-4 md:col-span-2">
-                                <a href="mailto:jornalzinhofc@gmail.com" className="text-xl flex items-center my-5" target="_blank" rel="noopener noreferrer">
+                                <a href="" className="text-xl flex items-center my-5" target="_blank" rel="noopener noreferrer">
                                     <span className="mr-2 text-2xl text-gray-500">
                                         <FaMailBulk />
                                     </span>
                                     <span className="text-gray-700 hover:underline">
-                                        jornalzinhofc@gmail.com
+                                        
                                     </span>
                                 </a>
-                                <a href="https://twitter.com/pequenojornal" className="text-xl flex items-center my-5" target="_blank" rel="noopener noreferrer">
+                                <a href="" className="text-xl flex items-center my-5" target="_blank" rel="noopener noreferrer">
                                     <span className="mr-1 text-2xl text-blue-500">
                                         <FaTwitter />
                                     </span>
                                     <span className="text-gray-700 hover:underline">
-                                        @pequenojornal
+                                        
                                     </span>
                                 </a>
-                                <a href="https://discord.gg/gou" className="text-xl flex items-center my-5" target="_blank" rel="noopener noreferrer">
+                                <a href="" className="text-xl flex items-center my-5" target="_blank" rel="noopener noreferrer">
                                     <span className="mr-1 text-2xl text-blue-700">
                                         <FaDiscord />
                                     </span>
                                     <span className="text-gray-700 hover:underline">
-                                        Servidor do Goularte
+                                        
                                     </span>
                                 </a>
                             </div>
