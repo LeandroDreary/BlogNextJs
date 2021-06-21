@@ -1,6 +1,6 @@
 # Blog Next.js
 
-Open [pequenojornal.tk](https://pequenojornal.tk/) in your browser to see the result.
+Open [BlogNextJs](https://blognextjs.vercel.app/) in your browser to see the result.
 
 BlogNextJs was created for people who want to start showing activity on the internet at a low cost but still with quality and speed.
 With this Repository you can host an entire blog without having advanced technical knowledge in programming or things like that.

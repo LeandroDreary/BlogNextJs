@@ -1,6 +1,6 @@
 # Blog Next.js
 
-Abra o site [pequenojornal.tk](https://pequenojornal.tk/) no seu navegador.
+Abra o site [BlogNextJs](https://blognextjs.vercel.app/) no seu navegador.
 
 BlogNextJs foi criado para pessoas que querem começar a mostrar uma atividade na internet a baixo custo mas mesmo assim com qualidade e velocidade.
 Com esse Repositório você hospedar um blog inteiro sem ter conhecimento técnico avançado em programação ou coisas do tipo.
