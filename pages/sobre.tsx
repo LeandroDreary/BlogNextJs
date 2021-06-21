@@ -48,7 +48,7 @@ const Index = ({ info, categories }) => {
                     </div>
                     <div className="col-span-5 md:col-span-2 my-8">
                         <div className={`mx-4`}>
-                            <img className="w-full p-6 mx-auto" src={info?.icon} alt="" />
+                            <img className="w-full p-6 mx-auto" src={info?.icon} alt="icone" />
                         </div>
                     </div>
                 </div>
