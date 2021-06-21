@@ -1,6 +1,5 @@
-import bcrypt from 'bcryptjs'
-import Cookies from 'cookies'
 import { User } from "../../../database/models"
+import { AdminAuthApi } from '../../../utils/authentication'
 import DbConnect from './../../../utils/dbConnect'
 
 async function handler(req, res) {
@@ -9,8 +8,8 @@ async function handler(req, res) {
 
     let { perPage, page, search } = req.query
 
-    const cookies = new Cookies(req, res)
-    let UA = bcrypt.compareSync(`${process.env.ADMINPASSWORD}_${process.env.ADMINUSERNAME}`, (cookies.get('AdminAreaAuth') || ""))
+    // user Authentication
+    let UAADM = await AdminAuthApi({ req, res }, ({ user }) => user)
 
     perPage = Number(perPage)
     page = Number(page)
@@ -25,8 +24,8 @@ async function handler(req, res) {
         user = user.find({})
         count = count.find({})
     }
-    user = user.select(`${UA ? "" : "-_id"}`)
-    count = count.select(`${UA ? "" : "-_id"}`)
+    user = user.select(`${UAADM ? "" : "-_id"}`)
+    count = count.select(`${UAADM ? "" : "-_id"}`)
 
     count = await count.countDocuments({}).exec()
     user = await user.skip(perPage * (((page >= 1) ? page : 1) - 1))

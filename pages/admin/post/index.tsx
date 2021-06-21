@@ -1,23 +1,17 @@
 import React, { useEffect, useState } from 'react'
-import Cookies from 'cookies'
 import Link from 'next/link'
-import { Document } from 'mongoose'
-import HandleAuth from '../../../services/auth'
 import { GetServerSideProps } from 'next'
+import { Document } from 'mongoose'
+import LayoutAdminArea from '../../../layout/layoutAdmin'
 import Api from './../../../services/api'
-import LayoutAdmin from './../../../layout/layoutAdmin'
 import { PostCardAdmin, Navigation, SearchBar } from '../../../components'
 import { Category, CategoryI, Config, ConfigI, User, UserI } from '../../../database/models'
 import DbConnect from './../../../utils/dbConnect'
+import { AdminAuth } from '../../../utils/authentication'
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
-    await DbConnect()
-
-    const cookies = new Cookies(req, res)
-
-    let user = await HandleAuth(cookies.get("auth") || "na")
-
-    if (user?.username) {
+    return AdminAuth({ req, res }, async ({ user }) => {
+        await DbConnect()
 
         let info: ConfigI & Document<any, any> = null
         try {
@@ -31,40 +25,35 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
         } catch (e) { }
 
 
-        let authors = null
+        let authors: (UserI & Document<any, any>)[] = null
         try {
-            authors = [{ username: user.toJSON()?.username, link: user.toJSON()?.link || null }]
+            authors = await User.find({}).select(`username -_id`).exec()
         } catch (e) { }
 
         return {
             props: {
                 info: info.toJSON().content,
-                user: { username: user.username },
-                authors: authors,
+                user,
+                authors: authors?.map(author => author.toJSON()),
                 categories: categories?.map(category => category.toJSON())
             }
         }
-    } else {
-        cookies.get("set")
-        return {
-            redirect: {
-                destination: '/admin/signin',
-                permanent: false,
-            }
-        }
-    }
+
+    })
 }
 
-const Index = ({ info, user, authors, categories }) => {
-    const [posts, setPosts] = useState<{ title: string, description: string, image: string, link: string }[]>()
+const Index = ({ info, user, categories, authors }) => {
+    const [posts, setPosts] = useState<{ _id: string, title: string, description: string, image: string, link: string }[]>()
 
     const [filters, setFilters] = useState<{ perPage: number, page: number, pages: number, search: string, category: string, author: string }>({ search: "", page: 1, pages: 0, category: "", author: "", perPage: 12 })
     const [loading, setLoading] = useState<boolean>(false);
 
+
     const LoadPost = ({ page, perPage, author, category, search }: { page?: number, perPage?: number, author?: string, category?: string, search?: string }) => {
         setLoading(true)
+        setFilters({ ...filters, page, perPage, author, category, search })
         const params = {
-            select: "title description image link",
+            select: "title description image link id",
             author: author || "",
             category: category || "",
             perPage: `${perPage || 12}`,
@@ -76,7 +65,7 @@ const Index = ({ info, user, authors, categories }) => {
         ).then(response => {
             setPosts(response.data?.result);
             setLoading(false);
-            setFilters({ ...filters, ...response.data })
+            setFilters({ ...filters, ...response.data, page, perPage, author, category, search })
         }).catch(() => setLoading(false))
     }
 
@@ -87,7 +76,7 @@ const Index = ({ info, user, authors, categories }) => {
 
     return (
         <>
-            <LayoutAdmin head={<title>{filters?.search || "Postagens"} - {info?.websiteName || ""}</title>} info={info} user={user}>
+            <LayoutAdminArea head={<title>{filters?.search || "Postagens"} - {info?.websiteName || ""}</title>} info={info} user={user}>
                 <div className="container mx-auto">
                     <Link href="/admin/post/create">
                         <a>
@@ -109,8 +98,8 @@ const Index = ({ info, user, authors, categories }) => {
                     <Navigation callBack={page => LoadPost({ ...filters, page })} info={info} page={filters.page} pages={filters.pages} />
                     <hr />
                     <div className="grid grid-cols-4 py-2">
-                        {!loading ? posts?.map((post, i) => {
-                            return <PostCardAdmin info={info} post={post} editLink={'/admin/post/edit/' + encodeURI(post.link)} reload={() => LoadPost({})} key={i} />
+                        {!loading ? posts?.map((post, index) => {
+                            return <PostCardAdmin requestAs="admin" post={post} info={info} editLink={'/admin/post/edit/' + encodeURI(post.link)} reload={() => LoadPost({})} key={index} />
                         }) :
                             <div className="col-span-4 flex justify-center items-center h-64">
                                 <img src="/img/load.gif" alt="loading" className="w-12" />
@@ -120,7 +109,7 @@ const Index = ({ info, user, authors, categories }) => {
                     <hr />
                     <Navigation callBack={page => LoadPost({ ...filters, page })} info={info} page={filters.page} pages={filters.pages} />
                 </div>
-            </LayoutAdmin>
+            </LayoutAdminArea>
         </>
     )
 

@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import LayoutAdminArea from './../../../../layout/layoutAdminArea'
+import LayoutAdminArea from '../../../../layout/layoutAdmin'
 import Api from '../../../../services/api'
 import { GetServerSideProps } from 'next'
 import { Config, ConfigI, User, UserI } from "../../../../database/models"
@@ -7,33 +7,37 @@ import DbConnect from './../../../../utils/dbConnect'
 import Link from 'next/link'
 import Router from 'next/router'
 import { Document } from 'mongoose'
+import { AdminAuth } from '../../../../utils/authentication'
 
-export const getServerSideProps: GetServerSideProps = async ({ params }) => {
-    await DbConnect()
+export const getServerSideProps: GetServerSideProps = async ({ req, res, params }) => {
+    return AdminAuth({ req, res }, async ({ user }) => {
+        await DbConnect()
 
-    let info: ConfigI & Document<any, any> = null
-    try {
-        info = await Config.findOne({ name: "info" }).select(`-_id`).exec()
-    } catch (e) { }
+        let info: ConfigI & Document<any, any> = null
+        try {
+            info = await Config.findOne({ name: "info" }).select(`-_id`).exec()
+        } catch (e) { }
 
-    let user: ConfigI & Document<any, any> = null
-    try {
-        user = await User.findOne({ username: String(params.username) }).exec();
-    } catch (e) { }
+        let userGet: ConfigI & Document<any, any> = null
+        try {
+            userGet = await User.findOne({ username: String(params.username) }).exec();
+        } catch (e) { }
 
 
-    return {
-        props: {
-            info: info?.toJSON()?.content,
-            user: {
-                ...user?.toJSON(),
-                _id: String(user?.toJSON()?._id || "")
+        return {
+            props: {
+                info: info?.toJSON()?.content,
+                userAuth: user,
+                user: {
+                    ...userGet?.toJSON(),
+                    _id: String(userGet?.toJSON()?._id || "")
+                }
             }
         }
-    }
+    })
 }
 
-function Blog({ info, user }) {
+function Blog({ info, userAuth, user }) {
     const [userF, setUserF] = useState<UserI>(user)
     const [password, setPassword] = useState<string>()
     const [warnings, setWarnings] = useState<{ message: string, input: string }[]>([])
@@ -45,16 +49,16 @@ function Blog({ info, user }) {
             setWarnings(response.data?.warnings || [])
         })
         if (warnings.length <= 0)
-            Router.push("/AdminArea/users")
+            Router.push("/admin/users")
     }
 
 
     return (
         <>
-            <LayoutAdminArea head={<title>Editar usuário - {user?.username || "usuário não encontrado"}</title>} info={info} user={user}>
+            <LayoutAdminArea head={<title>Editar usuário - {user?.username || "usuário não encontrado"}</title>} info={info} user={userAuth}>
                 <div className="container mx-auto">
                     <div>
-                        <Link href="/AdminArea/users">
+                        <Link href="/admin/users">
                             <a>
                                 <button className={`mr-5 bg-${info?.colors?.background?.color} hover:bg-${info?.colors?.background?.shadow} text-${info?.colors?.text?.shadow} hover:text-${info?.colors?.text?.color} m-4 font-bold py-2 px-6 rounded-lg`}>
                                     Voltar

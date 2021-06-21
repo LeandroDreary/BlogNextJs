@@ -3,7 +3,7 @@ import api from '../../services/api'
 import { Outclick } from '..'
 import FormData from 'form-data'
 import $ from 'jquery'
-import { PagesInfoI, WarningI } from '../../services/types'
+import { PagesInfoI, WarningI } from '../../utils/types'
 
 const Index = ({ Info, infoInputs, setInfoInputs }) => {
     const [info, setInfo] = useState<PagesInfoI>(Info)
@@ -72,6 +72,12 @@ const Index = ({ Info, infoInputs, setInfoInputs }) => {
         color:${infoInputs?.customLayout?.colors?.text?.shadow};
     }
     .hover${'\\'}:text-custom2:hover{
+        color:${infoInputs?.customLayout?.colors?.text?.shadow};
+    }
+    .placeholder-custom::placeholder{
+        color:${infoInputs?.customLayout?.colors?.text?.color};
+    }
+    .placeholder-custom2::placeholder{
         color:${infoInputs?.customLayout?.colors?.text?.shadow};
     }
 </style>`;
@@ -252,14 +258,14 @@ const Index = ({ Info, infoInputs, setInfoInputs }) => {
 
 
             <form onSubmit={HandleFormSubmit}>
-                <div className="grid grid-cols-3 border shadow-lg text-center md:text-left">
+                <div className="grid grid-cols-3 border shadow-md bg-white text-center md:text-left">
                     <div className={"col-span-3 bg-" + (infoInputs?.colors?.background?.shadow || "gray-500")}>
                         <h2 className={`font-semibold text-2xl my-2 mx-4 text-${infoInputs?.colors?.text?.color || "white"}`}>Informações:</h2>
                     </div>
                     <div className="col-span-3 md:col-span-1 pt-4 pb-4 px-4">
                         <div className="py-1">
                             <label htmlFor="websiteName" className="font-semibold text-gray-700">Nome do site: </label><br />
-                            <input value={infoInputs?.websiteName} onChange={e => setInfoInputs({ ...infoInputs, websiteName: e.target.value })} className="shadow w-64 appearance-none border max-w-full rounded py-1 px-3 text-gray-700" type="text" name="websiteName" />
+                            <input value={infoInputs?.websiteName} onChange={e => setInfoInputs({ ...infoInputs, websiteName: e.target.value })} className="shadow w-64 appearance-none border max-w-full rounded py-1 px-3 text-gray-600" type="text" name="websiteName" />
                             {
                                 warnings.map(warning => {
                                     if (warning.input === "websiteName")
@@ -276,7 +282,7 @@ const Index = ({ Info, infoInputs, setInfoInputs }) => {
                         </div>
                         <div className="py-1 pt-5 md:pt-0">
                             <label htmlFor="description" className="font-semibold text-gray-700">Descrição: </label><br />
-                            <textarea value={infoInputs?.description} onChange={e => setInfoInputs({ ...infoInputs, description: e.target.value })} className="shadow w-64 appearance-none border max-w-full rounded py-1 px-3 text-gray-700" name="description"></textarea>
+                            <textarea value={infoInputs?.description} onChange={e => setInfoInputs({ ...infoInputs, description: e.target.value })} className="shadow w-64 appearance-none border max-w-full rounded py-1 px-3 text-gray-600" name="description"></textarea>
                             {
                                 warnings.map(warning => {
                                     if (warning.input === "description")
@@ -293,7 +299,7 @@ const Index = ({ Info, infoInputs, setInfoInputs }) => {
                         </div>
                         <div className="py-1 pt-5 md:pt-0">
                             <label htmlFor="keywords" className="font-semibold text-gray-700">Palavras chaves: </label><br />
-                            <textarea value={infoInputs?.keywords} onChange={e => setInfoInputs({ ...infoInputs, keywords: e.target.value })} className="shadow w-64 appearance-none border max-w-full rounded py-1 px-3 text-gray-700" name="keywords"></textarea>
+                            <textarea value={infoInputs?.keywords} onChange={e => setInfoInputs({ ...infoInputs, keywords: e.target.value })} className="shadow w-64 appearance-none border max-w-full rounded py-1 px-3 text-gray-600" name="keywords"></textarea>
                             {
                                 warnings.map(warning => {
                                     if (warning.input === "keywords")
@@ -359,25 +365,25 @@ const Index = ({ Info, infoInputs, setInfoInputs }) => {
                         <div className="py-1">
                             <label htmlFor="websiteName" className="font-semibold text-gray-700">Cor de fundo 1: </label><br />
                             <div className="flex items-center justify-center md:justify-start">
-                                <button onClick={() => { setPopup("backgroundColor"); $("body").css({ "overflow-y": "hidden" }) }} type="button" className={`px-4 py-2 bg-${infoInputs?.colors?.background?.color || "gray-500"} hover:bg-${infoInputs?.colors?.background?.shadow || "gray-700"} inline-flex text-${infoInputs?.colors?.text?.color || "white"} hover:text-${infoInputs?.colors?.text?.shadow || "gray-100"} my-2 font-semibold`}>Select Color</button><div className={"w-8 h-8 m-2 bg-" + (infoInputs?.colors?.background?.color || "gray-500")}></div>
+                                <button onClick={() => { setPopup("backgroundColor"); $("body").css({ "overflow-y": "hidden" }) }} type="button" className={`px-4 py-2 bg-${infoInputs?.colors?.background?.color || "gray-500"} hover:bg-${infoInputs?.colors?.background?.shadow} inline-flex text-${infoInputs?.colors?.text?.color || "white"} hover:text-${infoInputs?.colors?.text?.shadow || "gray-100"} my-2 font-semibold`}>Select Color</button><div className={"w-8 h-8 m-2 bg-" + (infoInputs?.colors?.background?.color || "gray-500")}></div>
                             </div>
                         </div>
                         <div className="py-1 pt-5 md:pt-0">
                             <label htmlFor="websiteName" className="font-semibold text-gray-700">Cor de fundo 2: </label><br />
                             <div className="flex items-center justify-center md:justify-start">
-                                <button onClick={() => { setPopup("backgroundShadow"); $("body").css({ "overflow-y": "hidden" }) }} type="button" className={`px-4 py-2 bg-${infoInputs?.colors?.background?.color || "gray-500"} hover:bg-${infoInputs?.colors?.background?.shadow || "gray-700"} inline-flex text-${infoInputs?.colors?.text?.color || "white"} hover:text-${infoInputs?.colors?.text?.shadow || "gray-100"} my-2 font-semibold`}>Select Color</button><div className={"w-8 h-8 m-2 bg-" + (infoInputs?.colors?.background?.shadow || "gray-700")}></div>
+                                <button onClick={() => { setPopup("backgroundShadow"); $("body").css({ "overflow-y": "hidden" }) }} type="button" className={`px-4 py-2 bg-${infoInputs?.colors?.background?.color || "gray-500"} hover:bg-${infoInputs?.colors?.background?.shadow} inline-flex text-${infoInputs?.colors?.text?.color || "white"} hover:text-${infoInputs?.colors?.text?.shadow || "gray-100"} my-2 font-semibold`}>Select Color</button><div className={"w-8 h-8 m-2 bg-" + (infoInputs?.colors?.background?.shadow)}></div>
                             </div>
                         </div>
                         <div className="py-1 pt-5 md:pt-0">
                             <label htmlFor="websiteName" className="font-semibold text-gray-700">Cor de texto 1: </label><br />
                             <div className="flex items-center justify-center md:justify-start">
-                                <button onClick={() => { setPopup("textColor"); $("body").css({ "overflow-y": "hidden" }) }} type="button" className={`px-4 py-2 bg-${infoInputs?.colors?.background?.color || "gray-500"} hover:bg-${infoInputs?.colors?.background?.shadow || "gray-700"} inline-flex text-${infoInputs?.colors?.text?.color || "white"} hover:text-${infoInputs?.colors?.text?.shadow || "gray-100"} my-2 font-semibold`}>Select Color</button><div className={"text-2xl m-2 text-" + (infoInputs?.colors?.text?.color || "gray-500")}>Aa</div>
+                                <button onClick={() => { setPopup("textColor"); $("body").css({ "overflow-y": "hidden" }) }} type="button" className={`px-4 py-2 bg-${infoInputs?.colors?.background?.color || "gray-500"} hover:bg-${infoInputs?.colors?.background?.shadow} inline-flex text-${infoInputs?.colors?.text?.color || "white"} hover:text-${infoInputs?.colors?.text?.shadow || "gray-100"} my-2 font-semibold`}>Select Color</button><div className={"text-2xl m-2 text-" + (infoInputs?.colors?.text?.color || "gray-500")}>Aa</div>
                             </div>
                         </div>
                         <div className="py-1 pt-5 md:pt-0">
                             <label htmlFor="websiteName" className="font-semibold text-gray-700">Cor de texto 2: </label><br />
                             <div className="flex items-center justify-center md:justify-start">
-                                <button onClick={() => { setPopup("textShadow"); $("body").css({ "overflow-y": "hidden" }) }} type="button" className={`px-4 py-2 bg-${infoInputs?.colors?.background?.color || "gray-500"} hover:bg-${infoInputs?.colors?.background?.shadow || "gray-700"} inline-flex text-${infoInputs?.colors?.text?.color || "white"} hover:text-${infoInputs?.colors?.text?.shadow || "gray-100"} my-2 font-semibold`}>Select Color</button><div className={"text-2xl m-2 text-" + (infoInputs?.colors?.text?.shadow || "gray-700")}>Aa</div>
+                                <button onClick={() => { setPopup("textShadow"); $("body").css({ "overflow-y": "hidden" }) }} type="button" className={`px-4 py-2 bg-${infoInputs?.colors?.background?.color || "gray-500"} hover:bg-${infoInputs?.colors?.background?.shadow} inline-flex text-${infoInputs?.colors?.text?.color || "white"} hover:text-${infoInputs?.colors?.text?.shadow || "gray-100"} my-2 font-semibold`}>Select Color</button><div className={"text-2xl m-2 text-" + (infoInputs?.colors?.text?.shadow || "gray-700")}>Aa</div>
                             </div>
                         </div>
                     </div>

@@ -1,39 +1,49 @@
-import Cookies from 'cookies'
-import HandleAuth from "../../../services/auth"
-import type { NextApiRequest, NextApiResponse } from 'next'
+import { NextApiRequest, NextApiResponse } from 'next'
 import sharp from 'sharp';
 import formidable from 'formidable';
 import imgbbUploader from 'imgbb-uploader';
-import bcrypt from 'bcryptjs'
 import DbConnect from './../../../utils/dbConnect'
 import { Post, Category, User } from "../../../database/models";
+import { AdminAuthApi, AuthorAuthApi } from '../../../utils/authentication';
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
     const form = new formidable.IncomingForm()
-    const cookies = new Cookies(req, res)
 
     await form.parse(req, async (err, fields, files) => {
         let warnings = []
         let post
 
         let image = ""
-        let { _id, content, requestAs, author, title, category, description, publishDate, link } = fields
+        let _id = fields?._id || req.query?._id
+        let content = fields?.content || req.query?.content
+        let requestAs = fields?.requestAs || req.query?.requestAs
+        let author = fields?.author || req.query?.author
+        let title = fields?.title || req.query?.title
+        let category = fields?.category || req.query?.category
+        let description = fields?.description || req.query?.description
+        let publishDate = fields?.publishDate || req.query?.publishDate
+        let link = fields?.link || req.query?.link
+
+        console.log(requestAs)
+
         await DbConnect()
+        // user Authentication
 
         if (req.method === "POST" || req.method === "PUT" || req.method === "DELETE") {
             switch (requestAs) {
-                case "AdminArea":
-                    if (bcrypt.compareSync(`${process.env.ADMINPASSWORD}_${process.env.ADMINUSERNAME}`, cookies.get('AdminAreaAuth') || "")) {
-                        author = (await User.findOne({ username: author }).select('-password _id -__v').exec()).toJSON()._id
+                case "admin":
+                    let UAADM = await AdminAuthApi({ req, res }, ({ user }) => user)
+                    if (UAADM) {
+                        author = (await User.findOne({ username: author }).select('-password _id -__v').exec())?.toJSON()?._id
                     } else {
                         warnings.push({ message: "Você não está logado.", type: 'error', input: "" })
                     }
                     break;
-                case "admin":
-                    let UA = await HandleAuth(cookies.get("auth"))
+                case "author":
+                    let UA = await AuthorAuthApi({ req, res }, ({ user }) => user)
                     let post1 = await Post.findOne(_id).exec()
-                    if (UA?.username) {
-                        if (UA?._id === post1?.author) {
+                    if (UA) {
+                        if ((String(UA._id) === String(post1.author)) && post1._id ) {
                             author = UA._id
                         } else {
                             warnings.push({ message: "Você não possui permissões sobre essa postagem.", input: "" })
@@ -78,7 +88,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
                     post = await Post.findOneAndUpdate({ _id }, { content, title, category, description, publishDate, author, image, link: encodeURI(link) }).exec();
                     break;
                 case "DELETE":
-                    post = await Post.find({ link: String(req.query?.link) }).remove().exec();
+                    post = await Post.find({ link: String(req.query?.link) }).deleteOne().exec();
                     break;
                 default:
                     break;

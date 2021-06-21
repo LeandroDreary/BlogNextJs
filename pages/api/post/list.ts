@@ -1,9 +1,7 @@
-import Cookies from 'cookies'
-import HandleAuth from '../../../services/auth'
-import bcrypt from 'bcryptjs'
 import { Post, Category, User } from "../../../database/models"
 import DbConnect from './../../../utils/dbConnect'
-import { WarningI } from '../../../services/types'
+import { WarningI } from '../../../utils/types'
+import { AdminAuthApi, AuthorAuthApi } from '../../../utils/authentication'
 
 interface postListParams {
     perPage?: any,
@@ -74,7 +72,10 @@ export const listPosts = async (params: postListParams) => {
 
 async function handler(req, res) {
     await DbConnect()
-    const cookies = new Cookies(req, res)
+
+    // user Authentication
+    let UAADM = await AdminAuthApi({ req, res }, ({ user }) => user)
+    let UA = await AuthorAuthApi({ req, res }, ({ user }) => user)
 
     let warnings: WarningI[] = [];
 
@@ -93,17 +94,16 @@ async function handler(req, res) {
     try {
         category = (await Category.findOne({ name: category }).exec())?._id || null
         switch (requestAs) {
-            case "adminArea":
-                if (bcrypt.compareSync(`${process.env.ADMINPASSWORD}_${process.env.ADMINUSERNAME}`, cookies.get('AdminAreaAuth') || "")) {
+            case "admin":
+                if (UAADM) {
                     author = (await User.findOne({ username: author }).exec())?._id || null
                 } else {
                     warnings.push({ message: "Você não está logado.", type: 'error', input: "" })
                 }
                 break;
-            case "admin":
-                let user = await HandleAuth(cookies.get('auth') || "")
-                if (user) {
-                    author = user?._id || null
+            case "author":
+                if (UA) {
+                    author = UA?._id || null
                 } else {
                     warnings.push({ message: "Você não está logado.", type: 'error', input: "" })
                 }

@@ -4,10 +4,11 @@ import { GetServerSideProps } from 'next'
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
     const cookies = new Cookies(req, res)
-    cookies.set('Auth')
+    cookies.set('adminAuth')
+
     return {
         redirect: {
-            destination: '/AdminArea/signin',
+            destination: '/admin/signin',
             permanent: false,
         }
     }

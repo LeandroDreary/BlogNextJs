@@ -7,11 +7,13 @@ import { Outclick } from '.'
 
 interface MyProps {
     post: {
+        _id?: string;
         title?: string;
         link?: string;
         image?: string;
         description?: string;
     };
+    requestAs: "admin" | "author";
     info: any;
     reload: () => any;
     editLink: string;
@@ -36,7 +38,8 @@ class Post extends React.Component<MyProps, MyState> {
 
         const HandleDeletePost = () => {
             $("body").css({ "overflow-y": "auto" })
-            Api.delete("/api/post?link=" + this.props.post?.link).then(() => {
+            let params = { link: this.props.post?.link, requestAs: this.props?.requestAs }
+            Api.delete("/api/post", { params }).then(() => {
                 this.props.reload()
             })
         }
@@ -48,7 +51,7 @@ class Post extends React.Component<MyProps, MyState> {
                         <div className="h-full w-full top-0 left-0 bg-black bg-opacity-50 z-20 flex justify-center items-center fixed">
                             <Outclick callback={HandleDeletePopup}>
                                 <div className="bg-white">
-                                    <div className="w-full grid grid-cols-6 bg-red-600">
+                                    <div className={`w-full grid grid-cols-6 bg-${this.props?.info?.colors?.background?.color} text-${this.props?.info?.colors?.text?.color}`}>
                                         <div className="col-span-5 text-lg text-white font-semibold p-2">
                                             Apagar postagem
                                         </div>
@@ -56,10 +59,10 @@ class Post extends React.Component<MyProps, MyState> {
                                             <button className="text-lg p-1 text-white" onClick={HandleDeletePopup}><FaWindowClose /></button>
                                         </div>
                                     </div>
-                                    <div className="p-5">
+                                    <div className="p-8">
                                         <p className="pb-2 text-gray-800">Você realmente quer apagar a postagem?</p>
                                         <hr className="my-2" />
-                                        <button onClick={HandleDeletePost} className="mr-5 mt-2 bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-6 rounded-lg">
+                                        <button onClick={HandleDeletePost} className={`mr-5 mt-2 bg-${this.props?.info?.colors?.background?.color} hover:bg-${this.props?.info?.colors?.background?.shadow} text-${this.props?.info?.colors?.text?.color} hover:text-${this.props?.info?.colors?.text?.shadow} font-bold py-2 px-6 rounded-lg`}>
                                             Apagar
                                         </button>
                                     </div>

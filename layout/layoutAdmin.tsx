@@ -1,5 +1,5 @@
 import React from 'react'
-import { Footer, NavbarAdmin } from './../components'
+import { Footer,  NavbarAdmin } from '../components'
 import Head from 'next/head'
 import ReactHtmlParser from 'react-html-parser'
 

@@ -23,8 +23,7 @@ class Sidebar extends React.Component<MyProps, MyState> {
     render() {
         return (
             <div className="top-0 sticky pt-2">
-                <div className="w-full my-6 rounded border p-3 shadow-md">
-                    <p className="text-2xl font-semibold pb-3 mx-2 text-center text-gray-700">Categorias</p>
+                <div className="w-full my-6 rounded border p-3 pt-6 shadow-md">
                     <hr />
                     <div className="py-2">
                         {this.props?.categories?.map(category => {
@@ -39,10 +38,6 @@ class Sidebar extends React.Component<MyProps, MyState> {
                             )
                         })
                         }
-                    </div>
-                    <hr />
-                    <div className="py-4 px-2">
-                        <iframe src="https://open.spotify.com/embed/show/4nBsQLdWBRIExO4lINjdxi" width="100%" height="232" frameBorder="0" allow="encrypted-media"></iframe>
                     </div>
                 </div>
             </div>

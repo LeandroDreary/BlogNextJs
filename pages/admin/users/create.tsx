@@ -1,61 +1,53 @@
 import React, { useState } from 'react'
-import Cookies from 'cookies'
-import LayoutAdminArea from './../../../layout/layoutAdminArea'
-import getRawBody from 'raw-body'
 import { GetServerSideProps } from 'next'
+import getRawBody from 'raw-body'
 import bcrypt from 'bcryptjs'
+import Link from 'next/link'
+import LayoutAdminArea from '../../../layout/layoutAdmin'
 import { Config, User } from '../../../database/models'
 import DbConnect from './../../../utils/dbConnect'
-import Link from 'next/link'
+import { AdminAuth } from '../../../utils/authentication'
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
-    await DbConnect()
-    let warnings = []
-    const cookies = new Cookies(req, res)
-    let info = null
+    return AdminAuth({ req, res }, async ({ user }) => {
+        await DbConnect()
 
-    const url = new URL(`${process.env.API_URL}/?` + (await getRawBody(req)).toString("utf-8"));
-    const { username, discordUser, password } = { username: url.searchParams.get("username"), discordUser: url.searchParams.get("discordUser"), password: url.searchParams.get("password") }
+        let warnings = []
 
-    try {
-        info = await Config.findOne({ name: "info" }).select(`-_id`).exec()
-        info = info._doc.content
-    } catch (e) { }
+        let info = null
 
-    if (req.method === "POST")
-        if ((await User.find({ username }).collation({ locale: "en", strength: 2 }).exec()).length > 0)
-            warnings.push({ message: "Usuário já existe.", input: "username" })
+        const url = new URL(`${process.env.API_URL}/?` + (await getRawBody(req)).toString("utf-8"));
+        const { username, discordUser, password } = { username: url.searchParams.get("username"), discordUser: url.searchParams.get("discordUser"), password: url.searchParams.get("password") }
 
-    if (warnings.length <= 0)
-        switch (req.method) {
-            case "POST":
-                await (new User({ username, activated: true, discordUser, password: bcrypt.hashSync(password, bcrypt.genSaltSync(10)) })).save()
-                return {
-                    redirect: {
-                        destination: '/AdminArea/users',
-                        permanent: false,
+        try {
+            info = await Config.findOne({ name: "info" }).select(`-_id`).exec()
+            info = info._doc.content
+        } catch (e) { }
+
+        if (req.method === "POST")
+            if ((await User.find({ username }).collation({ locale: "en", strength: 2 }).exec()).length > 0)
+                warnings.push({ message: "Usuário já existe.", input: "username" })
+
+        if (warnings.length <= 0)
+            switch (req.method) {
+                case "POST":
+                    await (new User({ username, activated: true, discordUser, password: bcrypt.hashSync(password, bcrypt.genSaltSync(10)) })).save()
+                    return {
+                        redirect: {
+                            destination: '/admin/users',
+                            permanent: false,
+                        }
                     }
-                }
-                break;
-        }
-
-    if (bcrypt.compareSync(`${process.env.ADMINPASSWORD}_${process.env.ADMINUSERNAME}`, (cookies.get('AdminAreaAuth') || ""))) {
+            }
         return {
             props: {
                 info,
-                user: { username: process.env.ADMINUSERNAME },
+                user,
                 warnings,
                 inputs: { username, discordUser }
             }
         }
-    } else {
-        return {
-            redirect: {
-                destination: '/AdminArea/signin',
-                permanent: false,
-            }
-        }
-    }
+    })
 }
 
 const Index = ({ info, user, warnings, inputs }) => {
@@ -66,11 +58,11 @@ const Index = ({ info, user, warnings, inputs }) => {
         <>
             <LayoutAdminArea head={<title>Novo usuário - {info?.websiteName || ""}</title>} info={info} user={user}>
                 <div className="container mx-auto">
-                    <Link href="/AdminArea/users">
+                    <Link href="/admin/users">
                         <a>
                             <button className={`mr-5 my-4 bg-${info?.colors.background?.color} hover:bg-${info?.colors.background?.shadow} text-${info?.colors.text?.shadow} hover:text-${info?.colors.text?.color} font-bold py-2 px-6 rounded-lg`}>
                                 Voltar
-                        </button>
+                            </button>
                         </a>
                     </Link>
                     <hr />
@@ -120,7 +112,7 @@ const Index = ({ info, user, warnings, inputs }) => {
                                     <div className="p-4 border shadow-md">
                                         <button type="button" onClick={() => setPassword(Math.random().toString(36).slice(-8))} className={`mr-5 mb-4 bg-${info?.colors.background?.color} hover:bg-${info?.colors.background?.shadow} text-${info?.colors.text?.shadow} hover:text-${info?.colors.text?.color} font-bold py-2 px-6 rounded-lg`}>
                                             Gerar nova senha
-                                    </button>
+                                        </button>
                                         <input value={password} onChange={e => setPassword(e.target.value)} className="shadow w-full appearance-none border border-red rounded py-2 px-3 text-grey-400 mb-3" name="password" id="password" type="text" placeholder="Password" />
                                     </div>
                                 </div>
@@ -129,7 +121,7 @@ const Index = ({ info, user, warnings, inputs }) => {
                         <div className="text-center">
                             <button type="submit" className={`mr-5 my-4 bg-${info?.colors.background?.color} hover:bg-${info?.colors.background?.shadow} text-${info?.colors.text?.shadow} hover:text-${info?.colors.text?.color} font-bold py-2 px-6 rounded-lg`}>
                                 Create
-                        </button>
+                            </button>
                         </div>
                     </form>
                 </div>

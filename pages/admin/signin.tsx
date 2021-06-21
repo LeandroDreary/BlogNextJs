@@ -2,63 +2,43 @@ import React from 'react'
 import Head from 'next/head'
 import Cookies from 'cookies'
 import getRawBody from 'raw-body'
-import mongoose from "mongoose"
 import bcrypt from 'bcryptjs'
-import { GetServerSideProps, } from 'next'
-import { Auth, AuthI, User, UserI } from '../../database/models'
-import DbConnect from './../../utils/dbConnect'
-import HandleAuth from '../../services/auth'
+import { GetServerSideProps } from 'next'
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
     const cookies = new Cookies(req, res)
     let warnings = []
-    let { user_agent, ip, auth } = {
-        user_agent: req.headers['user-agent'],
-        ip: req.connection.remoteAddress || req.connection.localAddress,
-        auth: cookies.get('auth')
-    }
-    const url = new URL(`${process.env.API_URL}/?` + (await getRawBody(req)).toString("utf-8"));
-    const { username, password } = { username: url.searchParams.get("username"), password: url.searchParams.get("password") }
-
-    await DbConnect()
+    let auth = cookies.get('adminAuth') || ""
+    var searchParams = new URLSearchParams((await getRawBody(req)).toString("utf-8"));
+    const { username, password } = { username: searchParams.get("username"), password: searchParams.get("password") }
 
     switch (req.method) {
         case "POST":
-            cookies.set('auth')
-
-            let user: mongoose.Document & UserI = await User.findOne({ username }).exec();
-            if (!user?.username) {
-                warnings.push({ message: "Usuário não encontrado", input: "username" })
+            cookies.set('adminAuth')
+            if (process.env.ADMINUSERNAME === username && process.env.ADMINPASSWORD === password) {
+                auth = bcrypt.hashSync(`${password}_${username}`, bcrypt.genSaltSync(10))
+                cookies.set('adminAuth', auth)
             }
             else {
-                if (bcrypt.compareSync(password, user.password)) {
-                    let authInfo: AuthI = { ip, user_agent, user: user._id }
-                    auth = (await (new Auth(authInfo)).save())._id;
-                    cookies.set('auth', String(auth))
-                } else {
-                    warnings.push({ message: "Senha incorreta.", input: "password" })
-                }
+                warnings.push({ message: "Dados incorretos.", input: "password" })
             }
             break;
     }
 
-    let user = await HandleAuth(auth)
-
-    if (user?.username) {
+    if (bcrypt.compareSync(`${process.env.ADMINPASSWORD}_${process.env.ADMINUSERNAME}`, auth)) {
         return {
             redirect: {
                 destination: '/admin',
                 permanent: false,
             }
         }
-
     }
     else {
-        cookies.set('auth')
+        cookies.set('adminAuth')
         return {
             props: {
                 warnings,
-                inputs: { username }
+                inputs: { username: username || "" }
             }
         }
     }
@@ -81,12 +61,6 @@ const Index = ({ warnings, inputs }) => {
                             Usuário:
                         </label>
                         <input className="shadow w-64 appearance-none border rounded py-2 px-3 text-grey-400" defaultValue={inputs.username} type="text" name="username" placeholder="Usuário" />
-                        {
-                            warnings.map(warning => {
-                                if (warning.input === "username")
-                                    return <p className="text-red-400 text-xs italic font-bold my-1">{warning.message}</p>
-                            })
-                        }
                     </div>
                     <div className="mb-6">
                         <label className="block text-grey-400 text-sm font-bold mb-2" htmlFor="password">
@@ -102,7 +76,7 @@ const Index = ({ warnings, inputs }) => {
                     </div>
                     <div className="flex items-center justify-between">
                         <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" type="submit">
-                            Sign In
+                            Entrar
                     </button>
                     </div>
                 </form>

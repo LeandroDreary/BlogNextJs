@@ -1,5 +1,5 @@
 import React from 'react'
-import { Footer,  NavbarAdminArea } from './../components'
+import { Footer, NavbarAuthor } from '../components'
 import Head from 'next/head'
 import ReactHtmlParser from 'react-html-parser'
 
@@ -21,7 +21,7 @@ let Index: React.FC<props> = ({ footer, head, navbar, user, info, children }) =>
             </Head>
             {navbar ?
                 navbar :
-                <NavbarAdminArea user={user} info={info} />
+                <NavbarAuthor user={user} info={info} />
             }
             {children}
             {footer ?

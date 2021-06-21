@@ -2,21 +2,18 @@ import React, { useEffect, useState } from 'react'
 import { GetServerSideProps } from 'next'
 import { Document } from 'mongoose'
 import $ from 'jquery'
-import Cookies from 'cookies'
 import { FaSearch, FaWindowClose } from 'react-icons/fa'
-import bcrypt from 'bcryptjs'
 import Api from '../../services/api'
 import { Navigation, Outclick } from './../../components'
 import { Config, ConfigI } from '../../database/models'
 import DbConnect from './../../utils/dbConnect'
-import LayoutAdminArea from './../../layout/layoutAdminArea'
+import LayoutAdminArea from '../../layout/layoutAdmin'
+import { AdminAuth } from '../../utils/authentication'
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
-    await DbConnect()
-    const cookies = new Cookies(req, res)
+    return AdminAuth({ req, res }, async ({ user }) => {
+        await DbConnect()
 
-
-    if (bcrypt.compareSync(`${process.env.ADMINPASSWORD}_${process.env.ADMINUSERNAME}`, (cookies.get('AdminAreaAuth') || ""))) {
         let info: ConfigI & Document<any, any>
         try {
             info = await Config.findOne({ name: "info" }).select(`-_id`).exec()
@@ -25,17 +22,10 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
         return {
             props: {
                 info: info.toJSON()?.content,
-                user: { username: process.env.ADMINUSERNAME }
+                user
             }
         }
-    } else {
-        return {
-            redirect: {
-                destination: '/AdminArea/signin',
-                permanent: false,
-            }
-        }
-    }
+    })
 }
 
 const Index = ({ info, user }) => {
@@ -62,7 +52,7 @@ const Index = ({ info, user }) => {
             perPage: `${perPage || 12}`,
             page: `${page || 1}`,
             search: `${search || ""}`,
-            requestAs: "adminArea"
+            requestAs: "admin"
         };
         await Api.get(`/api/category/list`, { params, withCredentials: true }).then(response => {
             setCategoriesEdit(response.data?.result)
@@ -198,13 +188,13 @@ const Index = ({ info, user }) => {
                             {!loading ?
                                 categoriesEdit?.map((category, i) => {
                                     return (
-                                        <form onSubmit={e => HandleSubmit(category?._id, e)} className="grid grid-cols-3 shadow border my-4 rounded" key={category._id}>
+                                        <form onSubmit={e => HandleSubmit(category?._id, e)} className="grid grid-cols-3 bg-white border my-4 rounded" key={category._id}>
                                             <div className="col-span-3 sm:col-span-2 grid grid-cols-2 mx-auto">
                                                 <div className="col-span-1 ml-4 flex items-center">
-                                                    <input className="shadow appearance-none font-semibold text-gray-700 border rounded w-64 py-2 px-3 my-4 text-grey-400 mx-auto" onChange={e => setCategoriesEdit(categoriesEdit.map(c => { if (c._id === category._id) { return { ...c, name: e.target.value } } else return c }))} value={category?.name} type="text" />
+                                                    <input className="appearance-none font-semibold text-gray-700 border rounded w-64 py-2 px-3 my-4 text-grey-400 mx-auto" onChange={e => setCategoriesEdit(categoriesEdit.map(c => { if (c._id === category._id) { return { ...c, name: e.target.value } } else return c }))} value={category?.name} type="text" />
                                                 </div>
                                                 <div className="col-span-1 flex items-center justify-end sm:justify-center">
-                                                    <input className="mr-4 sm:mr-0" onChange={e => setCategoriesEdit(categoriesEdit.map(c => { if (c._id === category._id) { return { ...c, color: e.target.value } } else return c }))} value={category?.color} name={"color_selector_" + category._id} type="color" />
+                                                    <input className="shadow mr-4 sm:mr-0" onChange={e => setCategoriesEdit(categoriesEdit.map(c => { if (c._id === category._id) { return { ...c, color: e.target.value } } else return c }))} value={category?.color} name={"color_selector_" + category._id} type="color" />
                                                 </div>
                                             </div>
                                             <div className="col-span-3 text-right sm:col-span-1">

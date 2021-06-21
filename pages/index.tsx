@@ -1,13 +1,12 @@
 import React from 'react'
-import Link from 'next/link'
 import Layout from './../layout/layout'
-import { PostCard, PostCard2, Sidebar } from '../components'
+import { PostCard2 } from '../components'
 import ReactHtmlParser from 'react-html-parser'
-import { Config, Category, PostI, CategoryI } from "../database/models"
+import { Config, Category, CategoryI } from "../database/models"
 import DbConnect from './../utils/dbConnect'
 import { GetStaticProps } from 'next'
 import { listPosts } from './api/post/list'
-import { HomePageInfoI, PostCardI, PagesInfoI } from './../services/types'
+import { HomePageInfoI, PostCardI, PagesInfoI } from '../utils/types'
 
 interface PageProps {
   posts: PostCardI[],
@@ -118,86 +117,46 @@ const Index = ({ posts, homePageInfo, info, categories, postsCategories }) => {
   return (
     <>
       <Layout head={ReturnHead} info={info} categories={categories}>
-        <div className="col-span-3 mb-4 md:mb-0 w-full mx-auto bg-cover bg-center relative"
-          style={{ backgroundImage: `url(${homePageInfo?.banner})` }}>
-          <div className={`left-0 bottom-0 w-full h-full absolute z-10 flex items-center opacity-80 bg-gradient-to-t from-black`}
-            style={{ minHeight: "30em" }}>
-            <div className="h-full w-full bg-black opacity-70">
-            </div>
-          </div>
-          <div className={`left-0 bottom-0 w-full h-full z-20 flex items-center`}
-            style={{ minHeight: "30em" }}>
 
-            <div className="p-4 h-full grid grid-cols-2 z-20 items-center container mx-auto">
-              <div className="md:hidden col-span-2 md:col-span-1 pt-4">
-                <span className={`text-sm bg-${info?.colors?.background?.color || "gray-500"} banner-image text-${info?.colors?.text?.color || "white"} font-extrabold px-4 py-2`}>Destaque</span>
-                <div className={`border-4 border-${info?.colors?.background?.color || "gray-500"} rounded-lg flex items-center justify-center mt-6 p-2`}>
-                  <img src={posts ? posts[0]?.image : ""} className="w-full" alt={posts ? posts[0]?.title : ""} />
-                </div>
-              </div>
-              <div className="col-span-2 md:col-span-1 px-2 py-4">
-                <span className={`text-sm bg-${info?.colors?.background?.color || "gray-500"} banner-image text-${info?.colors?.text?.color || "white"} font-extrabold px-4 py-2 hidden md:inline-block`}>Destaque</span>
-                <h1 className="banner-image text-2xl font-bold text-white mt-4 mb-2">
-                  {posts ? posts[0]?.title : ""}
-                </h1>
-                <p className="banner-image text-lg text-gray-100">{posts ? posts[0]?.description?.substr(0, 200) + (posts[0]?.description?.length > 100 ? "..." : "") : ""}</p>
-                <Link href={"/post/" + (posts ? posts[0]?.link : "")}>
-                  <a>
-                    <button className={`bg-${info?.colors?.background?.color || "gray-500"} banner-image hover:bg-${info?.colors?.background?.shadow || "gray-500"} hover:text-${info?.colors?.text?.shadow || "gray-500"} text-${info?.colors?.text?.color || "white"} font-extrabold px-4 py-2 my-4`}>Continuar lendo...</button>
-                  </a>
-                </Link>
-              </div>
-              <div className="hidden md:block col-span-2 md:col-span-1">
-                <div className={`border-4 border-${info?.colors?.background?.color || "gray-500"} flex items-center justify-center rounded-lg p-1`}>
-                  <img src={posts ? posts[0]?.image : ""} className={`rounded w-full`} alt={posts ? posts[0]?.title : ""} />
-                </div>
+        <div className="" style={{background: "linear-gradient(90deg, rgba(9,137,249,1) 0%, rgba(38,235,228,1) 100%)"}}>
+          <div className="container min-h-screen mx-auto">
+            <div className="absolute max-w-2xl min-h-screen">
+              <div className="pt-16">
+                <h1 className="text-gray-50 font-semibold text-5xl">Hospede seu blog customizável gratuitamente.</h1>
+                <p className="py-12 text-xl text-gray-100">Utilizando serviços da netlify ou vercel você pode hospedar seu BlogNextJS gratuitamente.</p>
               </div>
             </div>
-
+            <div className="float-right px-10 pt-16">
+              <img src="/img/blogging.svg" className="h-96" alt="blogging" />
+            </div>
           </div>
         </div>
 
 
-        <div className="container mx-auto">
-          <div className="grid grid-cols-3">
-            <div className="col-span-3 md:col-span-2">
-              <div className="px-4 mt-4">
-                <p className="text-4xl px-2 text-semibold text-gray-700">Recentes:</p>
-                {/* <hr className="my-2" /> */}
-              </div>
-              {posts ?
-                posts?.filter((v, i) => i !== 0)?.map(post => <PostCard info={info} description={post.description} image={post.image} link={post.link} title={post.title} key={post.link} />)
-                :
-                <div className="flex justify-center items-center h-64">
-                  not Found.
-                </div>
-              }
-            </div>
-            <div className="col-span-3 mx-4 md:col-span-1 md:mx-0">
-              <Sidebar categories={categories} />
-            </div>
-          </div>
-          {
-            postsCategories?.map(postsCategory => {
-              return (
-                <>
-                  <div className="px-4 py-6 bg-white mt-4 shadow-sm border border-gray-100">
-                    <p className="text-4xl px-2 text-semibold text-gray-700">{postsCategory.category.name}:</p>
-                    {/* <hr className="my-2" /> */}
-                    <div className="grid grid-cols-4">
-                      {postsCategory.posts ?
-                        postsCategory.posts.map(post => <PostCard2 info={info} description={post.description} image={post.image} link={post.link} title={post.title} key={post.link} />)
-                        :
-                        <div className="flex justify-center items-center h-64">
-                          Não encontrado.
-                        </div>
-                      }
+        <div className="bg-white border border-gray-100">
+          <div className="container mx-auto">
+            {
+              postsCategories?.map(postsCategory => {
+                return (
+                  <>
+                    <div key={"postsCategory_" + postsCategory.category.name} className="px-4 py-6 mt-4">
+                      <h2 className={`pl-8 text-2xl px-2 text-semibold text-white py-2 pb-3`} style={{ backgroundColor: postsCategory.category.color }}>{postsCategory.category.name}:</h2>
+                      {/* <hr className="my-2" /> */}
+                      <div className="grid grid-cols-4">
+                        {postsCategory.posts ?
+                          postsCategory.posts.map(post => <PostCard2 info={info} description={post.description} image={post.image} link={post.link} title={post.title} key={post.link} />)
+                          :
+                          <div className="flex justify-center items-center h-64">
+                            Não encontrado.
+                          </div>
+                        }
+                      </div>
                     </div>
-                  </div>
-                </>
-              )
-            })
-          }
+                  </>
+                )
+              })
+            }
+          </div>
         </div>
       </Layout>
     </>

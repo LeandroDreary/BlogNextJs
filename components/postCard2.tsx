@@ -48,7 +48,7 @@ class Post extends React.Component<MyProps, MyState> {
                             <hr className="pt-2" />
                             <Link href={"/post/" + this.props.link}>
                                 <a>
-                                    <button className={`bg-${this.props.info?.colors?.background?.color || "gray-500"} mr-1 hover:bg-${this.props.info?.colors?.background?.shadow || "gray-500"} hover:text-${this.props.info?.colors?.text?.shadow || "gray-500"} text-${this.props.info?.colors?.text?.color || "white"} font-extrabold px-4 my-3 py-2`}>
+                                    <button className={`bg-${this.props.info?.colors?.background?.color} mr-1 hover:bg-${this.props.info?.colors?.background?.shadow || "gray-500"} hover:text-${this.props.info?.colors?.text?.shadow || "gray-500"} text-${this.props.info?.colors?.text?.color } font-extrabold px-4 my-3 py-2`}>
                                         Ler mais
                                     </button>
                                 </a>

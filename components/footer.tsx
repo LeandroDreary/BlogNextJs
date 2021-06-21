@@ -18,7 +18,7 @@ class Login extends React.Component<MyProps, MyState> {
     render() {
 
         return (
-            <footer className={`footer bg-${this.props?.info?.colors?.background?.color || "gray-500"} relative mt-4 pt-1 border-b-2 border-${this.props?.info?.colors?.background?.shadow || "gray-700"}`}>
+            <footer className={`footer bg-${this.props?.info?.colors?.background?.color} relative mt-4 pt-1 border-b-2 border-${this.props?.info?.colors?.background?.shadow}`}>
                 <div className="container mx-auto px-6">
 
                     <div className="sm:flex sm:mt-8">

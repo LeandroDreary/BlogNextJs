@@ -1,13 +1,11 @@
-import bcrypt from 'bcryptjs'
-import Cookies from 'cookies'
 import { Category } from "../../../database/models"
+import { AdminAuthApi } from '../../../utils/authentication'
 import DbConnect from './../../../utils/dbConnect'
 
 interface ListCategoriesParams {
     perPage?: any,
     page?: any,
     search?: any,
-    UA?: any,
     select?: string
 }
 
@@ -50,13 +48,12 @@ async function handler(req, res) {
 
     let { perPage, page, search, select } = req.query
 
-    const cookies = new Cookies(req, res)
+    // user Authentication
+    let UAADM = await AdminAuthApi({ req, res }, ({ user }) => user)
 
-    let UA = bcrypt.compareSync(`${process.env.ADMINPASSWORD}_${process.env.ADMINUSERNAME}`, (cookies.get('AdminAreaAuth') || ""))
+    if (!UAADM) select += " -_id"
 
-    if(!UA) select += " -_id"
-
-    res.status(200).json(await ListCategories({ perPage, page, search, UA, select }))
+    res.status(200).json(await ListCategories({ perPage, page, search, select }))
 }
 
 export default handler

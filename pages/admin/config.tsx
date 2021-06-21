@@ -1,43 +1,35 @@
 import React, { useState } from 'react'
-import LayoutAdminArea from './../../layout/layoutAdminArea'
-import Cookies from 'cookies'
-import bcrypt from 'bcryptjs'
 import { GetServerSideProps } from 'next'
+import LayoutAdminArea from '../../layout/layoutAdmin'
 import { Config } from '../../database/models'
 import DbConnect from './../../utils/dbConnect'
 import WebsiteConfig from '../../components/forms/websiteConfig'
 import HomePage from '../../components/forms/homePage'
-import { PagesInfoI } from '../../services/types'
+import { PagesInfoI } from '../../utils/types'
+import { AdminAuth } from '../../utils/authentication'
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
-    await DbConnect()
-    const cookies = new Cookies(req, res)
-    let Info = null
-    let HomePageInfo = null
-    try {
-        Info = await Config.findOne({ name: "info" }).select(`-_id`).exec()
-    } catch (e) { }
+    return AdminAuth({ req, res }, async ({ user }) => {
+        await DbConnect()
 
-    try {
-        HomePageInfo = await Config.findOne({ name: "homePageInfo" }).select(`-_id`).exec()
-    } catch (e) { }
+        let Info = null
+        let HomePageInfo = null
+        try {
+            Info = await Config.findOne({ name: "info" }).select(`-_id`).exec()
+        } catch (e) { }
 
-    if (bcrypt.compareSync(`${process.env.ADMINPASSWORD}_${process.env.ADMINUSERNAME}`, cookies.get('AdminAreaAuth'))) {
+        try {
+            HomePageInfo = await Config.findOne({ name: "homePageInfo" }).select(`-_id`).exec()
+        } catch (e) { }
+
         return {
             props: {
                 Info: Info.toJSON().content,
-                user: { username: process.env.ADMINUSERNAME },
+                user,
                 HomePageInfo: HomePageInfo.toJSON().content
             }
         }
-    } else {
-        return {
-            redirect: {
-                destination: '/AdminArea',
-                permanent: false,
-            }
-        }
-    }
+    })
 }
 
 const Index = ({ Info, user, HomePageInfo }) => {

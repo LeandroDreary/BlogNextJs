@@ -3,6 +3,7 @@ import Api from '../../services/api'
 import dynamic from 'next/dynamic'
 import FormData from 'form-data'
 import linkfy from '../../utils/linkfy'
+import TextareaAutosize from '../textAreaAoutosize'
 
 const Editor = dynamic(
     () => import('../editor'),
@@ -26,7 +27,7 @@ interface datas {
     authors: { username: string, link: string }[],
     Post?: PostI,
     onSubmit: () => any,
-    requestAs: "AdminArea" | "Admin"
+    requestAs: "author" | "admin"
 }
 
 export default function index({ Post, categories, authors, info, requestAs, onSubmit }: datas) {
@@ -85,6 +86,8 @@ export default function index({ Post, categories, authors, info, requestAs, onSu
         }
     }
 
+
+
     return (
         <>
             <div>
@@ -96,10 +99,10 @@ export default function index({ Post, categories, authors, info, requestAs, onSu
 
                             <div className="my-4">
                                 <div className={`bg-${info?.colors?.background?.color} p-2 px-4`}>
-                                    <span className={`font-semibold text-${info?.colors?.text?.color}`}>Tílulo:</span>
+                                    <span className={`font-semibold text-${info?.colors?.text?.color}`}>Título:</span>
                                 </div>
-                                <div className="p-4 border shadow-md">
-                                    <input value={post?.title} onChange={(e) => setPost({ ...post, title: String(e.target.value), link: handleChangeLink(String(e.target.value)) })} className="shadow w-full appearance-none border border-red rounded py-2 px-3 text-grey-400 mb-3" name="title" id="title" type="text" placeholder="Título" />
+                                <div className="p-4 border bg-white">
+                                    <input value={post?.title} onChange={(e) => setPost({ ...post, title: String(e.target.value), link: handleChangeLink(String(e.target.value)) })} className="w-full text-gray-500 appearance-none border border-red rounded py-2 px-3 mb-3" name="title" id="title" type="text" placeholder="Título" />
                                 </div>
                             </div>
 
@@ -109,8 +112,8 @@ export default function index({ Post, categories, authors, info, requestAs, onSu
                                 <div className={`bg-${info?.colors?.background?.color} p-2 px-4`}>
                                     <span className={`font-semibold text-${info?.colors?.text?.color}`}>Link:</span>
                                 </div>
-                                <div className="p-4 border shadow-md">
-                                    <input value={post?.link} onChange={(e) => setPost({ ...post, link: handleChangeLink(String(e.target.value)) })} className="shadow w-full appearance-none border border-red rounded py-2 px-3 text-grey-400 mb-3" name="link" id="link" type="text" placeholder="link" />
+                                <div className="p-4 border bg-white">
+                                    <input value={post?.link} onChange={(e) => setPost({ ...post, link: handleChangeLink(String(e.target.value)) })} className=" text-gray-500 w-full appearance-none border border-red rounded py-2 px-3 mb-3" name="link" id="link" type="text" placeholder="link" />
                                 </div>
                             </div>
 
@@ -148,28 +151,28 @@ export default function index({ Post, categories, authors, info, requestAs, onSu
                                 <div className={`bg-${info?.colors?.background?.color} p-2 px-4`}>
                                     <span className={`font-semibold text-${info?.colors?.text?.color}`}>Descrição:</span>
                                 </div>
-                                <div className="p-4  border shadow-md">
-                                    <textarea style={{ width: "100%" }} rows={5} defaultValue={post?.description} onChange={e => setPost({ ...post, description: e.target.value })} className="shadow w-full appearance-none border border-red rounded py-2 px-3 text-grey-400 mb-3" name="description" id="autoresizing" placeholder="Description"></textarea>
+                                <div className="p-4  border bg-white">
+                                    <TextareaAutosize defaultValue={post?.description} onLoad={e => e.currentTarget.value = post?.description} onChange={e => setPost({ ...post, description: e.target.value })} className="text-gray-500 w-full appearance-none border border-red rounded py-2 px-3 mb-3" name="description" placeholder="Description" />
                                 </div>
                             </div>
                             <div className="my-4">
                                 <div className={`bg-${info?.colors?.background?.color} p-2 px-4`}>
                                     <span className={`font-semibold text-${info?.colors?.text?.color}`}>Data de publicação:</span>
                                 </div>
-                                <div className="p-4  border shadow-md">
-                                    <input onChange={e => setPost({ ...post, publishDate: e.target.valueAsDate })} value={(post?.publishDate ? new Date(post?.publishDate) : new Date()).toISOString().substr(0, 10)} className="shadow w-full appearance-none border border-red rounded py-2 px-3 text-grey-400 mb-3" name="publishDate" type="date" id="publishDate" placeholder="Publish Date" />
+                                <div className="p-4 border bg-white">
+                                    <input onChange={e => setPost({ ...post, publishDate: e.target.valueAsDate })} value={(post?.publishDate ? new Date(post?.publishDate) : new Date()).toISOString().substr(0, 10)} className="text-gray-500 w-full appearance-none border border-red rounded py-2 px-3 mb-3" name="publishDate" type="date" id="publishDate" placeholder="Publish Date" />
                                 </div>
                             </div>
-                            {requestAs === "AdminArea" ?
+                            {requestAs === "admin" ?
                                 <div className="my-4">
                                     <div className={`bg-${info?.colors?.background?.color} p-2 px-4`}>
                                         <span className={`font-semibold text-${info?.colors?.text?.color}`}>Autor:</span>
                                     </div>
-                                    <div className="p-4  border shadow-md">
+                                    <div className="p-4 border bg-white">
                                         <select name="author" onChange={HandleAuthorChange} defaultValue={post?.author} className={`text-sm w-32 text-gray-600 border border-gray-300 outline-none focus:outline-none p-1`}>
                                             {
                                                 authors?.map(author => {
-                                                    return <option key={author.username} className={`bg-white text-gray-700`} value={author.username || ""}>{author.username || ""}</option>
+                                                    return <option key={author.username} className={`bg-white text-gray-500`} value={author.username || ""}>{author.username || ""}</option>
                                                 })
                                             }
                                         </select>
@@ -180,12 +183,12 @@ export default function index({ Post, categories, authors, info, requestAs, onSu
                                 <div className={`bg-${info?.colors?.background?.color} p-2 px-4`}>
                                     <span className={`font-semibold text-${info?.colors?.text?.color}`}>Categoria:</span>
                                 </div>
-                                <div className="p-4 border shadow-md">
+                                <div className="p-4 border bg-white">
                                     <div className="pb-5">
                                         {categories?.map((c, i) => {
                                             return (
                                                 <label key={i} className="inline-flex mx-3 items-center mt-3">
-                                                    <input type="radio" id="category" name="category" onChange={e => setPost({ ...post, category: c.name })} value={c.name} className="form-checkbox h-5 w-5 text-gray-600" checked={c?.name === post?.category} /><span className="ml-1 text-gray-700">{c.name}</span>
+                                                    <input type="radio" id="category" name="category" onChange={e => setPost({ ...post, category: c.name })} value={c.name} className="form-checkbox h-5 w-5 text-gray-500" checked={c?.name === post?.category} /><span className="ml-1 text-gray-700">{c.name}</span>
                                                 </label>
                                             )
                                         })
@@ -199,7 +202,7 @@ export default function index({ Post, categories, authors, info, requestAs, onSu
                                 <div className={`bg-${info?.colors?.background?.color} p-2 px-4`}>
                                     <span className={`font-semibold text-${info?.colors?.text?.color}`}>Banner:</span>
                                 </div>
-                                <div className="p-4">
+                                <div className="p-4 bg-white">
                                     <label aria-label="Banner">
                                         <input className="hidden" onChange={e => setImageFile({ preview: e.target.files[0] ? URL.createObjectURL(e.target.files[0]) : undefined, file: e.target.files[0] })} type="file" id="file" name="icon" accept="image/x-png,image/jpeg,image/webp" />
                                         <div className="pb-4">

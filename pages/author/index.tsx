@@ -1,12 +1,12 @@
 import React from 'react'
 import { GetServerSideProps } from 'next'
-import { AdminAuth } from '../../utils/authentication'
+import LayoutAdmin from '../../layout/layoutAuthor'
 import { Config } from '../../database/models'
 import DbConnect from './../../utils/dbConnect'
-import LayoutAdminArea from '../../layout/layoutAdmin'
+import { AuthorAuth } from '../../utils/authentication'
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
-    return AdminAuth({ req, res }, async ({ user }) => {
+    return AuthorAuth({ req, res }, async ({ user }) => {
         await DbConnect()
 
         let info = null
@@ -18,19 +18,22 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
         return {
             props: {
                 info,
-                user
+                user: {
+                    username: user?.username || null
+                }
             }
         }
     })
 }
 
-const Index = ({ info, user }) => {
+
+const Index = ({ info, user }: { info: any, user: any }) => {
 
     return (
         <>
-            <LayoutAdminArea head={<title>Página Inicial</title>} info={info} user={user}>
+            <LayoutAdmin head={<title>Página Inicial</title>} info={info} user={user}>
 
-            </LayoutAdminArea>
+            </LayoutAdmin>
         </>
     )
 

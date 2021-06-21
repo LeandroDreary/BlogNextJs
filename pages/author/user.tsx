@@ -1,26 +1,22 @@
 import React, { useState, useRef } from 'react'
-import LayoutAdmin from './../../layout/layoutAdmin'
-import Cookies from 'cookies'
+import LayoutAdmin from '../../layout/layoutAuthor'
 import { GetServerSideProps } from 'next'
-import HandleAuth from '../../services/auth'
 import { Config } from '../../database/models'
 import DbConnect from './../../utils/dbConnect'
 import Api from './../../services/api'
 import FormData from 'form-data'
+import { AuthorAuth } from '../../utils/authentication'
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
-    await DbConnect()
-    const cookies = new Cookies(req, res)
-    let { info, user } = { info: null, user: null }
+    return AuthorAuth({ req, res }, async ({ user }) => {
+        await DbConnect()
+        
+        let info = null
+        try {
+            info = await Config.findOne({ name: "info" }).select(`-_id`).exec()
+            info = info._doc.content
+        } catch (e) { }
 
-    try {
-        info = await Config.findOne({ name: "info" }).select(`-_id`).exec()
-        info = info._doc.content
-    } catch (e) { }
-
-    user = await HandleAuth(cookies.get("auth") || "na")
-
-    if (user?.username) {
         return {
             props: {
                 info,
@@ -33,15 +29,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
                 },
             }
         }
-    } else {
-        cookies.get("set")
-        return {
-            redirect: {
-                destination: '/admin/signin',
-                permanent: false,
-            }
-        }
-    }
+    })
 }
 
 const Index = ({ info, User }) => {
@@ -185,7 +173,7 @@ const Index = ({ info, User }) => {
                         <div className="text-center">
                             <button type="submit" className={`mr-5 my-4 bg-${info?.colors.background?.color} hover:bg-${info?.colors.background?.shadow} text-${info?.colors.text?.shadow} hover:text-${info?.colors.text?.color} font-bold py-2 px-6 rounded-lg`}>
                                 Save
-                        </button>
+                            </button>
                         </div>
                     </form>
                 </div>

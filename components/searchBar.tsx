@@ -1,5 +1,5 @@
 import React from "react";
-import { PagesInfoI } from "../services/types";
+import { PagesInfoI } from "../utils/types";
 import { FaSearch } from 'react-icons/fa'
 
 interface datas {

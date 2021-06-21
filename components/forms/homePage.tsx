@@ -53,9 +53,9 @@ class Login extends React.Component<MyProps, MyState> {
 
         return (
             <form onSubmit={HandleFormSubmit}>
-                <div className="grid grid-cols-3 my-6 border shadow-lg text-center md:text-left">
-                    <div className={"col-span-3 bg-" + (this.props.info?.colors?.background?.shadow || "gray-500")}>
-                        <h2 className={`font-semibold text-2xl my-2 mx-4 text-${this.props.info?.colors?.text?.color || "white"}`}>Página Inicial</h2>
+                <div className="grid grid-cols-3 bg-white my-6 border shadow-md text-center md:text-left">
+                    <div className={"col-span-3 bg-" + (this.props.info?.colors?.background?.shadow)}>
+                        <h2 className={`font-semibold text-2xl my-2 mx-4 text-${this.props.info?.colors?.text?.color}`}>Página Inicial</h2>
                     </div>
                     <div className="col-span-3 md:col-span-1 pt-4 pb-4 px-4">
                         <div className="py-1">

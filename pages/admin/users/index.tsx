@@ -1,39 +1,31 @@
 import React, { useEffect, useState } from 'react'
-import Cookies from 'cookies'
-import Api from '../../../services/api'
-import LayoutAdminArea from './../../../layout/layoutAdminArea'
-import { Navigation } from './../../../components'
 import { GetServerSideProps } from 'next'
-import bcrypt from 'bcryptjs'
-import Link from 'next/link';
+import { FaSearch } from 'react-icons/fa'
+import Link from 'next/link'
+import Api from '../../../services/api'
+import LayoutAdminArea from '../../../layout/layoutAdmin'
+import { AdminAuth } from '../../../utils/authentication'
+import { Navigation } from './../../../components'
 import { Config } from '../../../database/models'
 import DbConnect from './../../../utils/dbConnect'
-import { FaSearch } from 'react-icons/fa'
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
-    await DbConnect()
-    const cookies = new Cookies(req, res)
-    let info = null
-    try {
-        info = await Config.findOne({ name: "info" }).select(`-_id`).exec()
-        info = info._doc.content
-    } catch (e) { }
+    return AdminAuth({ req, res }, async ({ user }) => {
+        await DbConnect()
+        
+        let info = null
+        try {
+            info = await Config.findOne({ name: "info" }).select(`-_id`).exec()
+            info = info._doc.content
+        } catch (e) { }
 
-    if (bcrypt.compareSync(`${process.env.ADMINPASSWORD}_${process.env.ADMINUSERNAME}`, (cookies.get('AdminAreaAuth') || ""))) {
         return {
             props: {
                 info,
-                user: { username: process.env.ADMINUSERNAME }
+                user
             }
         }
-    } else {
-        return {
-            redirect: {
-                destination: '/AdminArea/signin',
-                permanent: false,
-            }
-        }
-    }
+    })
 }
 
 const Index = ({ info, user }) => {
@@ -63,16 +55,16 @@ const Index = ({ info, user }) => {
                 <div className="container mx-auto">
                     <div className="grid grid-cols-12">
                         <div className="col-span-12">
-                            <Link href="/AdminArea/users/create">
+                            <Link href="/admin/users/create">
                                 <a>
                                     <button className={`mr-5 my-4 bg-${info?.colors.background?.color} hover:bg-${info?.colors.background?.shadow} text-${info?.colors.text?.shadow} hover:text-${info?.colors.text?.color} font-bold py-2 px-6 rounded-lg`}>
                                         Novo usuário
-                                </button>
+                                    </button>
                                 </a>
                             </Link>
                             <button onClick={() => LoadUsers()} className="mr-5 my-4 bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-2 px-6 rounded-lg">
                                 Recarregar
-                        </button>
+                            </button>
                             <hr />
                         </div>
                     </div>
@@ -107,11 +99,11 @@ const Index = ({ info, user }) => {
                                                 {user?.discordUser}
                                             </div>
                                             <div className="col-span-4 md:col-span-2 text-center">
-                                                <Link href={`/AdminArea/users/edit/${user?.username}`}>
+                                                <Link href={`/admin/users/edit/${user?.username}`}>
                                                     <a>
                                                         <button className={`mr-5 my-4 bg-${info?.colors.background?.color} hover:bg-${info?.colors.background?.shadow} text-${info?.colors.text?.shadow} hover:text-${info?.colors.text?.color} font-bold py-2 px-6 rounded-lg`}>
                                                             Editar
-                                                    </button>
+                                                        </button>
                                                     </a>
                                                 </Link>
                                             </div>
