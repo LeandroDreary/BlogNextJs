@@ -34,17 +34,17 @@ const Index = ({ info, categories }) => {
             <Layout head={<title>Sobre - {info?.websiteName}</title>} info={info} categories={categories}>
                 <div className="mx-auto container grid grid-cols-5 pb-4 items-center">
                     <div className="col-span-5 md:col-span-3 px-3 md:px-6 my-8">
-                        <h1 className="text-2xl font-semibold text-gray-700 mb-2">Este é o nosso Jornalzinho!</h1>
+                        <h1 className="text-2xl font-semibold text-gray-700 mb-2">Mais sobre Blog Next JS!</h1>
                         <hr />
                         <p className="text-lg text-gray-600 my-6">
-                            Pequeno Jornal é uma equipe de jornalistas e colunistas sérios e bem preparados na produção de notícias e artigos sobre vários assuntos, bem como: animes, séries, filmes, jogos, atualidades, tecnologia e afins.
-                    </p>
+                            Blog Next Js, um blog customizável que pode trazer visibilidade para você na internet
+                        </p>
                         <p className="text-lg text-gray-600 my-6">
-                            Ele surgiu como um ímpeto para que pudéssemos informar e promover conteúdos criativos e disruptivos, além de nos conectar ainda mais. E sendo desta forma, não se trata apenas de textos e notícias. Nosso jornal não busca somente levar informação e entretenimento para aqueles que se interessam, somos como uma família, construímos relações e interesses em comum.
-                    </p>
+                            BlogNextJs foi criado para pessoas que querem começar a mostrar uma atividade na internet a baixo custo mas mesmo assim com qualidade e velocidade. Com esse Repositório você hospedar um blog inteiro sem ter conhecimento técnico avançado em programação ou coisas do tipo. Tudo o que você precisa é de uma conta na MongoDB e na ImgBB. Domínio fica a seu critério pagar por um ou não.
+                        </p>
                         <p className="text-lg text-gray-600 my-6">
-                            É um lugar para se expressar, compartilhar conhecimento e fazer amigos.
-                    </p>
+                            Qualquer um pode ter participação digital na internet!
+                        </p>
                     </div>
                     <div className="col-span-5 md:col-span-2 my-8">
                         <div className={`mx-4`}>

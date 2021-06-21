@@ -10,8 +10,8 @@ import nodemailer from 'nodemailer';
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
     await DbConnect()
     let { info, categories, warnings } = { info: null, categories: null, warnings: [] }
-    const url = new URL(`${process.env.API_URL}/?` + (await getRawBody(req)).toString("utf-8"));
-    const { name, email, message } = { name: url.searchParams.get("name"), email: url.searchParams.get("email"), message: url.searchParams.get("message") }
+    var searchParams = new URLSearchParams((await getRawBody(req)).toString("utf-8"));
+    const { name, email, message } = { name: searchParams.get("usernnameame"), email: searchParams.get("email"), message: searchParams.get("message") }
 
     switch (req.method) {
         case "POST":
@@ -92,7 +92,7 @@ const Index = ({ info, categories, warnings }) => {
                                     </span>
                                     <span className="text-gray-700 hover:underline">
                                         jornalzinhofc@gmail.com
-                                </span>
+                                    </span>
                                 </a>
                                 <a href="https://twitter.com/pequenojornal" className="text-xl flex items-center my-5" target="_blank" rel="noopener noreferrer">
                                     <span className="mr-1 text-2xl text-blue-500">
@@ -100,7 +100,7 @@ const Index = ({ info, categories, warnings }) => {
                                     </span>
                                     <span className="text-gray-700 hover:underline">
                                         @pequenojornal
-                                </span>
+                                    </span>
                                 </a>
                                 <a href="https://discord.gg/gou" className="text-xl flex items-center my-5" target="_blank" rel="noopener noreferrer">
                                     <span className="mr-1 text-2xl text-blue-700">
@@ -108,7 +108,7 @@ const Index = ({ info, categories, warnings }) => {
                                     </span>
                                     <span className="text-gray-700 hover:underline">
                                         Servidor do Goularte
-                                </span>
+                                    </span>
                                 </a>
                             </div>
                         </div>
