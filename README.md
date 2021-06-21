@@ -8,8 +8,8 @@ All you need is an account at [MongoDB](https://mongodb.com/) and [ImgBB](https:
 
 Deploy your own BlogNextJs project with Vercel.
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/import/project?template=https://github.com/LeandroDreary/BlogNextJs)
-[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/LeandroDreary/BlogNextJs)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/import/project?template=https://github.com/LeandroViegas/BlogNextJs)
+[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/LeandroViegas/BlogNextJs)
 
 ## Functionalities
 
