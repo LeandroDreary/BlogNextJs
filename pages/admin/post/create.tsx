@@ -8,15 +8,14 @@ import Post from '../../../components/forms/post'
 import { Category, CategoryI, Config, ConfigI, User, UserI } from '../../../database/models'
 import DbConnect from './../../../utils/dbConnect'
 import { AdminAuth } from '../../../utils/authentication'
+import { getPageInfo } from '../../../services/getPageInfo'
+import { cache } from '../../../services/cache'
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
     return AdminAuth({ req, res }, async ({ user }) => {
         await DbConnect()
 
-        let info: ConfigI & Document<any, any> = null
-        try {
-            info = await Config.findOne({ name: "info" }).select(`-_id`).exec()
-        } catch (e) { }
+        const info = cache({ name: "info" }, await getPageInfo());
 
         let categories: (CategoryI & Document<any, any>)[] = null
         try {
@@ -32,7 +31,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
 
         return {
             props: {
-                info: info.toJSON().content,
+                info,
                 user,
                 authors: authors?.map(author => author.toJSON()),
                 categories: categories?.map(category => category.toJSON())

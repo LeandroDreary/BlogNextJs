@@ -17,23 +17,24 @@ export async function getStaticPaths() {
 export async function getStaticProps(context) {
     await DbConnect()
 
-    let post: Document<any, any> & PostI & any = null
-    let author: Document<any, any> & UserI = null
-    let recommend = null
-
     const info = cache({name: "info"}, await getPageInfo())
 
+    let post: Document<any, any> & PostI & any = null
     try {
         post = await Post.findOne({ link: context.params.post, publishDate: { $lte: new Date() } }).select(`-_id`).collation({ locale: "en", strength: 1 }).exec()
         let category: Document<any, any> & CategoryI = await Category.findById(post.toJSON().category).select(`-_id`).exec()
         post = { ...post.toJSON(), publishDate: post.toJSON().publishDate.toISOString().substr(0, 10), category: { name: category.name, color: category.color } }
     } catch (e) { }
 
+
+    let author: Document<any, any> & UserI = null
     try {
         author = await User.findOne({ _id: post?.author }).select(`-password -activated -_id`).exec()
         post = { ...post, author: null }
     } catch (e) { }
 
+
+    let recommend = null
     try {
         let perPage = 4
         let posts = await Post.aggregate([{ $sample: { size: perPage + 1 } }, { $match: { publishDate: { $lte: new Date() } } }])
@@ -51,7 +52,7 @@ export async function getStaticProps(context) {
         props: {
             post,
             recommend,
-            info: info.toJSON()?.content,
+            info,
             author: author.toJSON(),
             categories: categories.map(category => category.toJSON())
         },

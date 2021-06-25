@@ -6,18 +6,16 @@ import Api from '../../../services/api'
 import LayoutAdminArea from '../../../layout/layoutAdmin'
 import { AdminAuth } from '../../../utils/authentication'
 import { Navigation } from './../../../components'
-import { Config } from '../../../database/models'
 import DbConnect from './../../../utils/dbConnect'
+import { getPageInfo } from '../../../services/getPageInfo'
+import { cache } from '../../../services/cache'
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
     return AdminAuth({ req, res }, async ({ user }) => {
         await DbConnect()
         
-        let info = null
-        try {
-            info = await Config.findOne({ name: "info" }).select(`-_id`).exec()
-            info = info._doc.content
-        } catch (e) { }
+        const info = cache({ name: "info" }, await getPageInfo());
+
 
         return {
             props: {

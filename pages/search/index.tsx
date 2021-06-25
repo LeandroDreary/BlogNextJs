@@ -13,7 +13,7 @@ import { getPageInfo } from '../../services/getPageInfo'
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
     await DbConnect()
 
-    let info = cache({name: "info"}, await getPageInfo())
+    const info = cache({name: "info"}, await getPageInfo())
 
     let categories: (CategoryI & Document<any, any>)[] = null
     try {

@@ -8,6 +8,8 @@ import { Category, CategoryI, Config, ConfigI, User, UserI, Post, PostI } from "
 import DbConnect from './../../../../utils/dbConnect'
 import { Document } from 'mongoose'
 import { AdminAuth } from '../../../../utils/authentication'
+import { getPageInfo } from '../../../../services/getPageInfo'
+import { cache } from '../../../../services/cache'
 
 const removeUndefinedForNextJsSerializing = <T,>(props: T): T =>
     Object.fromEntries(
@@ -18,11 +20,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res, params 
     return AdminAuth({ req, res }, async ({ user }) => {
         await DbConnect()
 
-        let info: ConfigI & Document<any, any> = null
-
-        try {
-            info = await Config.findOne({ name: "info" }).select(`-_id`).exec()
-        } catch (e) { }
+        const info = cache({ name: "info" }, await getPageInfo());
 
 
         let categories: (CategoryI & Document<any, any>)[] = null
@@ -51,7 +49,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res, params 
 
         return {
             props: removeUndefinedForNextJsSerializing({
-                info: info?.toJSON().content,
+                info,
                 post,
                 user,
                 authors: authors?.map(author => author.toJSON()),

@@ -2,21 +2,20 @@ import React, { useState } from 'react'
 import LayoutAdminArea from '../../../../layout/layoutAdmin'
 import Api from '../../../../services/api'
 import { GetServerSideProps } from 'next'
-import { Config, ConfigI, User, UserI } from "../../../../database/models"
+import { ConfigI, User, UserI } from "../../../../database/models"
 import DbConnect from './../../../../utils/dbConnect'
 import Link from 'next/link'
 import Router from 'next/router'
 import { Document } from 'mongoose'
 import { AdminAuth } from '../../../../utils/authentication'
+import { getPageInfo } from '../../../../services/getPageInfo'
+import { cache } from '../../../../services/cache'
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res, params }) => {
     return AdminAuth({ req, res }, async ({ user }) => {
         await DbConnect()
 
-        let info: ConfigI & Document<any, any> = null
-        try {
-            info = await Config.findOne({ name: "info" }).select(`-_id`).exec()
-        } catch (e) { }
+        const info = cache({ name: "info" }, await getPageInfo());
 
         let userGet: ConfigI & Document<any, any> = null
         try {
@@ -26,7 +25,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res, params 
 
         return {
             props: {
-                info: info?.toJSON()?.content,
+                info,
                 userAuth: user,
                 user: {
                     ...userGet?.toJSON(),

@@ -1,27 +1,24 @@
 import React, { useEffect, useState } from 'react'
 import { GetServerSideProps } from 'next'
-import { Document } from 'mongoose'
 import $ from 'jquery'
 import { FaSearch, FaWindowClose } from 'react-icons/fa'
 import Api from '../../services/api'
 import { Navigation, Outclick } from './../../components'
-import { Config, ConfigI } from '../../database/models'
 import DbConnect from './../../utils/dbConnect'
 import LayoutAdminArea from '../../layout/layoutAdmin'
 import { AdminAuth } from '../../utils/authentication'
+import { cache } from '../../services/cache'
+import { getPageInfo } from '../../services/getPageInfo'
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
     return AdminAuth({ req, res }, async ({ user }) => {
         await DbConnect()
 
-        let info: ConfigI & Document<any, any>
-        try {
-            info = await Config.findOne({ name: "info" }).select(`-_id`).exec()
-        } catch (e) { }
+        const info = cache({ name: "info" }, await getPageInfo());
 
         return {
             props: {
-                info: info.toJSON()?.content,
+                info,
                 user
             }
         }

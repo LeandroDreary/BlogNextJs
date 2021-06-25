@@ -24,13 +24,14 @@ interface PageProps {
 export let getStaticProps: GetStaticProps = async ({ }) => {
   await DbConnect()
 
+  const info = cache({name: "info"}, await getPageInfo())
+
   let posts = null
   try {
     let perPage = 6
     posts = (await listPosts({ select: "image link title description -_id", perPage, beforeDate: new Date() })).result
   } catch (e) { }
 
-  let info = cache({name: "info"}, await getPageInfo())
 
   let homePageInfo = null
   try {
@@ -38,11 +39,13 @@ export let getStaticProps: GetStaticProps = async ({ }) => {
     homePageInfo = homePageInfo._doc.content
   } catch (e) { }
 
+
   let categories = null
   try {
     categories = await Category.find({}).exec()
     categories = categories._doc.content
   } catch (e) { }
+
 
   let postsCategories = []
   try {
@@ -57,6 +60,7 @@ export let getStaticProps: GetStaticProps = async ({ }) => {
     }
   } catch (e) { console.error(e) }
 
+  
   return {
     props: {
       posts,

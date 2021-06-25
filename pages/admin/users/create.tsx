@@ -4,9 +4,11 @@ import getRawBody from 'raw-body'
 import bcrypt from 'bcryptjs'
 import Link from 'next/link'
 import LayoutAdminArea from '../../../layout/layoutAdmin'
-import { Config, User } from '../../../database/models'
+import { User } from '../../../database/models'
 import DbConnect from './../../../utils/dbConnect'
 import { AdminAuth } from '../../../utils/authentication'
+import { getPageInfo } from '../../../services/getPageInfo'
+import { cache } from '../../../services/cache'
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
     return AdminAuth({ req, res }, async ({ user }) => {
@@ -14,15 +16,10 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
 
         let warnings = []
 
-        let info = null
-
         const url = new URL(`${process.env.API_URL}/?` + (await getRawBody(req)).toString("utf-8"));
         const { username, discordUser, password } = { username: url.searchParams.get("username"), discordUser: url.searchParams.get("discordUser"), password: url.searchParams.get("password") }
 
-        try {
-            info = await Config.findOne({ name: "info" }).select(`-_id`).exec()
-            info = info._doc.content
-        } catch (e) { }
+        const info = cache({ name: "info" }, await getPageInfo());
 
         if (req.method === "POST")
             if ((await User.find({ username }).collation({ locale: "en", strength: 2 }).exec()).length > 0)
