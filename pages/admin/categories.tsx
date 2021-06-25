@@ -161,7 +161,7 @@ const Index = ({ info, user }) => {
             }
 
             < LayoutAdminArea head={<title>Categorias - {info?.websiteName}</title>} info={info} user={user}>
-                <div className="container mx-auto">
+                <div className="container">
                     <button onClick={() => { $("body").css({ "overflow-y": "hidden" }); setPopup("create") }} className={`mr-5 my-4 bg-${info?.colors.background?.color} hover:bg-${info?.colors.background?.shadow} text-${info?.colors.text?.shadow} hover:text-${info?.colors.text?.color} font-bold py-2 px-6 rounded-lg`}>
                         Nova categoria
                     </button>

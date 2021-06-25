@@ -7,6 +7,8 @@ import DbConnect from './../utils/dbConnect'
 import { GetStaticProps } from 'next'
 import { listPosts } from './api/post/list'
 import { HomePageInfoI, PostCardI, PagesInfoI } from '../utils/types'
+import { getPageInfo } from '../services/getPageInfo'
+import { cache } from '../services/cache'
 
 interface PageProps {
   posts: PostCardI[],
@@ -28,11 +30,7 @@ export let getStaticProps: GetStaticProps = async ({ }) => {
     posts = (await listPosts({ select: "image link title description -_id", perPage, beforeDate: new Date() })).result
   } catch (e) { }
 
-  let info = null
-  try {
-    info = await Config.findOne({ name: "info" }).select(`-_id`).exec()
-    info = info._doc.content
-  } catch (e) { }
+  let info = cache({name: "info"}, await getPageInfo())
 
   let homePageInfo = null
   try {

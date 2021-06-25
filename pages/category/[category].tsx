@@ -5,6 +5,8 @@ import { Category, CategoryI, Config, ConfigI, Post, PostI } from "../../databas
 import DbConnect from './../../utils/dbConnect'
 import { Document } from 'mongoose'
 import { GetServerSideProps } from 'next'
+import { getPageInfo } from '../../services/getPageInfo'
+import { cache } from '../../services/cache'
 
 const removeUndefinedForNextJsSerializing = <T,>(props: T): T =>
     Object.fromEntries(
@@ -14,11 +16,7 @@ const removeUndefinedForNextJsSerializing = <T,>(props: T): T =>
 export const getServerSideProps: GetServerSideProps = async ({ req, res, params }) => {
     await DbConnect()
 
-    let info: ConfigI & Document<any, any> = null
-    try {
-        info = await Config.findOne({ name: "info" }).select(`-_id`).exec()
-    } catch (e) { }
-
+    const info = cache({name: "info"}, await getPageInfo())
 
     let category: CategoryI & Document<any, any> = null
     try {
@@ -42,7 +40,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res, params 
 
     return {
         props: removeUndefinedForNextJsSerializing({
-            info: info.toJSON().content,
+            info,
             posts: posts?.map(post => post.toJSON()),
             category: { name: category?.toJSON()?.name || null, color: category?.toJSON()?.color || null },
             categories: categories?.map(category => category.toJSON())

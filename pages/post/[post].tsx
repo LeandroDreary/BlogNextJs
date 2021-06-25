@@ -1,10 +1,11 @@
 import React from 'react'
 import Layout from './../../layout/layout'
 import { Sidebar, PostCard2 } from './../../components'
-import { Category, CategoryI, Config, ConfigI, Post, PostI, User, UserI } from "../../database/models"
+import { Category, CategoryI, Post, PostI, User, UserI } from "../../database/models"
 import DbConnect from './../../utils/dbConnect'
-import { ListCategories } from '../api/category/list'
 import { Document } from 'mongoose'
+import { cache } from '../../services/cache'
+import { getPageInfo } from '../../services/getPageInfo'
 
 export async function getStaticPaths() {
     return {
@@ -16,14 +17,11 @@ export async function getStaticPaths() {
 export async function getStaticProps(context) {
     await DbConnect()
 
-    let info: Document<any, any> & ConfigI = null
     let post: Document<any, any> & PostI & any = null
     let author: Document<any, any> & UserI = null
     let recommend = null
 
-    try {
-        info = await Config.findOne({ name: "info" }).select(`-_id`).exec()
-    } catch (e) { }
+    const info = cache({name: "info"}, await getPageInfo())
 
     try {
         post = await Post.findOne({ link: context.params.post, publishDate: { $lte: new Date() } }).select(`-_id`).collation({ locale: "en", strength: 1 }).exec()

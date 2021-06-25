@@ -1,11 +1,13 @@
 import React from 'react'
 import Layout from './../layout/layout'
 import { GetServerSideProps } from 'next'
-import { Category, Config } from './../database/models'
+import { Category } from './../database/models'
 import DbConnect from './../utils/dbConnect'
 import { FaDiscord, FaMailBulk, FaTwitter } from "react-icons/fa"
 import getRawBody from 'raw-body';
 import nodemailer from 'nodemailer';
+import { cache } from '../services/cache'
+import { getPageInfo } from '../services/getPageInfo'
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
     await DbConnect()
@@ -39,10 +41,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
             break;
     }
 
-    try {
-        info = await Config.findOne({ name: "info" }).select(`-_id`).exec()
-        info = info._doc.content
-    } catch (e) { }
+    info = cache({name: "info"}, await getPageInfo())
 
     try {
         categories = await Category.find({}).exec()

@@ -1,17 +1,16 @@
 import React from 'react'
 import Layout from './../layout/layout'
 import { GetServerSideProps } from 'next'
-import { Category, Config } from '../database/models'
+import { Category } from '../database/models'
 import DbConnect from '../utils/dbConnect'
+import { cache } from '../services/cache'
+import { getPageInfo } from '../services/getPageInfo'
 
 export const getServerSideProps: GetServerSideProps = async () => {
     await DbConnect()
     let { info, categories } = { info: null, categories: null }
 
-    try {
-        info = await Config.findOne({ name: "info" }).select(`-_id`).exec()
-        info = info._doc.content
-    } catch (e) { }
+    info = cache({name: "info"}, await getPageInfo())
 
     try {
         categories = await Category.find({}).exec()
@@ -40,7 +39,7 @@ const Index = ({ info, categories }) => {
                             Blog Next Js, um blog customizável que pode trazer visibilidade para você na internet
                         </p>
                         <p className="text-lg text-gray-600 my-6">
-                            BlogNextJs foi criado para pessoas que querem começar a mostrar uma atividade na internet a baixo custo mas mesmo assim com qualidade e velocidade. Com esse Repositório você hospedar um blog inteiro sem ter conhecimento técnico avançado em programação ou coisas do tipo. Tudo o que você precisa é de uma conta na MongoDB e na ImgBB. Domínio fica a seu critério pagar por um ou não.
+                            BlogNextJs foi criado para pessoas que queiram começar a mostrar uma atividade na internet a baixo custo mas mesmo assim com qualidade e velocidade. Com esse Repositório você pode hospedar um blog inteiro sem ter conhecimento técnico avançado em programação ou coisas do tipo. Tudo o que você precisa é de uma conta na MongoDB e na ImgBB. Domínio fica a seu critério pagar por um ou não.
                         </p>
                         <p className="text-lg text-gray-600 my-6">
                             Qualquer um pode ter participação digital na internet!

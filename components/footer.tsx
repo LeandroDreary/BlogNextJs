@@ -18,7 +18,7 @@ class Login extends React.Component<MyProps, MyState> {
     render() {
 
         return (
-            <footer className={`footer bg-${this.props?.info?.colors?.background?.color} relative mt-4 pt-1 border-b-2 border-${this.props?.info?.colors?.background?.shadow}`}>
+            <footer className={`footer bg-${this.props?.info?.colors?.background?.color} relative pt-1 border-b-2 border-${this.props?.info?.colors?.background?.shadow}`}>
                 <div className="container mx-auto px-6">
 
                     <div className="sm:flex sm:mt-8">
@@ -26,7 +26,7 @@ class Login extends React.Component<MyProps, MyState> {
                             <div className="flex flex-col">
                                 <span className={`font-bold text-${this.props?.info?.colors?.text?.color || "gray-500"} uppercase mb-2`}>Redes sociais</span>
                                 <div className="flex items-center">
-                                    <a href="https://twitter.com/pequenojornal" className={`text-${this.props?.info?.colors?.text?.color || "gray-500"} my-2 mr-4 flex items-center text-md hover:text-${this.props?.info?.colors?.text?.shadow || "gray-500"} items-center`}>
+                                    <a href="" className={`text-${this.props?.info?.colors?.text?.color || "gray-500"} my-2 mr-4 flex items-center text-md hover:text-${this.props?.info?.colors?.text?.shadow || "gray-500"} items-center`}>
                                         <span className="pr-2">
                                             Twitter
                                             </span>
@@ -34,7 +34,7 @@ class Login extends React.Component<MyProps, MyState> {
                                             <FaTwitter />
                                         </span>
                                     </a>
-                                    <a href="https://discord.gg/gou" className={`text-${this.props?.info?.colors?.text?.color || "gray-500"} my-2 flex flex items-center text-md hover:text-${this.props?.info?.colors?.text?.shadow || "gray-500"} items-center`}>
+                                    <a href="" className={`text-${this.props?.info?.colors?.text?.color || "gray-500"} my-2 flex flex items-center text-md hover:text-${this.props?.info?.colors?.text?.shadow || "gray-500"} items-center`}>
                                         <span className="mr-2">
                                             Discord
                                         </span>

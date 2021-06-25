@@ -5,16 +5,15 @@ import Layout from './../../layout/layout'
 import { PostCard2, Navigation, SearchBar } from './../../components'
 import api from '../../services/api'
 import { useRouter } from 'next/router'
-import { Category, CategoryI, Config, ConfigI, User, UserI } from "../../database/models"
+import { Category, CategoryI, User, UserI } from "../../database/models"
 import DbConnect from './../../utils/dbConnect'
+import { cache } from '../../services/cache'
+import { getPageInfo } from '../../services/getPageInfo'
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
     await DbConnect()
 
-    let info: ConfigI & Document<any, any> = null
-    try {
-        info = await Config.findOne({ name: "info" }).select(`-_id`).exec()
-    } catch (e) { }
+    let info = cache({name: "info"}, await getPageInfo())
 
     let categories: (CategoryI & Document<any, any>)[] = null
     try {
@@ -29,7 +28,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
 
     return {
         props: {
-            info: info.toJSON().content,
+            info,
             authors: authors?.map(author => author.toJSON()),
             categories: categories?.map(category => category.toJSON())
         }

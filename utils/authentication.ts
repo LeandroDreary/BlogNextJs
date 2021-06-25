@@ -14,10 +14,8 @@ type Context = {
     res: ServerResponse
 }
 type ContextApi = {
-    req: NextApiRequest | IncomingMessage & {
-        cookies: NextApiRequestCookies;
-    },
-    res: NextApiResponse | ServerResponse
+    req: NextApiRequest,
+    res: NextApiResponse
 }
 
 export const findUserByAuth = async (id: string) => {
